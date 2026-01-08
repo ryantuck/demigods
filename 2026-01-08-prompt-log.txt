@@ -35,3 +35,8 @@ append the user prompts from this session to today's the prompt log via read/wri
 identify one solved problem from this site that doesn't yet have its solution formalized using lean, and formalize it using lean. https://teorth.github.io/erdosproblems/?status=proved
 add a link to index.html with a section for erdos problems. add an ELI5 for this one with a link summarizing the lean proof generated.
 append prompts to today's prompt log using read/write operations, separated by three dashes "---", no extra styling
+---
+add a section to index.html containing the contents of gemini.md with the header "system prompt"
+Add the following text as a description for the system prompt section: "Ryan believes machines should behave like machines."
+update the erdos problems section header in index.html to indicate it contains ELI5s and lean proofs
+append the prompts from this session to today's prompt log after appending a triple dash "---". use read/write operations.
