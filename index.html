@@ -6,9 +6,83 @@
     <title>Millennium Prize Problems - ELI5</title>
     <link rel="stylesheet" href="./navier-stokes/styles.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        body {
+            background-color: #0d0d0d;
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 2rem;
+            background: transparent;
+            box-shadow: none;
+            padding-top: 50px;
+            text-align: center;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 5em;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 80px #00ffff;
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+            margin-top: 0;
+            margin-bottom: 50px;
+        }
+
+        h3 {
+            font-size: 2em;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+        }
+
+        .problem-list {
+            list-style: none;
+            padding: 0;
+            display: inline-block;
+            text-align: left;
+        }
+
+        .problem-list li {
+            margin-bottom: 15px;
+        }
+
+        .problem-list a {
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        .problem-list a:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff;
+            border-bottom: 1px solid #ff00ff;
+        }
+        
         #ai-notice p {
             font-weight: bold;
-            color: red;
+            color: #ff0000;
+            text-shadow: 0 0 5px #ff0000;
             font-size: 1.2em;
             text-align: center;
             margin-top: 20px;
@@ -17,7 +91,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>Millennium Prize Problems - ELI5</h1>
+        <h1>Demigods</h1>
+        <h2>Experiments in Generative AI, by Ryan Tuck</h2>
+        <h3>ELI5s for the Millennium Prize Problems</h3>
         <ul class="problem-list">
             <li><a href="millennium-prize/birch-and-swinnerton-dyer-conjecture.html">Birch and Swinnerton-Dyer Conjecture</a></li>
             <li><a href="millennium-prize/hodge-conjecture.html">Hodge Conjecture</a></li>

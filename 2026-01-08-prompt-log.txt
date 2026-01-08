@@ -21,3 +21,13 @@ run the test suite
 set the environment variable USE_REAL_MODEL=true prior to the python3 string in the command when running the test suite to avoid issues with the env var not persisting between shell command execution
 remove the __pycache__ dir
 list all user prompts from this session and persist that list in a file titled 2026-01-08-prompt-log.txt
+---
+update index.html to indicate that this page was generated using AI
+make the notice about the page being generated using ai more prominent.
+append the prompt log from today with the contents of this chat, indicating that it was a separate chat
+---
+Update the h1 of index.html to say "Demigods", with a subtitle of "Experiments in Generative AI, by Ryan Tuck"
+The millennium prize section should still indicate that it is a bunch of ELI5s for the millennium prize problems. update accordingly.
+make the styling of index.html more dramatic and techo-futuristic
+append user prompts from this session to today's prompt log file
+append the user prompts from this session to today's the prompt log via read/write commands, not a shell command
