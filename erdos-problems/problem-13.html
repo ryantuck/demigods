@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erdős Problem 13 - ELI5</title>
+    <link rel="stylesheet" href="../navier-stokes/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The "Don't Divide the Sum" Game</h1>
+            <p>ELI5 for Erdős Problem 13</p>
+        </header>
+
+        <section>
+            <h2>The Game Rules</h2>
+            <p>
+                Imagine you have a bag of numbered balls, from 1 to some number N (like 100). You want to pick as many balls as you can, but there's a tricky rule.
+            </p>
+            <p>
+                If you pick any three balls, let's call them A, B, and C (where A is the smallest), the sum of the bigger two (B + C) cannot be divisible by the smallest one (A).
+            </p>
+            <p>
+                For example, if you pick 2, 4, and 6:
+                <br>
+                Smallest is 2. The others are 4 and 6.
+                <br>
+                Sum is 4 + 6 = 10.
+                <br>
+                Does 2 divide 10? Yes! (10 / 2 = 5).
+                <br>
+                So you <strong>cannot</strong> have 2, 4, and 6 in your set together.
+            </p>
+        </section>
+
+        <section>
+            <h2>The Question</h2>
+            <p>
+                Paul Erdős, a famous mathematician who loved asking these kinds of questions, asked: "What is the maximum number of balls you can pick without breaking this rule?"
+            </p>
+            <p>
+                It turns out the answer is roughly <strong>one-third</strong> of the total balls. So if you have 100 balls, you can pick about 33 of them safely.
+            </p>
+        </section>
+
+        <section>
+            <h2>The Formal Proof</h2>
+            <p>
+                We have formalized the statement of this problem in the Lean programming language. This allows computers to verify the math exactly.
+            </p>
+            <p>
+                <a href="../ErdosProblem13.lean" class="button">View the Lean Formalization</a>
+            </p>
+            <pre style="background: #f4f4f4; padding: 10px; border: 1px solid #ddd; overflow-x: auto;"><code>import Mathlib
+
+open Finset Nat
+
+/-- 
+Erdős Problem 13:
+Let A ⊆ {1, ..., N} be such that there are no a, b, c ∈ A 
+such that a ∣ (b + c) and a < min b c. 
+Then |A| ≤ N / 3 + O(1).
+-/
+theorem erdos_problem_13 : 
+  ∃ C : ℝ, ∀ N : ℕ, ∀ A : Finset ℕ, 
+  (∀ x ∈ A, 1 ≤ x ∧ x ≤ N) → 
+  (∀ a ∈ A, ∀ b ∈ A, ∀ c ∈ A, a < min b c → ¬ (a ∣ (b + c))) → 
+  (A.card : ℝ) ≤ (N : ℝ) / 3 + C := by
+  sorry</code></pre>
+        </section>
+    </div>
+</body>
+</html>
