@@ -1,0 +1,23 @@
+how would i set up a basic test suite to ensure the model adheres to the system prompt?
+tree
+move the gemini test file to the top level of the repo
+ls
+run the test suite again
+move the prompt adherence test suite to the top level of the repo
+remove the navier-stokes/gemini-stuff directory
+rename gemini_test.py gemini_sample.py
+update the test suite to support actually prompting the model. leave mocking stuff in-place. adhere to python testing best practices.
+google whether google-generativeai is the right python package to use or if there is a newer one available from google
+run the actual test suite
+export GOOGLE_API_KEY=$(GEMINI_API_KEY)
+export GOOGLE_API_KEY=$GEMINI_API_KEY
+export USE_REAL_MODEL=true
+run actual test suite
+run test suite
+update the model used for the test suite to gemini-3-flash-preview
+run the test suite
+are the necessary environment variables set?
+run the test suite
+set the environment variable USE_REAL_MODEL=true prior to the python3 string in the command when running the test suite to avoid issues with the env var not persisting between shell command execution
+remove the __pycache__ dir
+list all user prompts from this session and persist that list in a file titled 2026-01-08-prompt-log.txt
