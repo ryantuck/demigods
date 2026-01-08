@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navier-Stokes 3D Simulation</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+        #controls-3d {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .control-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 200px;
+        }
+        .control-group input {
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls-3d" class="controls">
+        <button id="reset-button-3d">Reset</button>
+        <div class="control-group">
+            <label for="jet-vx">Jet X:</label>
+            <input type="range" id="jet-vx" min="-5" max="5" step="0.1" value="0">
+        </div>
+        <div class="control-group">
+            <label for="jet-vy">Jet Y:</label>
+            <input type="range" id="jet-vy" min="-5" max="5" step="0.1" value="2">
+        </div>
+        <div class="control-group">
+            <label for="jet-vz">Jet Z:</label>
+            <input type="range" id="jet-vz" min="-5" max="5" step="0.1" value="0">
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script type="module" src="simulation_3d.js"></script>
+</body>
+</html>
