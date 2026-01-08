@@ -31,3 +31,7 @@ The millennium prize section should still indicate that it is a bunch of ELI5s f
 make the styling of index.html more dramatic and techo-futuristic
 append user prompts from this session to today's prompt log file
 append the user prompts from this session to today's the prompt log via read/write commands, not a shell command
+---
+identify one solved problem from this site that doesn't yet have its solution formalized using lean, and formalize it using lean. https://teorth.github.io/erdosproblems/?status=proved
+add a link to index.html with a section for erdos problems. add an ELI5 for this one with a link summarizing the lean proof generated.
+append prompts to today's prompt log using read/write operations, separated by three dashes "---", no extra styling
