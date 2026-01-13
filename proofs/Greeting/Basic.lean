@@ -1,4 +1,5 @@
 import Mathlib.Data.Real.Basic
+import Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.Data.Fintype.Card
 import Mathlib.Data.Nat.Basic
 import Mathlib.Data.Finset.Basic
@@ -57,17 +58,17 @@ lemma bedert_lemma_2 (n : ℕ) (A : Finset ℕ) (hA : PropertyP A)
   (B.card : ℝ) + ((Finset.image₂ (· + ·) A_alpha_1 A_alpha_1) ∩ I ∩ (I.filter (fun x => x ≡ a [MOD q]))).card < (I.card : ℝ) / q + 1 := by
   sorry
 
--- Theorem 1 from Bedert's paper
-theorem bedert_theorem_1 :
-  ∃ C : ℝ, ∀ n : ℕ, ∀ A : Finset ℕ,
-  (A ⊆ range (n + 1)) → PropertyP A → (A.card : ℝ) ≤ n / 3 + C :=
-sorry
-
--- Theorem 2 from Bedert's paper
+-- Theorem 2 from Bedert's paper (Assumed as base for Theorem 1)
 theorem bedert_theorem_2 :
   ∃ N : ℕ, ∀ n : ℕ, n ≥ N →
   ∀ A : Finset ℕ, (A ⊆ range (n + 1)) → PropertyP A →
   A.card ≤ n / 3 + 1 :=
+sorry
+
+-- Theorem 1 from Bedert's paper
+theorem bedert_theorem_1 :
+  ∃ C : ℝ, ∀ n : ℕ, ∀ A : Finset ℕ,
+  (A ⊆ range (n + 1)) → PropertyP A → (A.card : ℝ) ≤ n / 3 + C :=
 sorry
 
 theorem erdos_sarkozy_conjecture (N : ℕ) :
