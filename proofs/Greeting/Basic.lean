@@ -1,5 +1,4 @@
 import Mathlib.Data.Real.Basic
-import Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.Data.Fintype.Card
 import Mathlib.Data.Nat.Basic
 import Mathlib.Data.Finset.Basic
@@ -8,15 +7,6 @@ import Mathlib.Tactic
 
 open Real
 open Finset
-
--- Assuming a, b, c are real numbers and a ≠ 0
--- The discriminant
-def D (a b c : ℝ) := b^2 - 4 * a * c
-
-theorem quadratic_formula_solutions {a b c x : ℝ} (ha : a ≠ 0) :
-  a * x^2 + b * x + c = 0 ↔
-  (∃ s : ℝ, s^2 = D a b c ∧ (x = (-b + s) / (2 * a) ∨ x = (-b - s) / (2 * a))) := by
-  sorry
 
 def PropertyP (A : Finset ℕ) : Prop :=
   ∀ x ∈ A, ∀ y ∈ A, ∀ z ∈ A, (z < x ∧ z < y) → ¬ (z ∣ (x + y))
