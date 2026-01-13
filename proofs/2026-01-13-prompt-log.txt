@@ -1,0 +1,31 @@
+1. This is the Gemini CLI. We are setting up the context for our chat. Today's date is Tuesday, January 13, 2026 (formatted according to the user's locale). My operating system is: linux. The project's temporary directory is: /home/codespace/.gemini/tmp/d76deba0628ca7563883bc4d95a65990813e4ad914778d181c1bf7a458abce5d. I'm currently working in the directory: /workspaces/demigods/proofs. notes.txt contains details on how to build and run this project. run it.
+2. now there is, try again
+3. only execute the #run command
+4. commit changes with message boilerplate lean setup
+5. update greeting lean project to prove the quadratic formula
+6. run executable again
+7. commit changes
+8. Update the project to formalize the conjecture found here without implementing the proof https://www.erdosproblems.com/13
+9. commit changes
+10. Run the executable to verify that it works as expected
+11. Update the executable to reference the correct name instead of quadratic formula
+12. commit changes
+13. the link contains a paper that has the proof for the conjecture. implement and run executable as needed.
+14. fetch the source pdf and read it to read the proof
+15. pull the pdf down and read it in and implement the proof
+16. commit changes
+17. commit changes not including the proof.pdf but leave the pdf around
+18. implement one of the proofs
+19. run the executable
+20. commit changes
+21. solve the remaining proofs and validate by running the executable
+22. commit the changes
+23. remove the qudratic equation bits from the lean program leaving just the erdos-related stuff
+24. run the exectuable
+25. does the project contain actual formalized proofs or just formalized conjectures?
+26. formalize the proof for one of the bedert theorems
+27. commit changes
+28. update the index.html to summarize the state of the lean project work done so far and what's required to further formalize the entire proof
+29. persist a summary of this entire session as a file containing the iso date in the filename
+30. commit changes and push to master
+31. list all prompts from this session and persist them in a file 2026-01-13-prompt-log.txt
