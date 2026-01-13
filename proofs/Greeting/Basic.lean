@@ -5,6 +5,7 @@ import Mathlib.Data.Nat.Basic
 import Mathlib.Data.Finset.Basic
 
 open Real
+open Finset
 
 -- Assuming a, b, c are real numbers and a ≠ 0
 -- The discriminant
@@ -19,11 +20,26 @@ theorem quadratic_formula_solutions {a b c x : ℝ} (ha : a ≠ 0) :
 -- This is a conceptual representation.
 sorry -- The actual proof is already in mathlib.
 
--- Formalization of the conjecture from https://www.erdosproblems.com/13
-open Finset
+-- Definition 1 from Bedert's paper
+def PropertyP (A : Finset ℕ) : Prop :=
+  ∀ x ∈ A, ∀ y ∈ A, ∀ z ∈ A, (z < x ∧ z < y) → ¬ (z ∣ (x + y))
 
+-- Theorem 1 from Bedert's paper
+theorem bedert_theorem_1 :
+  ∃ C : ℝ, ∀ n : ℕ, ∀ A : Finset ℕ,
+  (A ⊆ range (n + 1)) → PropertyP A → (A.card : ℝ) ≤ n / 3 + C :=
+sorry
+
+-- Theorem 2 from Bedert's paper
+theorem bedert_theorem_2 :
+  ∃ N : ℕ, ∀ n : ℕ, n ≥ N →
+  ∀ A : Finset ℕ, (A ⊆ range (n + 1)) → PropertyP A →
+  A.card ≤ n / 3 + 1 :=
+sorry
+
+-- Original conjecture formalization (matches Theorem 2 but for all N, which might be too strong or implied by "sufficiently large")
 theorem erdos_sarkozy_conjecture (N : ℕ) :
-  ∀ (A : Finset ℕ), (A ⊆ Finset.range (N + 1)) →
-  (∀ a ∈ A, ∀ b ∈ A, ∀ c ∈ A, (a < min b c) → ¬ (a ∣ (b + c))) →
+  ∀ (A : Finset ℕ), (A ⊆ range (N + 1)) →
+  PropertyP A →
   (A.card ≤ N / 3 + 1) :=
-sorry -- Proof is not implemented
+sorry
