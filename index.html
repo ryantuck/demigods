@@ -121,6 +121,14 @@
     <div class="container">
         <h1>Demigods</h1>
         <h2>Experiments in Generative AI, by Ryan Tuck</h2>
+
+        <h3>Game of Life</h3>
+        <canvas id="miniLife" width="300" height="200" style="background: #000; border: 1px solid #333; display: inline-block;"></canvas>
+        <div style="margin-top: 10px; font-size: 0.9em; margin-bottom: 40px;">
+            <span style="color: #888;"><span id="miniPop">0</span> cells alive</span><br>
+            <a href="game_of_life.html" style="color: #00ffff; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.3s ease;" onmouseover="this.style.color='#ff00ff'; this.style.borderBottom='1px solid #ff00ff';" onmouseout="this.style.color='#00ffff'; this.style.borderBottom='1px solid transparent';">interactive game of life</a>
+        </div>
+
         <h3>ELI5s for the Millennium Prize Problems</h3>
         <ul class="problem-list">
             <li><a href="millennium-prize/birch-and-swinnerton-dyer-conjecture.html">Birch and Swinnerton-Dyer Conjecture</a></li>
@@ -194,5 +202,57 @@ If no response is available to provide to the user, the model should use a defau
     <footer id="ai-notice">
         <p>This page was generated using AI.</p>
     </footer>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('miniLife');
+            const ctx = canvas.getContext('2d');
+            const popSpan = document.getElementById('miniPop');
+            const cellSize = 5;
+            const cols = canvas.width / cellSize;
+            const rows = canvas.height / cellSize;
+            let grid = Array.from({ length: cols }, () => 
+                Array.from({ length: rows }, () => Math.random() > 0.85 ? 1 : 0)
+            );
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#00ff00';
+                let pop = 0;
+                for (let x = 0; x < cols; x++) {
+                    for (let y = 0; y < rows; y++) {
+                        if (grid[x][y]) {
+                            ctx.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1);
+                            pop++;
+                        }
+                    }
+                }
+                popSpan.textContent = pop;
+            }
+
+            function nextGen() {
+                const next = grid.map(col => [...col]);
+                for (let x = 0; x < cols; x++) {
+                    for (let y = 0; y < rows; y++) {
+                        let neighbors = 0;
+                        for (let i = -1; i <= 1; i++) {
+                            for (let j = -1; j <= 1; j++) {
+                                if (i === 0 && j === 0) continue;
+                                const nx = (x + i + cols) % cols;
+                                const ny = (y + j + rows) % rows;
+                                neighbors += grid[nx][ny];
+                            }
+                        }
+                        if (grid[x][y] === 1 && (neighbors < 2 || neighbors > 3)) next[x][y] = 0;
+                        else if (grid[x][y] === 0 && neighbors === 3) next[x][y] = 1;
+                    }
+                }
+                grid = next;
+                draw();
+            }
+
+            setInterval(nextGen, 150);
+        })();
+    </script>
 </body>
 </html>
