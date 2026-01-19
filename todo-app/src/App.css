@@ -1,0 +1,12 @@
+#root {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.hover-opacity-100:hover {
+  opacity: 1 !important;
+}
+
+.delete-btn {
+  transition: opacity 0.2s ease-in-out;
+}
