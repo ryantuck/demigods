@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Chain Insurance</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 2rem;
+        }
+        h1, h2, h3 {
+            font-family: 'Orbitron', 'Courier New', sans-serif;
+            text-transform: uppercase;
+        }
+        h1 {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #00ffff;
+            text-align: center;
+            font-size: 2.4em;
+        }
+        h2 {
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff;
+            font-size: 1.3em;
+            margin-top: 2.5rem;
+        }
+        h3 {
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+            font-size: 1.1em;
+        }
+        p, li { color: #ccc; }
+        strong { color: #fff; }
+        a { color: #00ffff; text-decoration: none; }
+        a:hover { color: #ff00ff; }
+        code {
+            background-color: #333; color: #00ffff;
+            padding: 2px 5px; border-radius: 3px;
+        }
+        .panel {
+            background: #141414; border: 1px solid #333;
+            border-radius: 8px; padding: 1.2rem 1.5rem; margin: 1.5rem 0;
+        }
+        .controls label {
+            display: block; margin: 0.9rem 0 0.2rem; color: #aaa;
+        }
+        .controls input[type=range] { width: 100%; accent-color: #00ffff; }
+        .controls .val { color: #ffff00; }
+        .stat-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 12px; margin-top: 1rem;
+        }
+        .stat {
+            background: #1a1a1a; border: 1px solid #333; border-radius: 6px;
+            padding: 10px 12px;
+        }
+        .stat .label { color: #888; font-size: 0.78em; text-transform: uppercase; }
+        .stat .value { font-size: 1.35em; color: #00ffff; }
+        .stat .value.good { color: #00ff00; }
+        .stat .value.bad { color: #ff5555; }
+        .barchart { margin-top: 1rem; }
+        .barrow { display: flex; align-items: center; margin: 4px 0; font-size: 0.85em; }
+        .barrow .blabel { width: 90px; color: #888; flex-shrink: 0; }
+        .barrow .btrack { flex: 1; background: #1a1a1a; border-radius: 3px; height: 16px; }
+        .barrow .bfill { height: 16px; border-radius: 3px; background: #ff00ff; box-shadow: 0 0 6px #ff00ff; }
+        .barrow .bval { width: 60px; text-align: right; color: #ccc; flex-shrink: 0; padding-left: 8px; }
+        footer p {
+            font-family: 'Orbitron', sans-serif; text-transform: uppercase;
+            color: #ffff00; text-shadow: 0 0 5px #ffff00;
+            text-align: center; margin: 50px 0;
+        }
+        .note { color: #777; font-size: 0.85em; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>House Chain Insurance</h1>
+    <p style="text-align:center; color:#888;">Pricing flexibility and hard deadlines in a chain of dependent sales.
+        &nbsp;<a href="../index.html">&larr; back</a></p>
+
+    <h2>The problem</h2>
+    <p>In a property chain, every household must complete on the same day. The
+    completion date is therefore the <strong>maximum</strong> of everyone's
+    readiness dates, and the chain survives only if <strong>every</strong>
+    link holds. Both risks compound with chain length — yet nobody prices
+    them. The buyer with a hard deadline silently carries huge timing risk;
+    the seller with total flexibility provides real option value to the whole
+    chain and captures none of it.</p>
+    <p>The instruments below make that risk transfer explicit. A fuller
+    write-up and a Python version of this model live in
+    <a href="https://github.com/ryantuck/demigods/tree/master/house-chain-insurance">the repo</a>.</p>
+
+    <ul>
+        <li><strong>A. Chain-break cover</strong> — insurer pays the buyer's sunk costs if any link fails.</li>
+        <li><strong>B. Delay option</strong> — the seller commits to a deadline and pays per-day damages past it (voids if the chain breaks). A flexible seller hedges by <em>bridging</em>: completing on their own schedule and renting until their onward purchase catches up.</li>
+        <li><strong>C. Completion guarantee</strong> — the seller completes by the deadline <em>no matter what happens upstream</em>. Only a flexible party can write this at a sane price; a hard-deadline buyer is the natural payer.</li>
+        <li><strong>D. Milestone bond pool</strong> — everyone escrows a bond and forfeits a daily amount to the on-time parties for each day they run late. Slowness becomes a priced choice.</li>
+    </ul>
+
+    <h2>Simulator</h2>
+    <div class="panel controls">
+        <label>Parties in chain: <span class="val" id="vN">6</span></label>
+        <input type="range" id="inN" min="2" max="8" value="6">
+        <label>Per-link fall-through probability (middle parties): <span class="val" id="vP">8%</span></label>
+        <input type="range" id="inP" min="0" max="20" value="8">
+        <label>Mean days-to-ready (middle parties): <span class="val" id="vM">28</span></label>
+        <input type="range" id="inM" min="10" max="60" value="28">
+        <label>Committed deadline (days): <span class="val" id="vD">42</span></label>
+        <input type="range" id="inD" min="14" max="90" value="42">
+        <label>Seller flexibility — cost of bridging (1 = can crash with family, 5 = deeply rooted): <span class="val" id="vF">1&times;</span></label>
+        <input type="range" id="inF" min="1" max="5" value="1">
+        <p class="note">Fixed terms: damages £250/day capped at £15,000; buyer's cost of lateness £250/day;
+        sunk costs £4,000; chain-collapse disruption to buyer £6,000. 4,000 Monte Carlo runs per update.</p>
+    </div>
+
+    <h3>Chain risk</h3>
+    <div class="stat-grid">
+        <div class="stat"><div class="label">P(chain breaks)</div><div class="value bad" id="oBreak">—</div></div>
+        <div class="stat"><div class="label">Median completion</div><div class="value" id="oMed">—</div></div>
+        <div class="stat"><div class="label">P90 completion</div><div class="value" id="oP90">—</div></div>
+        <div class="stat"><div class="label">P(miss deadline | intact)</div><div class="value bad" id="oLate">—</div></div>
+        <div class="stat"><div class="label">Buyer's uninsured expected cost</div><div class="value bad" id="oUnins">—</div></div>
+    </div>
+
+    <h3>Instrument prices</h3>
+    <div class="stat-grid">
+        <div class="stat"><div class="label">A. Chain-break cover premium</div><div class="value" id="oA">—</div></div>
+        <div class="stat"><div class="label">B. Delay option premium</div><div class="value" id="oB">—</div></div>
+        <div class="stat"><div class="label">B. Flexible seller expected profit</div><div class="value good" id="oBflex">—</div></div>
+        <div class="stat"><div class="label">B. Inflexible seller expected profit</div><div class="value bad" id="oBinflex">—</div></div>
+        <div class="stat"><div class="label">C. Completion guarantee premium</div><div class="value" id="oC">—</div></div>
+        <div class="stat"><div class="label">C. Flexible seller expected profit</div><div class="value good" id="oCflex">—</div></div>
+    </div>
+
+    <h3>Break probability by chain length</h3>
+    <div class="barchart" id="oBars"></div>
+
+    <h2>Reading the results</h2>
+    <ul>
+        <li><strong>Flexibility is the hedge.</strong> The identical delay-option
+        contract is profitable for a seller who can cheaply bridge and
+        loss-making for one who can't. Drag the flexibility slider and watch
+        the two profit tiles diverge — that spread is the yield on flexibility.</li>
+        <li><strong>Hard deadlines have a price.</strong> The guarantee premium is
+        what day-certain completion actually costs. A buyer whose real
+        deadline cost exceeds it should happily pay; the flexible
+        counterparty happily writes it. Positive-sum.</li>
+        <li><strong>Long chains are where the money is.</strong> Push the chain to
+        8 parties: break risk and delay tails explode, and so do the premiums —
+        exactly where explicit risk transfer matters most.</li>
+    </ul>
+    <p class="note">Caveats: bridging decisions here use the realized delay
+    (an upper bound on hedge value); link failures are independent (a falling
+    market correlates them); all money figures are illustrative.</p>
+</div>
+<footer><p>All content on this page generated using agentic AI</p></footer>
+
+<script>
+(function () {
+    // Marsaglia-Tsang gamma sampler (shape >= 1)
+    function gamma(shape, scale) {
+        const d = shape - 1 / 3, c = 1 / Math.sqrt(9 * d);
+        for (;;) {
+            let x, v;
+            do { x = normal(); v = 1 + c * x; } while (v <= 0);
+            v = v * v * v;
+            const u = Math.random();
+            if (u < 1 - 0.0331 * x * x * x * x) return d * v * scale;
+            if (Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v * scale;
+        }
+    }
+    function normal() {
+        let u = 0, v = 0;
+        while (u === 0) u = Math.random();
+        while (v === 0) v = Math.random();
+        return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+    }
+    function quantile(sorted, q) {
+        if (!sorted.length) return 0;
+        return sorted[Math.min(Math.floor(q * sorted.length), sorted.length - 1)];
+    }
+    const gbp = x => (x < 0 ? "-£" : "£") + Math.abs(Math.round(x)).toLocaleString();
+    const pct = x => (100 * x).toFixed(1) + "%";
+
+    const T = {
+        damagesPerDay: 250, damagesCap: 15000,
+        sunk: 4000, disruption: 6000, buyerCostPerDay: 250,
+        loading: 0.25, rebuyDays: 90,
+        baseBridgeFixed: 1500, baseBridgePerDay: 60,
+    };
+    const cap = late => Math.min(Math.max(late, 0) * T.damagesPerDay, T.damagesCap);
+
+    function makeParties(n, pMid, meanMid) {
+        const ps = [{ shape: 4, scale: 21 / 4, pFail: 0.03 }];           // buyer
+        for (let i = 1; i < n - 1; i++)
+            ps.push({ shape: 4, scale: meanMid / 4, pFail: pMid });       // middles
+        ps.push({ shape: 4, scale: 14 / 4, pFail: 0.03 });                // top seller
+        return ps;
+    }
+
+    function simulate() {
+        const n = +inN.value, pMid = +inP.value / 100, meanMid = +inM.value;
+        const D = +inD.value, flex = +inF.value;
+        const bridgeFixed = T.baseBridgeFixed * flex;
+        const bridgePerDay = T.baseBridgePerDay * flex;
+        const parties = makeParties(n, pMid, meanMid);
+        const SIMS = 4000;
+
+        let broken = 0;
+        const completions = [];
+        let uninsured = 0;
+        let bUnhedged = 0, bHedged = 0;         // instrument B legs (intact only)
+        let cSellerCost = 0, cBuyerValue = 0;   // instrument C legs
+        let liveCount = 0;
+
+        for (let s = 0; s < SIMS; s++) {
+            const readies = parties.map(p => gamma(p.shape, p.scale));
+            let failIdx = null;
+            for (let i = 0; i < n; i++)
+                if (Math.random() < parties[i].pFail) { failIdx = i; break; }
+
+            const bridgedT = Math.max(readies[0], readies[1]);
+
+            if (failIdx !== null) {
+                broken++;
+                uninsured += T.sunk + T.disruption;
+                if (failIdx !== 0) {
+                    // C: upstream break -> seller bridges for the re-buy period
+                    liveCount++;
+                    cSellerCost += bridgeFixed + bridgePerDay * T.rebuyDays + cap(bridgedT - D);
+                    const residual = Math.max(bridgedT - D, 0) * T.buyerCostPerDay - cap(bridgedT - D);
+                    cBuyerValue += (T.sunk + T.disruption) - residual;
+                }
+                continue;
+            }
+
+            const Tc = Math.max(...readies);
+            completions.push(Tc);
+            uninsured += Math.max(Tc - D, 0) * T.buyerCostPerDay;
+            liveCount++;
+
+            const payDamages = cap(Tc - D);
+            const bridgeCost = bridgeFixed + bridgePerDay * Math.max(Tc - bridgedT, 0) + cap(bridgedT - D);
+            bUnhedged += payDamages;
+            bHedged += Math.min(payDamages, bridgeCost);
+
+            const useBridge = bridgeCost < payDamages;
+            const eff = (Tc > D && useBridge) ? bridgedT : Tc;
+            cSellerCost += Tc <= D ? 0 : Math.min(payDamages, bridgeCost);
+            const lateDays = Math.max(eff - D, 0);
+            const residual = lateDays * T.buyerCostPerDay - cap(lateDays);
+            cBuyerValue += Math.max(Tc - D, 0) * T.buyerCostPerDay - residual;
+        }
+
+        const nIntact = completions.length;
+        completions.sort((a, b) => a - b);
+        const pBreak = broken / SIMS;
+
+        const fairA = pBreak * T.sunk * (1 + T.loading);
+        const uh = bUnhedged / nIntact, h = bHedged / nIntact;
+        const premB = (uh + h) / 2;
+        const sc = cSellerCost / liveCount, bv = cBuyerValue / liveCount;
+        const premC = (sc + bv) / 2;
+
+        oBreak.textContent = pct(pBreak);
+        oMed.textContent = quantile(completions, 0.5).toFixed(0) + "d";
+        oP90.textContent = quantile(completions, 0.9).toFixed(0) + "d";
+        oLate.textContent = pct(completions.filter(c => c > D).length / nIntact);
+        oUnins.textContent = gbp(uninsured / SIMS);
+        oA.textContent = gbp(fairA);
+        oB.textContent = gbp(premB);
+        oBflex.textContent = gbp(premB - h);
+        oBinflex.textContent = gbp(premB - uh);
+        oC.textContent = gbp(premC);
+        oCflex.textContent = gbp(premC - sc);
+        oCflex.className = "value " + (premC - sc >= 0 ? "good" : "bad");
+
+        // analytic break probability by chain length, same per-link params
+        let bars = "";
+        for (let m = 2; m <= 8; m++) {
+            let alive = 0.97 * 0.97;
+            for (let i = 0; i < m - 2; i++) alive *= 1 - pMid;
+            const pb = 1 - alive;
+            bars += '<div class="barrow"><div class="blabel">' + m + " parties</div>"
+                + '<div class="btrack"><div class="bfill" style="width:' + (pb * 100).toFixed(1) + '%"></div></div>'
+                + '<div class="bval">' + pct(pb) + "</div></div>";
+        }
+        oBars.innerHTML = bars;
+    }
+
+    const ids = ["inN", "inP", "inM", "inD", "inF"];
+    function refreshLabels() {
+        vN.textContent = inN.value;
+        vP.textContent = inP.value + "%";
+        vM.textContent = inM.value;
+        vD.textContent = inD.value;
+        vF.textContent = inF.value + "×";
+    }
+    ids.forEach(id => document.getElementById(id).addEventListener("input", () => {
+        refreshLabels(); simulate();
+    }));
+    refreshLabels();
+    simulate();
+})();
+</script>
+</body>
+</html>
