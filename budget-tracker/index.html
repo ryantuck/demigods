@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Household Budget Tracker</title>
+<style>
+  :root {
+    --page:           #f9f9f7;
+    --surface-1:      #fcfcfb;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --good:           #006300;
+    --bad:            #d03b3b;
+    --seq:            #2a78d6;   /* sequential hue (magnitude) */
+    --div-pos:        #2a78d6;   /* diverging: cool pole */
+    --div-neg:        #e34948;   /* diverging: warm pole */
+    --s1: #2a78d6; --s2: #1baf7a; --s3: #eda100; --s4: #008300;
+    --s5: #4a3aa7; --s6: #e34948; --s7: #e87ba4; --s8: #eb6834;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page:           #0d0d0d;
+      --surface-1:      #1a1a19;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --good:           #0ca30c;
+      --bad:            #d03b3b;
+      --seq:            #3987e5;
+      --div-pos:        #3987e5;
+      --div-neg:        #e66767;
+      --s1: #3987e5; --s2: #199e70; --s3: #c98500; --s4: #008300;
+      --s5: #9085e9; --s6: #e66767; --s7: #d55181; --s8: #d95926;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 28px 20px 56px; }
+  header h1 { font-size: 22px; font-weight: 650; margin: 0 0 2px; }
+  header p  { margin: 0 0 22px; color: var(--text-secondary); }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .tile {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px 12px;
+  }
+  .tile .label { color: var(--text-secondary); font-size: 13px; }
+  .tile .value { font-size: 30px; font-weight: 600; margin-top: 2px; }
+  .tile .delta { font-size: 13px; margin-top: 2px; color: var(--text-secondary); }
+  .tile .delta.up   { color: var(--good); }
+  .tile .delta.down { color: var(--bad); }
+
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 18px 14px; margin-bottom: 20px;
+  }
+  .card h2 { font-size: 15px; font-weight: 650; margin: 0 0 2px; }
+  .card .sub { color: var(--text-secondary); font-size: 13px; margin: 0 0 12px; }
+  .chart { position: relative; }
+  svg { display: block; }
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .tick   { fill: var(--text-muted); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+  .barlbl { fill: var(--text-secondary); font-size: 11.5px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; }
+  .legend .key { display: flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: 12.5px; }
+  .legend .swatch { width: 11px; height: 11px; border-radius: 3px; }
+
+  .tooltip {
+    position: absolute; pointer-events: none; z-index: 5; display: none;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.14); padding: 9px 11px; min-width: 150px;
+  }
+  .tooltip .tt-title { color: var(--text-secondary); font-size: 12px; margin-bottom: 5px; }
+  .tooltip .tt-row { display: flex; align-items: center; gap: 7px; font-size: 12.5px; padding: 1.5px 0; }
+  .tooltip .tt-key { width: 12px; height: 3px; border-radius: 2px; flex: none; }
+  .tooltip .tt-val { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; padding-left: 14px; }
+  .tooltip .tt-name { color: var(--text-secondary); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 6px 10px; text-align: right; font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; font-variant-numeric: normal; }
+  thead th { color: var(--text-secondary); font-weight: 600; border-bottom: 1px solid var(--baseline); }
+  tbody tr { border-bottom: 1px solid var(--gridline); }
+  tbody tr:last-child { border-bottom: none; }
+  tfoot td { border-top: 1px solid var(--baseline); font-weight: 650; }
+  .table-scroll { overflow-x: auto; }
+
+  footer { color: var(--text-muted); font-size: 12.5px; margin-top: 6px; }
+  footer code { font-family: ui-monospace, monospace; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Household Budget Tracker</h1>
+    <p id="subtitle">Categorized spending from checking + credit card statements</p>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="card">
+    <h2>Monthly spending by category</h2>
+    <p class="sub">Top categories stacked per month; smaller ones folded into Other</p>
+    <div class="chart" id="stacked"></div>
+    <div class="legend" id="stacked-legend"></div>
+  </div>
+
+  <div class="card">
+    <h2>Where the money went</h2>
+    <p class="sub" id="cat-sub">Total spending per category over the full period</p>
+    <div class="chart" id="cats"></div>
+  </div>
+
+  <div class="card">
+    <h2>Net cash flow by month</h2>
+    <p class="sub">Income minus spending; below the line means the month ran a deficit</p>
+    <div class="chart" id="net"></div>
+  </div>
+
+  <div class="card">
+    <h2>Spending detail</h2>
+    <p class="sub">Every category, every month — the numbers behind the charts</p>
+    <div class="table-scroll" id="table"></div>
+  </div>
+
+  <footer>
+    Mock data generated by <code>generate_mock_data.py</code>, categorized by
+    <code>process.py</code>. Card payments and internal transfers are excluded
+    from spending to avoid double counting; savings transfers are tracked separately.
+  </footer>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  const D = window.BUDGET_DATA;
+  const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const SERIES_VARS = ['--s1','--s2','--s3','--s4','--s5','--s6','--s7','--s8'];
+
+  const fmt$ = v => (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString('en-US', { maximumFractionDigits: 0 });
+  const fmtK = v => {
+    const a = Math.abs(v), s = v < 0 ? '−$' : '$';
+    return a >= 100000 ? s + (a / 1000).toFixed(0) + 'K'
+         : a >= 10000  ? s + (a / 1000).toFixed(1) + 'K'
+         : s + a.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  };
+  const monthName = m => new Date(m + '-15T00:00:00').toLocaleString('en-US', { month: 'short' });
+
+  const months = D.months;
+  document.getElementById('subtitle').textContent =
+    `Categorized spending from checking + credit card statements · ${monthName(months[0])}–${monthName(months[months.length - 1])} ${months[0].slice(0, 4)} · ${D.transaction_count} transactions`;
+
+  // ---- Top 7 categories + Other (series ladder: never more than 8 slots) ----
+  const topCats = D.category_totals.slice(0, 7).map(c => c.category);
+  const hasOther = D.category_totals.length > 7;
+  const stackCats = hasOther ? topCats.concat(['Other']) : topCats;
+  const stackData = months.map(m => {
+    const src = D.by_month_category[m], row = {};
+    stackCats.forEach(c => row[c] = 0);
+    for (const [cat, v] of Object.entries(src)) {
+      row[topCats.includes(cat) ? cat : 'Other'] = (row[topCats.includes(cat) ? cat : 'Other'] || 0) + v;
+    }
+    return row;
+  });
+
+  // ---- KPI tiles ----
+  const inc = D.totals.income, spend = D.totals.spending, net = inc - spend;
+  const kpis = [
+    { label: 'Total income', value: fmtK(inc) },
+    { label: 'Total spending', value: fmtK(spend) },
+    { label: 'Net saved', value: fmtK(net), delta: (net / inc * 100).toFixed(1) + '% savings rate', dir: net >= 0 ? 'up' : 'down' },
+    { label: 'Avg monthly spending', value: fmtK(spend / months.length) },
+  ];
+  const kpiRoot = document.getElementById('kpis');
+  for (const k of kpis) {
+    const tile = document.createElement('div'); tile.className = 'tile';
+    const l = document.createElement('div'); l.className = 'label'; l.textContent = k.label;
+    const v = document.createElement('div'); v.className = 'value'; v.textContent = k.value;
+    tile.append(l, v);
+    if (k.delta) {
+      const d = document.createElement('div'); d.className = 'delta ' + k.dir; d.textContent = k.delta;
+      tile.append(d);
+    }
+    kpiRoot.append(tile);
+  }
+
+  // ---- shared svg helpers ----
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (tag, attrs) => {
+    const n = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    return n;
+  };
+  const txt = (x, y, s, cls, anchor) => {
+    const t = el('text', { x, y, class: cls, 'text-anchor': anchor || 'start' });
+    t.textContent = s;
+    return t;
+  };
+  const niceTicks = (max, n) => {
+    const raw = max / n, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map(s => s * mag).find(s => s >= raw);
+    const out = [];
+    for (let v = 0; v <= max + 1e-9; v += step) out.push(v);
+    return out;
+  };
+  // Rounded cap on the data end only, square at the baseline
+  const capPath = (x, y, w, h, r, capTop) => {
+    r = Math.min(r, h / 2, w / 2);
+    return capTop
+      ? `M${x},${y + h} v${-(h - r)} q0,${-r} ${r},${-r} h${w - 2 * r} q${r},0 ${r},${r} v${h - r} z`
+      : `M${x},${y} h${w - r} q${r},0 ${r},${r} v${h - 2 * r} q0,${r} ${-r},${r} h${-(w - r)} z`;
+  };
+
+  // ---- tooltip ----
+  const tt = document.getElementById('tooltip');
+  function showTip(evt, title, rows) {
+    tt.replaceChildren();
+    const h = document.createElement('div'); h.className = 'tt-title'; h.textContent = title;
+    tt.append(h);
+    for (const r of rows) {
+      const row = document.createElement('div'); row.className = 'tt-row';
+      const key = document.createElement('span'); key.className = 'tt-key'; key.style.background = r.color;
+      const name = document.createElement('span'); name.className = 'tt-name'; name.textContent = r.name;
+      const val = document.createElement('span'); val.className = 'tt-val'; val.textContent = r.value;
+      row.append(key, name, val);
+      tt.append(row);
+    }
+    tt.style.display = 'block';
+    const pad = 14, W = tt.offsetWidth;
+    let x = evt.pageX + pad;
+    if (x + W > document.documentElement.clientWidth + window.scrollX - 8) x = evt.pageX - W - pad;
+    tt.style.left = x + 'px';
+    tt.style.top = (evt.pageY - 10) + 'px';
+  }
+  const hideTip = () => { tt.style.display = 'none'; };
+
+  // ================= Chart 1: stacked monthly columns =================
+  function renderStacked() {
+    const root = document.getElementById('stacked');
+    root.replaceChildren();
+    const W = root.clientWidth, H = 300, m = { t: 8, r: 8, b: 24, l: 52 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const svg = el('svg', { width: W, height: H, role: 'img', 'aria-label': 'Stacked monthly spending by category' });
+
+    const maxTotal = Math.max(...months.map(mo => D.spending_by_month[mo]));
+    const ticks = niceTicks(maxTotal * 1.05, 4);
+    const yMax = ticks[ticks.length - 1];
+    const y = v => m.t + ih - (v / yMax) * ih;
+
+    for (const tv of ticks) {
+      svg.append(el('line', { x1: m.l, x2: W - m.r, y1: y(tv), y2: y(tv), stroke: tv === 0 ? css('--baseline') : css('--gridline'), 'stroke-width': 1 }));
+      svg.append(txt(m.l - 8, y(tv) + 4, fmtK(tv), 'tick', 'end'));
+    }
+
+    const band = iw / months.length;
+    const barW = Math.min(24, band * 0.55);
+    const GAP = 2;
+    months.forEach((mo, i) => {
+      const x = m.l + band * i + (band - barW) / 2;
+      let cum = 0;
+      const segs = stackCats.map((c, si) => ({ c, si, v: stackData[i][c] })).filter(s => s.v > 0.005);
+      segs.forEach((s, order) => {
+        const y0 = y(cum), y1 = y(cum + s.v);
+        cum += s.v;
+        const isTop = order === segs.length - 1;
+        const h = Math.max(y0 - y1 - (isTop ? 0 : GAP), 1);
+        const color = css(SERIES_VARS[s.si]);
+        const mark = isTop
+          ? el('path', { d: capPath(x, y1, barW, h, 4, true), fill: color })
+          : el('rect', { x, y: y1 + GAP, width: barW, height: h, fill: color });
+        svg.append(mark);
+      });
+      // hover hit target spans the whole band
+      const hit = el('rect', { x: m.l + band * i, y: m.t, width: band, height: ih, fill: 'transparent', tabindex: 0 });
+      const tip = e => showTip(e, `${monthName(mo)} ${mo.slice(0, 4)} · total ${fmt$(D.spending_by_month[mo])}`,
+        stackCats.map((c, si) => ({ name: c, color: css(SERIES_VARS[si]), value: fmt$(stackData[i][c]) }))
+          .filter((r, si) => stackData[i][stackCats[si]] > 0.005).reverse());
+      hit.addEventListener('pointermove', tip);
+      hit.addEventListener('focus', e => {
+        const b = hit.getBoundingClientRect();
+        tip({ pageX: b.left + b.width / 2 + window.scrollX, pageY: b.top + 40 + window.scrollY });
+      });
+      hit.addEventListener('pointerleave', hideTip);
+      hit.addEventListener('blur', hideTip);
+      svg.append(hit);
+      svg.append(txt(m.l + band * i + band / 2, H - 6, monthName(mo), 'tick', 'middle'));
+    });
+    root.append(svg);
+
+    const legend = document.getElementById('stacked-legend');
+    legend.replaceChildren();
+    stackCats.forEach((c, si) => {
+      const k = document.createElement('span'); k.className = 'key';
+      const sw = document.createElement('span'); sw.className = 'swatch'; sw.style.background = css(SERIES_VARS[si]);
+      const label = document.createElement('span'); label.textContent = c;
+      k.append(sw, label);
+      legend.append(k);
+    });
+  }
+
+  // ================= Chart 2: category totals (horizontal, sequential) =================
+  function renderCats() {
+    const cats = D.category_totals;
+    const root = document.getElementById('cats');
+    root.replaceChildren();
+    const rowH = 30, m = { t: 4, r: 74, b: 4, l: 112 };
+    const W = root.clientWidth, H = m.t + m.b + rowH * cats.length;
+    const iw = W - m.l - m.r;
+    const svg = el('svg', { width: W, height: H, role: 'img', 'aria-label': 'Total spending per category' });
+    const maxV = cats[0].total;
+    // single-hue ordinal ramp, darkest = largest; floor at step 250 per palette spec
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    const RAMP = dark
+      ? ['#86b6ef', '#6da7ec', '#5598e7', '#3987e5', '#2a78d6', '#256abf', '#1c5cab', '#184f95']
+      : ['#0d366b', '#104281', '#184f95', '#1c5cab', '#256abf', '#2a78d6', '#3987e5', '#5598e7'];
+    const shade = i => RAMP[cats.length > 1 ? Math.round(i / (cats.length - 1) * (RAMP.length - 1)) : 0];
+
+    svg.append(el('line', { x1: m.l, x2: m.l, y1: m.t, y2: H - m.b, stroke: css('--baseline'), 'stroke-width': 1 }));
+    cats.forEach((c, i) => {
+      const yMid = m.t + rowH * i + rowH / 2;
+      const w = Math.max((c.total / maxV) * iw, 2);
+      const bar = el('path', { d: capPath(m.l, yMid - 10, w, 20, 4, false), fill: shade(i) });
+      svg.append(bar);
+      svg.append(txt(m.l - 8, yMid + 4, c.category, 'barlbl', 'end'));
+      svg.append(txt(m.l + w + 7, yMid + 4, fmt$(c.total), 'tick'));
+      const hit = el('rect', { x: 0, y: m.t + rowH * i, width: W, height: rowH, fill: 'transparent', tabindex: 0 });
+      const tip = e => showTip(e, c.category, [
+        { name: 'Total', color: shade(i), value: fmt$(c.total) },
+        { name: 'Monthly avg', color: shade(i), value: fmt$(c.total / months.length) },
+        { name: 'Share', color: shade(i), value: (c.total / spend * 100).toFixed(1) + '%' },
+      ]);
+      hit.addEventListener('pointermove', tip);
+      hit.addEventListener('pointerleave', hideTip);
+      hit.addEventListener('blur', hideTip);
+      svg.append(hit);
+    });
+    root.append(svg);
+  }
+
+  // ================= Chart 3: net cash flow (diverging) =================
+  function renderNet() {
+    const root = document.getElementById('net');
+    root.replaceChildren();
+    const W = root.clientWidth, H = 240, m = { t: 22, r: 8, b: 24, l: 52 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const svg = el('svg', { width: W, height: H, role: 'img', 'aria-label': 'Net cash flow by month' });
+    const nets = months.map(mo => ({ mo, v: D.income_by_month[mo] - D.spending_by_month[mo] }));
+    const maxAbs = Math.max(...nets.map(n => Math.abs(n.v))) * 1.15;
+    const y = v => m.t + ih / 2 - (v / maxAbs) * (ih / 2);
+
+    svg.append(el('line', { x1: m.l, x2: W - m.r, y1: y(0), y2: y(0), stroke: css('--baseline'), 'stroke-width': 1 }));
+    svg.append(txt(m.l - 8, y(0) + 4, '$0', 'tick', 'end'));
+
+    const band = iw / nets.length;
+    const barW = Math.min(24, band * 0.5);
+    nets.forEach((n, i) => {
+      const x = m.l + band * i + (band - barW) / 2;
+      const up = n.v >= 0;
+      const h = Math.max(Math.abs(y(n.v) - y(0)), 1);
+      const color = up ? css('--div-pos') : css('--div-neg');
+      const d = up
+        ? capPath(x, y(n.v), barW, h, 4, true)
+        : `M${x},${y(0)} h${barW} v${h - 4} q0,4 -4,4 h${-(barW - 8)} q-4,0 -4,-4 z`;
+      svg.append(el('path', { d, fill: color }));
+      svg.append(txt(x + barW / 2, up ? y(n.v) - 7 : y(0) + h + 15, fmtK(n.v), 'barlbl', 'middle'));
+      svg.append(txt(m.l + band * i + band / 2, H - 6, monthName(n.mo), 'tick', 'middle'));
+      const hit = el('rect', { x: m.l + band * i, y: m.t, width: band, height: ih, fill: 'transparent', tabindex: 0 });
+      const tip = e => showTip(e, `${monthName(n.mo)} ${n.mo.slice(0, 4)}`, [
+        { name: 'Income', color: css('--div-pos'), value: fmt$(D.income_by_month[n.mo]) },
+        { name: 'Spending', color: css('--div-neg'), value: fmt$(D.spending_by_month[n.mo]) },
+        { name: 'Net', color: n.v >= 0 ? css('--div-pos') : css('--div-neg'), value: fmt$(n.v) },
+      ]);
+      hit.addEventListener('pointermove', tip);
+      hit.addEventListener('pointerleave', hideTip);
+      hit.addEventListener('blur', hideTip);
+      svg.append(hit);
+    });
+    root.append(svg);
+  }
+
+  // ================= Table view =================
+  function renderTable() {
+    const root = document.getElementById('table');
+    root.replaceChildren();
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const hr = document.createElement('tr');
+    ['Category', ...months.map(mo => monthName(mo)), 'Total'].forEach(h => {
+      const th = document.createElement('th'); th.textContent = h; hr.append(th);
+    });
+    thead.append(hr); table.append(thead);
+
+    const tbody = document.createElement('tbody');
+    for (const c of D.category_totals) {
+      const tr = document.createElement('tr');
+      const name = document.createElement('td'); name.textContent = c.category; tr.append(name);
+      for (const mo of months) {
+        const td = document.createElement('td');
+        const v = D.by_month_category[mo][c.category] || 0;
+        td.textContent = v ? fmt$(v) : '—';
+        tr.append(td);
+      }
+      const tot = document.createElement('td'); tot.textContent = fmt$(c.total); tr.append(tot);
+      tbody.append(tr);
+    }
+    table.append(tbody);
+
+    const tfoot = document.createElement('tfoot');
+    const fr = document.createElement('tr');
+    const fl = document.createElement('td'); fl.textContent = 'Total spending'; fr.append(fl);
+    for (const mo of months) {
+      const td = document.createElement('td'); td.textContent = fmt$(D.spending_by_month[mo]); fr.append(td);
+    }
+    const ft = document.createElement('td'); ft.textContent = fmt$(spend); fr.append(ft);
+    tfoot.append(fr); table.append(tfoot);
+    root.append(table);
+  }
+
+  function renderAll() { renderStacked(); renderCats(); renderNet(); renderTable(); }
+  renderAll();
+  let raf;
+  addEventListener('resize', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(renderAll); });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderAll);
+})();
+</script>
+</body>
+</html>

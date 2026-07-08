@@ -1,0 +1,4091 @@
+{
+  "generated_from": [
+    "data/checking.csv",
+    "data/credit_card.csv"
+  ],
+  "period": {
+    "start": "2026-01",
+    "end": "2026-06"
+  },
+  "months": [
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06"
+  ],
+  "income_by_month": {
+    "2026-01": 14136.16,
+    "2026-02": 10951.54,
+    "2026-03": 11131.54,
+    "2026-04": 10951.54,
+    "2026-05": 13242.69,
+    "2026-06": 10951.54
+  },
+  "savings_by_month": {
+    "2026-01": 800.0,
+    "2026-02": 800.0,
+    "2026-03": 800.0,
+    "2026-04": 800.0,
+    "2026-05": 800.0,
+    "2026-06": 800.0
+  },
+  "spending_by_month": {
+    "2026-01": 9286.93,
+    "2026-02": 10243.05,
+    "2026-03": 9617.05,
+    "2026-04": 10003.03,
+    "2026-05": 11091.33,
+    "2026-06": 11135.21
+  },
+  "by_month_category": {
+    "2026-01": {
+      "Childcare": 1450.0,
+      "Dining": 829.54,
+      "Groceries": 2391.22,
+      "Health": 82.77,
+      "Insurance": 212.4,
+      "Mortgage": 2418.0,
+      "Other": 58.32,
+      "Shopping": 769.87,
+      "Subscriptions": 117.46,
+      "Transportation": 497.44,
+      "Utilities": 459.91
+    },
+    "2026-02": {
+      "Childcare": 1450.0,
+      "Dining": 1223.01,
+      "Groceries": 2396.37,
+      "Health": 288.99,
+      "Insurance": 212.4,
+      "Mortgage": 2418.0,
+      "Other": 129.86,
+      "Shopping": 347.85,
+      "Subscriptions": 117.46,
+      "Transportation": 326.07,
+      "Travel": 856.8,
+      "Utilities": 476.24
+    },
+    "2026-03": {
+      "Childcare": 1450.0,
+      "Dining": 675.73,
+      "Groceries": 2316.36,
+      "Health": 105.46,
+      "Insurance": 212.4,
+      "Mortgage": 2418.0,
+      "Other": 80.0,
+      "Shopping": 558.76,
+      "Subscriptions": 117.46,
+      "Transportation": 340.39,
+      "Travel": 800.13,
+      "Utilities": 542.36
+    },
+    "2026-04": {
+      "Childcare": 1450.0,
+      "Dining": 604.78,
+      "Groceries": 1939.29,
+      "Health": 197.39,
+      "Insurance": 212.4,
+      "Mortgage": 2418.0,
+      "Other": 100.0,
+      "Shopping": 747.7,
+      "Subscriptions": 117.46,
+      "Taxes": 1240.0,
+      "Transportation": 388.62,
+      "Utilities": 587.39
+    },
+    "2026-05": {
+      "Childcare": 1450.0,
+      "Dining": 1066.57,
+      "Groceries": 2591.54,
+      "Health": 204.29,
+      "Insurance": 212.4,
+      "Mortgage": 2418.0,
+      "Other": 115.5,
+      "Shopping": 2061.21,
+      "Subscriptions": 117.46,
+      "Transportation": 330.95,
+      "Utilities": 523.41
+    },
+    "2026-06": {
+      "Childcare": 1450.0,
+      "Dining": 813.61,
+      "Groceries": 3723.79,
+      "Health": 182.81,
+      "Insurance": 212.4,
+      "Mortgage": 2418.0,
+      "Other": 100.0,
+      "Shopping": 1231.0,
+      "Subscriptions": 117.46,
+      "Transportation": 441.87,
+      "Utilities": 444.27
+    }
+  },
+  "category_totals": [
+    {
+      "category": "Groceries",
+      "total": 15358.57
+    },
+    {
+      "category": "Mortgage",
+      "total": 14508.0
+    },
+    {
+      "category": "Childcare",
+      "total": 8700.0
+    },
+    {
+      "category": "Shopping",
+      "total": 5716.39
+    },
+    {
+      "category": "Dining",
+      "total": 5213.24
+    },
+    {
+      "category": "Utilities",
+      "total": 3033.58
+    },
+    {
+      "category": "Transportation",
+      "total": 2325.34
+    },
+    {
+      "category": "Travel",
+      "total": 1656.93
+    },
+    {
+      "category": "Insurance",
+      "total": 1274.4
+    },
+    {
+      "category": "Taxes",
+      "total": 1240.0
+    },
+    {
+      "category": "Health",
+      "total": 1061.71
+    },
+    {
+      "category": "Subscriptions",
+      "total": 704.76
+    },
+    {
+      "category": "Other",
+      "total": 583.68
+    }
+  ],
+  "totals": {
+    "income": 71365.01,
+    "spending": 61376.6,
+    "savings_transfers": 4800.0
+  },
+  "transaction_count": 488,
+  "transactions": [
+    {
+      "date": "2026-01-01",
+      "description": "FIRSTBANK MORTGAGE PMT 0031877",
+      "amount": 2418.0,
+      "account": "checking",
+      "category": "Mortgage",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-02",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-01-03",
+      "description": "STATE FARM INSURANCE AUTO+UMBRELLA",
+      "amount": 212.4,
+      "account": "checking",
+      "category": "Insurance",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-05",
+      "description": "CITY WATER & SEWER AUTOPAY",
+      "amount": 59.16,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-06",
+      "description": "ONLINE XFER TO SAVINGS XXXX4821",
+      "amount": 800.0,
+      "account": "checking",
+      "category": "Savings",
+      "kind": "savings"
+    },
+    {
+      "date": "2026-01-09",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-01-12",
+      "description": "NORTHERN GRID ELECTRIC BILLPAY",
+      "amount": 129.95,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-12",
+      "description": "VALLEY GAS UTILITY",
+      "amount": 40.81,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-15",
+      "description": "LITTLE SPROUTS DAYCARE ACH",
+      "amount": 1450.0,
+      "account": "checking",
+      "category": "Childcare",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-16",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-01-18",
+      "description": "COMCAST XFINITY INTERNET",
+      "amount": 89.99,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-20",
+      "description": "TMOBILE AUTOPAY",
+      "amount": 140.0,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-23",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-01-24",
+      "description": "CHECK 1003 GREEN LAWN CARE",
+      "amount": 58.32,
+      "account": "checking",
+      "category": "Other",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-25",
+      "description": "CHASE CREDIT CRD EPAY",
+      "amount": 3270.77,
+      "account": "checking",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-01-30",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-02-02",
+      "description": "FIRSTBANK MORTGAGE PMT 0031877",
+      "amount": 2418.0,
+      "account": "checking",
+      "category": "Mortgage",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-03",
+      "description": "STATE FARM INSURANCE AUTO+UMBRELLA",
+      "amount": 212.4,
+      "account": "checking",
+      "category": "Insurance",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-05",
+      "description": "CITY WATER & SEWER AUTOPAY",
+      "amount": 71.32,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-06",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-02-06",
+      "description": "ONLINE XFER TO SAVINGS XXXX4821",
+      "amount": 800.0,
+      "account": "checking",
+      "category": "Savings",
+      "kind": "savings"
+    },
+    {
+      "date": "2026-02-12",
+      "description": "NORTHERN GRID ELECTRIC BILLPAY",
+      "amount": 100.13,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-12",
+      "description": "VALLEY GAS UTILITY",
+      "amount": 74.8,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-13",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-02-15",
+      "description": "LITTLE SPROUTS DAYCARE ACH",
+      "amount": 1450.0,
+      "account": "checking",
+      "category": "Childcare",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-18",
+      "description": "COMCAST XFINITY INTERNET",
+      "amount": 89.99,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-18",
+      "description": "ATM WITHDRAWAL MAIN ST",
+      "amount": 60.0,
+      "account": "checking",
+      "category": "Other",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-19",
+      "description": "CHECK 1069 GREEN LAWN CARE",
+      "amount": 69.86,
+      "account": "checking",
+      "category": "Other",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-20",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-02-20",
+      "description": "TMOBILE AUTOPAY",
+      "amount": 140.0,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-25",
+      "description": "CHASE CREDIT CRD EPAY",
+      "amount": 2451.99,
+      "account": "checking",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-02-27",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-03-02",
+      "description": "FIRSTBANK MORTGAGE PMT 0031877",
+      "amount": 2418.0,
+      "account": "checking",
+      "category": "Mortgage",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-03",
+      "description": "STATE FARM INSURANCE AUTO+UMBRELLA",
+      "amount": 212.4,
+      "account": "checking",
+      "category": "Insurance",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-05",
+      "description": "CITY WATER & SEWER AUTOPAY",
+      "amount": 58.38,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-06",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-03-06",
+      "description": "ONLINE XFER TO SAVINGS XXXX4821",
+      "amount": 800.0,
+      "account": "checking",
+      "category": "Savings",
+      "kind": "savings"
+    },
+    {
+      "date": "2026-03-12",
+      "description": "NORTHERN GRID ELECTRIC BILLPAY",
+      "amount": 194.62,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-12",
+      "description": "VALLEY GAS UTILITY",
+      "amount": 59.37,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-13",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-03-15",
+      "description": "LITTLE SPROUTS DAYCARE ACH",
+      "amount": 1450.0,
+      "account": "checking",
+      "category": "Childcare",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-18",
+      "description": "COMCAST XFINITY INTERNET",
+      "amount": 89.99,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-19",
+      "description": "ATM WITHDRAWAL MAIN ST",
+      "amount": 80.0,
+      "account": "checking",
+      "category": "Other",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-20",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-03-20",
+      "description": "TMOBILE AUTOPAY",
+      "amount": 140.0,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-22",
+      "description": "VENMO CASHOUT",
+      "amount": -180.0,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-03-25",
+      "description": "CHASE CREDIT CRD EPAY",
+      "amount": 2510.89,
+      "account": "checking",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-03-27",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-04-01",
+      "description": "FIRSTBANK MORTGAGE PMT 0031877",
+      "amount": 2418.0,
+      "account": "checking",
+      "category": "Mortgage",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-03",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-04-03",
+      "description": "STATE FARM INSURANCE AUTO+UMBRELLA",
+      "amount": 212.4,
+      "account": "checking",
+      "category": "Insurance",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-05",
+      "description": "CITY WATER & SEWER AUTOPAY",
+      "amount": 66.86,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-06",
+      "description": "ONLINE XFER TO SAVINGS XXXX4821",
+      "amount": 800.0,
+      "account": "checking",
+      "category": "Savings",
+      "kind": "savings"
+    },
+    {
+      "date": "2026-04-09",
+      "description": "ATM WITHDRAWAL MAIN ST",
+      "amount": 100.0,
+      "account": "checking",
+      "category": "Other",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-10",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-04-12",
+      "description": "NORTHERN GRID ELECTRIC BILLPAY",
+      "amount": 133.87,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-12",
+      "description": "VALLEY GAS UTILITY",
+      "amount": 156.67,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-14",
+      "description": "IRS USATAXPYMT",
+      "amount": 1240.0,
+      "account": "checking",
+      "category": "Taxes",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-15",
+      "description": "LITTLE SPROUTS DAYCARE ACH",
+      "amount": 1450.0,
+      "account": "checking",
+      "category": "Childcare",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-17",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-04-18",
+      "description": "COMCAST XFINITY INTERNET",
+      "amount": 89.99,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-20",
+      "description": "TMOBILE AUTOPAY",
+      "amount": 140.0,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-24",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-04-25",
+      "description": "CHASE CREDIT CRD EPAY",
+      "amount": 3098.97,
+      "account": "checking",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-05-01",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-05-01",
+      "description": "FIRSTBANK MORTGAGE PMT 0031877",
+      "amount": 2418.0,
+      "account": "checking",
+      "category": "Mortgage",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-03",
+      "description": "STATE FARM INSURANCE AUTO+UMBRELLA",
+      "amount": 212.4,
+      "account": "checking",
+      "category": "Insurance",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-05",
+      "description": "CITY WATER & SEWER AUTOPAY",
+      "amount": 69.2,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-06",
+      "description": "ONLINE XFER TO SAVINGS XXXX4821",
+      "amount": 800.0,
+      "account": "checking",
+      "category": "Savings",
+      "kind": "savings"
+    },
+    {
+      "date": "2026-05-08",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-05-12",
+      "description": "NORTHERN GRID ELECTRIC BILLPAY",
+      "amount": 189.79,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-12",
+      "description": "VALLEY GAS UTILITY",
+      "amount": 34.43,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-15",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-05-15",
+      "description": "LITTLE SPROUTS DAYCARE ACH",
+      "amount": 1450.0,
+      "account": "checking",
+      "category": "Childcare",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-18",
+      "description": "COMCAST XFINITY INTERNET",
+      "amount": 89.99,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-20",
+      "description": "TMOBILE AUTOPAY",
+      "amount": 140.0,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-22",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-05-22",
+      "description": "CHECK 1022 GREEN LAWN CARE",
+      "amount": 115.5,
+      "account": "checking",
+      "category": "Other",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-25",
+      "description": "CHASE CREDIT CRD EPAY",
+      "amount": 3383.22,
+      "account": "checking",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-05-29",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-06-01",
+      "description": "FIRSTBANK MORTGAGE PMT 0031877",
+      "amount": 2418.0,
+      "account": "checking",
+      "category": "Mortgage",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-03",
+      "description": "STATE FARM INSURANCE AUTO+UMBRELLA",
+      "amount": 212.4,
+      "account": "checking",
+      "category": "Insurance",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-05",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-06-05",
+      "description": "CITY WATER & SEWER AUTOPAY",
+      "amount": 75.87,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-06",
+      "description": "ONLINE XFER TO SAVINGS XXXX4821",
+      "amount": 800.0,
+      "account": "checking",
+      "category": "Savings",
+      "kind": "savings"
+    },
+    {
+      "date": "2026-06-12",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-06-12",
+      "description": "NORTHERN GRID ELECTRIC BILLPAY",
+      "amount": 110.78,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-12",
+      "description": "VALLEY GAS UTILITY",
+      "amount": 27.63,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-15",
+      "description": "LITTLE SPROUTS DAYCARE ACH",
+      "amount": 1450.0,
+      "account": "checking",
+      "category": "Childcare",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-16",
+      "description": "ATM WITHDRAWAL MAIN ST",
+      "amount": 100.0,
+      "account": "checking",
+      "category": "Other",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-18",
+      "description": "COMCAST XFINITY INTERNET",
+      "amount": 89.99,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-19",
+      "description": "DIRECT DEP ACME CORP PAYROLL",
+      "amount": -3184.62,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-06-20",
+      "description": "TMOBILE AUTOPAY",
+      "amount": 140.0,
+      "account": "checking",
+      "category": "Utilities",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-25",
+      "description": "CHASE CREDIT CRD EPAY",
+      "amount": 2446.67,
+      "account": "checking",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-06-26",
+      "description": "DIRECT DEP RIVERSIDE SCHOOL DIST PAY",
+      "amount": -2291.15,
+      "account": "checking",
+      "category": "Income",
+      "kind": "income"
+    },
+    {
+      "date": "2026-01-01",
+      "description": "AMAZON.COM*1FDC36G",
+      "amount": 25.09,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-01",
+      "description": "HOMEDEPOT.COM",
+      "amount": 76.67,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-01",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 65.16,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-02",
+      "description": "COSTCO WHSE #8278",
+      "amount": 138.85,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-02",
+      "description": "TRADER JOE'S #962",
+      "amount": 68.76,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-03",
+      "description": "SPOTIFY USA",
+      "amount": 16.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-04",
+      "description": "SHELL OIL 47144887",
+      "amount": 47.93,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-04",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 91.49,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-04",
+      "description": "HOMEDEPOT.COM",
+      "amount": 134.54,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-05",
+      "description": "WHOLEFDS MKT #4770",
+      "amount": 61.18,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-06",
+      "description": "HOMEDEPOT.COM",
+      "amount": 53.19,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-06",
+      "description": "NETFLIX.COM",
+      "amount": 15.49,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-07",
+      "description": "COSTCO WHSE #5216",
+      "amount": 316.54,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-09",
+      "description": "CHIPOTLE 9211",
+      "amount": 49.37,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-09",
+      "description": "STARBUCKS STORE 52205",
+      "amount": 15.44,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-09",
+      "description": "DISNEYPLUS",
+      "amount": 13.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-10",
+      "description": "WHOLEFDS MKT #0846",
+      "amount": 139.34,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-11",
+      "description": "STARBUCKS STORE 43050",
+      "amount": 13.35,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-11",
+      "description": "SHELL OIL 73992714",
+      "amount": 70.23,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-12",
+      "description": "SHELL OIL 27448553",
+      "amount": 66.81,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-12",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 46.26,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-12",
+      "description": "NYTIMES*SUBSCRIPTION",
+      "amount": 17.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-14",
+      "description": "TRADER JOE'S #962",
+      "amount": 38.94,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-15",
+      "description": "TRADER JOE'S #524",
+      "amount": 61.1,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-15",
+      "description": "AMAZON.COM*0G7F453",
+      "amount": 80.02,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-15",
+      "description": "WHOLEFDS MKT #4998",
+      "amount": 98.84,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-15",
+      "description": "AMAZON.COM*EDD2FGE",
+      "amount": 33.92,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-16",
+      "description": "STARBUCKS STORE 83739",
+      "amount": 13.7,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-16",
+      "description": "SHELL OIL 62344193",
+      "amount": 28.18,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-16",
+      "description": "CHIPOTLE 4291",
+      "amount": 44.03,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-16",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 41.05,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-17",
+      "description": "AMAZON.COM*5HE342C",
+      "amount": 110.23,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-17",
+      "description": "CHIPOTLE 3417",
+      "amount": 50.49,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-17",
+      "description": "CHIPOTLE 1019",
+      "amount": 46.73,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-17",
+      "description": "PELOTON* MEMBERSHIP",
+      "amount": 44.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-19",
+      "description": "SHELL OIL 27182556",
+      "amount": 48.38,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-20",
+      "description": "STARBUCKS STORE 23519",
+      "amount": 13.21,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-20",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 29.08,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-20",
+      "description": "COSTCO WHSE #6140",
+      "amount": 293.99,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-21",
+      "description": "TRADER JOE'S #119",
+      "amount": 118.01,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-21",
+      "description": "GOOGLE *STORAGE",
+      "amount": 9.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-22",
+      "description": "EXXONMOBIL 75806526",
+      "amount": 51.47,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-22",
+      "description": "SHELL OIL 09334192",
+      "amount": 45.29,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-23",
+      "description": "CVS/PHARMACY #67351",
+      "amount": 49.1,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-23",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 31.65,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-24",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 52.59,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-25",
+      "description": "SHELL OIL 64735029",
+      "amount": 48.3,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-25",
+      "description": "EXXONMOBIL 35074463",
+      "amount": 52.29,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-25",
+      "description": "AUTOMATIC PAYMENT - THANK YOU",
+      "amount": -2333.92,
+      "account": "credit_card",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-01-26",
+      "description": "TARGET T-6749",
+      "amount": 44.45,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-26",
+      "description": "COSTCO WHSE #9064",
+      "amount": 231.93,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-26",
+      "description": "TRADER JOE'S #841",
+      "amount": 95.83,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-27",
+      "description": "WHOLEFDS MKT #3641",
+      "amount": 207.57,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-27",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 33.67,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-28",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 86.36,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-28",
+      "description": "TARGET T-3899",
+      "amount": 130.11,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-28",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 69.51,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-28",
+      "description": "AMAZON.COM REFUND",
+      "amount": -43.12,
+      "account": "credit_card",
+      "category": "Refund",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-29",
+      "description": "TRADER JOE'S #507",
+      "amount": 121.74,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-29",
+      "description": "AMAZON.COM*1C0256D",
+      "amount": 124.77,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-29",
+      "description": "TRADER JOE'S #275",
+      "amount": 73.57,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-30",
+      "description": "SHELL OIL 44479226",
+      "amount": 38.56,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-31",
+      "description": "COSTCO WHSE #2250",
+      "amount": 205.97,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-31",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 70.07,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-01-31",
+      "description": "WHOLEFDS MKT #7385",
+      "amount": 119.06,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-01",
+      "description": "WALGREENS #8442",
+      "amount": 44.88,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-01",
+      "description": "SHELL OIL 27290057",
+      "amount": 58.3,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-01",
+      "description": "WHOLEFDS MKT #2104",
+      "amount": 90.48,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-02",
+      "description": "COSTCO WHSE #4289",
+      "amount": 245.2,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-02",
+      "description": "STARBUCKS STORE 91281",
+      "amount": 13.89,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-03",
+      "description": "AMAZON.COM*GG5E641",
+      "amount": 37.72,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-03",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 42.74,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-03",
+      "description": "AMAZON.COM*FFF02C6",
+      "amount": 17.75,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-03",
+      "description": "STARBUCKS STORE 44640",
+      "amount": 6.13,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-03",
+      "description": "SPOTIFY USA",
+      "amount": 16.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-04",
+      "description": "SHELL OIL 89003155",
+      "amount": 59.08,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-04",
+      "description": "WHOLEFDS MKT #2483",
+      "amount": 214.11,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-05",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 70.31,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-06",
+      "description": "NETFLIX.COM",
+      "amount": 15.49,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-07",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 38.82,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-07",
+      "description": "CVS/PHARMACY #88653",
+      "amount": 21.47,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-07",
+      "description": "SHELL OIL 86349771",
+      "amount": 42.31,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-07",
+      "description": "CHIPOTLE 6270",
+      "amount": 42.97,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-08",
+      "description": "AMAZON.COM*D4E0735",
+      "amount": 75.77,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-09",
+      "description": "COSTCO WHSE #4807",
+      "amount": 264.21,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-09",
+      "description": "DISNEYPLUS",
+      "amount": 13.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-10",
+      "description": "TRADER JOE'S #218",
+      "amount": 127.82,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-10",
+      "description": "WALGREENS #4094",
+      "amount": 41.04,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-10",
+      "description": "AMAZON.COM*71A3EHF",
+      "amount": 30.17,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-10",
+      "description": "CHIPOTLE 2579",
+      "amount": 24.54,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-11",
+      "description": "WHOLEFDS MKT #3544",
+      "amount": 211.73,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-12",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 74.2,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-12",
+      "description": "NYTIMES*SUBSCRIPTION",
+      "amount": 17.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-13",
+      "description": "DELTA AIR 0062341998877",
+      "amount": 428.4,
+      "account": "credit_card",
+      "category": "Travel",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-13",
+      "description": "DELTA AIR 0062341998878",
+      "amount": 428.4,
+      "account": "credit_card",
+      "category": "Travel",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-14",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 124.41,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-14",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 30.5,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-14",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 39.41,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-15",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 139.37,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-15",
+      "description": "COSTCO WHSE #8210",
+      "amount": 293.12,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-16",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 32.82,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-17",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 66.39,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-17",
+      "description": "AMAZON.COM*BD2A11D",
+      "amount": 17.78,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-17",
+      "description": "PELOTON* MEMBERSHIP",
+      "amount": 44.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-18",
+      "description": "AMAZON.COM*3G4DAF0",
+      "amount": 101.13,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-18",
+      "description": "TRADER JOE'S #923",
+      "amount": 77.81,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-18",
+      "description": "SHELL OIL 34844052",
+      "amount": 36.21,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-18",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 78.09,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-19",
+      "description": "WALGREENS #5162",
+      "amount": 16.43,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-19",
+      "description": "COSTCO WHSE #3887",
+      "amount": 246.92,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-19",
+      "description": "STARBUCKS STORE 08036",
+      "amount": 16.29,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-19",
+      "description": "CVS/PHARMACY #45747",
+      "amount": 62.88,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-21",
+      "description": "GOOGLE *STORAGE",
+      "amount": 9.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-22",
+      "description": "CHIPOTLE 9825",
+      "amount": 49.72,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-23",
+      "description": "WALGREENS #2218",
+      "amount": 43.3,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-23",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 55.25,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-23",
+      "description": "SHELL OIL 88088938",
+      "amount": 57.25,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-23",
+      "description": "SHELL OIL 34123378",
+      "amount": 39.4,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-24",
+      "description": "AMAZON.COM*ABG1F63",
+      "amount": 67.53,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-24",
+      "description": "WHOLEFDS MKT #7494",
+      "amount": 207.7,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-24",
+      "description": "WHOLEFDS MKT #6535",
+      "amount": 62.16,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-24",
+      "description": "STARBUCKS STORE 39320",
+      "amount": 8.77,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-25",
+      "description": "AUTOMATIC PAYMENT - THANK YOU",
+      "amount": -3311.26,
+      "account": "credit_card",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-02-26",
+      "description": "SHELL OIL 78506442",
+      "amount": 33.52,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-26",
+      "description": "TRADER JOE'S #335",
+      "amount": 72.25,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-26",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 127.4,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-26",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 138.33,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-28",
+      "description": "COSTCO WHSE #8808",
+      "amount": 96.5,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-28",
+      "description": "CHIPOTLE 6686",
+      "amount": 41.48,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-28",
+      "description": "WHOLEFDS MKT #4851",
+      "amount": 186.36,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-02-28",
+      "description": "CVS/PHARMACY #19138",
+      "amount": 20.17,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-01",
+      "description": "COSTCO WHSE #4599",
+      "amount": 148.98,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-01",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 69.16,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-01",
+      "description": "TRADER JOE'S #531",
+      "amount": 52.16,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-02",
+      "description": "TRADER JOE'S #416",
+      "amount": 52.85,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-03",
+      "description": "AMAZON.COM*FG22GC0",
+      "amount": 84.18,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-03",
+      "description": "SPOTIFY USA",
+      "amount": 16.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-06",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 67.07,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-06",
+      "description": "SHELL OIL 80628171",
+      "amount": 64.63,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-06",
+      "description": "NETFLIX.COM",
+      "amount": 15.49,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-07",
+      "description": "WHOLEFDS MKT #6403",
+      "amount": 121.45,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-07",
+      "description": "TRADER JOE'S #013",
+      "amount": 104.62,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-07",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 51.27,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-07",
+      "description": "EXXONMOBIL 47953562",
+      "amount": 41.06,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-08",
+      "description": "STARBUCKS STORE 90930",
+      "amount": 12.18,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-08",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 68.78,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-09",
+      "description": "SHELL OIL 80469023",
+      "amount": 65.68,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-09",
+      "description": "DISNEYPLUS",
+      "amount": 13.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-10",
+      "description": "SHELL OIL 65490048",
+      "amount": 65.09,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-10",
+      "description": "STARBUCKS STORE 55390",
+      "amount": 10.97,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-11",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 69.33,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-12",
+      "description": "NYTIMES*SUBSCRIPTION",
+      "amount": 17.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-13",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 28.14,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-13",
+      "description": "AMAZON.COM*271GF16",
+      "amount": 105.1,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-14",
+      "description": "CVS/PHARMACY #64582",
+      "amount": 55.22,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-14",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 26.89,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-14",
+      "description": "TRADER JOE'S #346",
+      "amount": 58.1,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-14",
+      "description": "TRADER JOE'S #883",
+      "amount": 89.61,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-15",
+      "description": "TRADER JOE'S #360",
+      "amount": 85.76,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-15",
+      "description": "TRADER JOE'S #406",
+      "amount": 82.66,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-16",
+      "description": "STARBUCKS STORE 21333",
+      "amount": 16.92,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-17",
+      "description": "PELOTON* MEMBERSHIP",
+      "amount": 44.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-18",
+      "description": "SHELL OIL 40230817",
+      "amount": 70.0,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-18",
+      "description": "WHOLEFDS MKT #6520",
+      "amount": 56.96,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-20",
+      "description": "MARRIOTT SAVANNAH RIVERFRONT",
+      "amount": 612.88,
+      "account": "credit_card",
+      "category": "Travel",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-21",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 52.68,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-21",
+      "description": "GOOGLE *STORAGE",
+      "amount": 9.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-21",
+      "description": "HERTZ RENT-A-CAR SAV",
+      "amount": 187.25,
+      "account": "credit_card",
+      "category": "Travel",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-22",
+      "description": "EXXONMOBIL 37477974",
+      "amount": 33.93,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-24",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 70.58,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-24",
+      "description": "AMAZON.COM*3CC5CE6",
+      "amount": 72.19,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-25",
+      "description": "COSTCO WHSE #0287",
+      "amount": 203.12,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-25",
+      "description": "TRADER JOE'S #928",
+      "amount": 93.55,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-25",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 72.18,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-25",
+      "description": "TRADER JOE'S #657",
+      "amount": 89.0,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-25",
+      "description": "AUTOMATIC PAYMENT - THANK YOU",
+      "amount": -2946.12,
+      "account": "credit_card",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-03-26",
+      "description": "WHOLEFDS MKT #4486",
+      "amount": 84.19,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-27",
+      "description": "WHOLEFDS MKT #1176",
+      "amount": 129.05,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-27",
+      "description": "COSTCO WHSE #3428",
+      "amount": 97.28,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-28",
+      "description": "WHOLEFDS MKT #6558",
+      "amount": 121.83,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-28",
+      "description": "CHIPOTLE 6689",
+      "amount": 29.1,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-28",
+      "description": "AMAZON.COM*6F2D6CF",
+      "amount": 152.36,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-29",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 43.89,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-29",
+      "description": "WHOLEFDS MKT #7418",
+      "amount": 206.29,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-29",
+      "description": "AMAZON.COM*2BBB7EG",
+      "amount": 65.17,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-30",
+      "description": "STARBUCKS STORE 21301",
+      "amount": 6.12,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-30",
+      "description": "COSTCO WHSE #3083",
+      "amount": 218.3,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-30",
+      "description": "COSTCO WHSE #8452",
+      "amount": 123.63,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-31",
+      "description": "STARBUCKS STORE 00750",
+      "amount": 7.36,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-31",
+      "description": "WHOLEFDS MKT #4329",
+      "amount": 96.97,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-31",
+      "description": "CVS/PHARMACY #24903",
+      "amount": 23.35,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-03-31",
+      "description": "HOMEDEPOT.COM",
+      "amount": 79.76,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-01",
+      "description": "STARBUCKS STORE 58193",
+      "amount": 13.86,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-02",
+      "description": "WALGREENS #7880",
+      "amount": 19.81,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-03",
+      "description": "STARBUCKS STORE 72529",
+      "amount": 18.95,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-03",
+      "description": "SPOTIFY USA",
+      "amount": 16.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-04",
+      "description": "WHOLEFDS MKT #1827",
+      "amount": 199.17,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-04",
+      "description": "CVS/PHARMACY #95690",
+      "amount": 34.0,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-05",
+      "description": "TRADER JOE'S #892",
+      "amount": 65.8,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-05",
+      "description": "SHELL OIL 80001662",
+      "amount": 43.47,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-05",
+      "description": "WHOLEFDS MKT #0447",
+      "amount": 112.92,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-05",
+      "description": "COSTCO WHSE #5510",
+      "amount": 301.2,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-06",
+      "description": "NETFLIX.COM",
+      "amount": 15.49,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-08",
+      "description": "COSTCO WHSE #4942",
+      "amount": 161.31,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-09",
+      "description": "SHELL OIL 97320376",
+      "amount": 32.12,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-09",
+      "description": "DISNEYPLUS",
+      "amount": 13.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-10",
+      "description": "CHIPOTLE 6994",
+      "amount": 28.68,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-10",
+      "description": "SHELL OIL 40016335",
+      "amount": 59.6,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-10",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 81.5,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-11",
+      "description": "CHIPOTLE 3415",
+      "amount": 49.45,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-11",
+      "description": "EXXONMOBIL 35195794",
+      "amount": 37.79,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-11",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 38.57,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-11",
+      "description": "TARGET T-9712",
+      "amount": 139.41,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-12",
+      "description": "CHIPOTLE 2007",
+      "amount": 29.44,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-12",
+      "description": "STARBUCKS STORE 75675",
+      "amount": 12.12,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-12",
+      "description": "NYTIMES*SUBSCRIPTION",
+      "amount": 17.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-13",
+      "description": "COSTCO WHSE #1144",
+      "amount": 316.57,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-15",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 68.94,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-15",
+      "description": "TARGET T-7105",
+      "amount": 65.26,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-17",
+      "description": "STARBUCKS STORE 80157",
+      "amount": 8.84,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-17",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 129.85,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-17",
+      "description": "TRADER JOE'S #645",
+      "amount": 56.88,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-17",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 31.56,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-17",
+      "description": "PELOTON* MEMBERSHIP",
+      "amount": 44.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-19",
+      "description": "CVS/PHARMACY #30408",
+      "amount": 58.95,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-19",
+      "description": "CHIPOTLE 1096",
+      "amount": 34.49,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-19",
+      "description": "COSTCO WHSE #0316",
+      "amount": 186.1,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-19",
+      "description": "COSTCO WHSE #0939",
+      "amount": 178.8,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-20",
+      "description": "TARGET T-9063",
+      "amount": 153.64,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-20",
+      "description": "STARBUCKS STORE 61693",
+      "amount": 8.46,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-21",
+      "description": "TRADER JOE'S #860",
+      "amount": 87.99,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-21",
+      "description": "GOOGLE *STORAGE",
+      "amount": 9.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-22",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 93.04,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-22",
+      "description": "WHOLEFDS MKT #6621",
+      "amount": 68.17,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-22",
+      "description": "SHELL OIL 93656151",
+      "amount": 69.0,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-23",
+      "description": "SHELL OIL 78351386",
+      "amount": 47.78,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-23",
+      "description": "TRADER JOE'S #780",
+      "amount": 39.45,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-23",
+      "description": "COSTCO WHSE #8753",
+      "amount": 164.93,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-24",
+      "description": "STARBUCKS STORE 93431",
+      "amount": 11.5,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-25",
+      "description": "AMAZON.COM*HD551HA",
+      "amount": 140.41,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-25",
+      "description": "SHELL OIL 54392405",
+      "amount": 29.61,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-25",
+      "description": "AUTOMATIC PAYMENT - THANK YOU",
+      "amount": -2852.14,
+      "account": "credit_card",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-04-26",
+      "description": "SHELL OIL 86294978",
+      "amount": 69.25,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-26",
+      "description": "TARGET T-3771",
+      "amount": 124.06,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-29",
+      "description": "AMAZON.COM*06BGE7E",
+      "amount": 124.92,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-29",
+      "description": "STARBUCKS STORE 00383",
+      "amount": 15.66,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-04-29",
+      "description": "CVS/PHARMACY #60140",
+      "amount": 14.5,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-02",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 36.15,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-03",
+      "description": "CHIPOTLE 9295",
+      "amount": 49.42,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-03",
+      "description": "AMAZON.COM*F36CG3A",
+      "amount": 27.44,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-03",
+      "description": "SPOTIFY USA",
+      "amount": 16.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-04",
+      "description": "BEST BUY #0442",
+      "amount": 899.99,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-05",
+      "description": "COSTCO WHSE #4894",
+      "amount": 182.14,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-06",
+      "description": "TARGET T-9243",
+      "amount": 141.02,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-06",
+      "description": "NETFLIX.COM",
+      "amount": 15.49,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-07",
+      "description": "TRADER JOE'S #962",
+      "amount": 54.34,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-08",
+      "description": "TARGET T-7167",
+      "amount": 41.17,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-08",
+      "description": "WHOLEFDS MKT #2393",
+      "amount": 132.72,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-08",
+      "description": "TRADER JOE'S #049",
+      "amount": 39.68,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-09",
+      "description": "WALGREENS #3178",
+      "amount": 36.63,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-09",
+      "description": "SHELL OIL 33845608",
+      "amount": 63.01,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-09",
+      "description": "TARGET T-4493",
+      "amount": 104.47,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-09",
+      "description": "DISNEYPLUS",
+      "amount": 13.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-10",
+      "description": "TRADER JOE'S #918",
+      "amount": 103.82,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-10",
+      "description": "AMAZON.COM*167HE5A",
+      "amount": 84.59,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-11",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 127.48,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-11",
+      "description": "WHOLEFDS MKT #7012",
+      "amount": 51.64,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-11",
+      "description": "SHELL OIL 22101676",
+      "amount": 49.77,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-12",
+      "description": "EXXONMOBIL 68922985",
+      "amount": 49.24,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-12",
+      "description": "STARBUCKS STORE 04911",
+      "amount": 10.58,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-12",
+      "description": "NYTIMES*SUBSCRIPTION",
+      "amount": 17.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-13",
+      "description": "TARGET T-0916",
+      "amount": 117.9,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-13",
+      "description": "CHIPOTLE 2810",
+      "amount": 34.97,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-13",
+      "description": "WHOLEFDS MKT #8575",
+      "amount": 169.66,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-14",
+      "description": "CVS/PHARMACY #97311",
+      "amount": 61.26,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-15",
+      "description": "TARGET T-2026",
+      "amount": 45.1,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-15",
+      "description": "WHOLEFDS MKT #0121",
+      "amount": 209.35,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-15",
+      "description": "STARBUCKS STORE 99380",
+      "amount": 9.3,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-15",
+      "description": "STARBUCKS STORE 23654",
+      "amount": 14.61,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-16",
+      "description": "TRADER JOE'S #645",
+      "amount": 48.64,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-16",
+      "description": "STARBUCKS STORE 07999",
+      "amount": 10.3,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-16",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 35.0,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-16",
+      "description": "COSTCO WHSE #3930",
+      "amount": 301.46,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-17",
+      "description": "WHOLEFDS MKT #5822",
+      "amount": 113.47,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-17",
+      "description": "STARBUCKS STORE 94850",
+      "amount": 12.36,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-17",
+      "description": "PELOTON* MEMBERSHIP",
+      "amount": 44.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-18",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 25.33,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-18",
+      "description": "COSTCO WHSE #9326",
+      "amount": 283.75,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-18",
+      "description": "TRADER JOE'S #278",
+      "amount": 37.31,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-18",
+      "description": "WHOLEFDS MKT #6945",
+      "amount": 98.02,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-20",
+      "description": "CHIPOTLE 5211",
+      "amount": 42.13,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-20",
+      "description": "CHIPOTLE 4994",
+      "amount": 46.54,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-20",
+      "description": "COSTCO WHSE #6792",
+      "amount": 319.03,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-20",
+      "description": "SHELL OIL 62182230",
+      "amount": 71.23,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-21",
+      "description": "HOMEDEPOT.COM",
+      "amount": 50.06,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-21",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 44.26,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-21",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 99.97,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-21",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 30.11,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-21",
+      "description": "GOOGLE *STORAGE",
+      "amount": 9.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-22",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 73.08,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-22",
+      "description": "EXXONMOBIL 29024772",
+      "amount": 39.56,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-22",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 137.33,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-22",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 100.78,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-23",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 83.43,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-24",
+      "description": "WHOLEFDS MKT #2047",
+      "amount": 71.79,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-24",
+      "description": "TRADER JOE'S #635",
+      "amount": 115.61,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-25",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 38.59,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-25",
+      "description": "CHIPOTLE 5145",
+      "amount": 47.32,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-25",
+      "description": "AUTOMATIC PAYMENT - THANK YOU",
+      "amount": -2931.76,
+      "account": "credit_card",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-05-26",
+      "description": "HOMEDEPOT.COM",
+      "amount": 237.71,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-27",
+      "description": "STARBUCKS STORE 83314",
+      "amount": 9.11,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-27",
+      "description": "COSTCO WHSE #6686",
+      "amount": 101.33,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-28",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 30.02,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-28",
+      "description": "EXXONMOBIL 27982530",
+      "amount": 58.14,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-29",
+      "description": "WALGREENS #1634",
+      "amount": 16.05,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-29",
+      "description": "AMAZON.COM*74G6EFA",
+      "amount": 153.11,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-30",
+      "description": "TRADER JOE'S #400",
+      "amount": 65.87,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-30",
+      "description": "AMAZON.COM*6F6A17G",
+      "amount": 158.65,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-31",
+      "description": "STARBUCKS STORE 17391",
+      "amount": 8.75,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-05-31",
+      "description": "WHOLEFDS MKT #7854",
+      "amount": 91.91,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-03",
+      "description": "TRADER JOE'S #871",
+      "amount": 128.83,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-03",
+      "description": "SPOTIFY USA",
+      "amount": 16.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-04",
+      "description": "CHIPOTLE 8807",
+      "amount": 32.39,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-04",
+      "description": "SHELL OIL 55757443",
+      "amount": 71.13,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-05",
+      "description": "WHOLEFDS MKT #9583",
+      "amount": 116.52,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-05",
+      "description": "CHIPOTLE 7489",
+      "amount": 43.45,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-05",
+      "description": "AMAZON.COM*CH304EH",
+      "amount": 126.07,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-06",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 73.15,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-06",
+      "description": "COSTCO WHSE #0443",
+      "amount": 219.89,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-06",
+      "description": "AMAZON.COM*44FEFB1",
+      "amount": 143.85,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-06",
+      "description": "TRADER JOE'S #848",
+      "amount": 122.26,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-06",
+      "description": "NETFLIX.COM",
+      "amount": 15.49,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-07",
+      "description": "SHELL OIL 01344952",
+      "amount": 70.08,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-07",
+      "description": "AMAZON.COM*B6C4574",
+      "amount": 73.8,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-07",
+      "description": "WHOLEFDS MKT #9481",
+      "amount": 213.2,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-08",
+      "description": "WHOLEFDS MKT #9902",
+      "amount": 101.26,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-09",
+      "description": "AMAZON.COM*250162C",
+      "amount": 150.43,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-09",
+      "description": "TRADER JOE'S #727",
+      "amount": 120.55,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-09",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 140.41,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-09",
+      "description": "STARBUCKS STORE 34026",
+      "amount": 9.04,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-09",
+      "description": "DISNEYPLUS",
+      "amount": 13.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-10",
+      "description": "SHELL OIL 15546137",
+      "amount": 37.26,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-10",
+      "description": "WHOLEFDS MKT #1035",
+      "amount": 166.99,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-10",
+      "description": "TARGET T-0183",
+      "amount": 107.96,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-11",
+      "description": "PETSMART #1183",
+      "amount": 84.17,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-12",
+      "description": "TRADER JOE'S #983",
+      "amount": 72.72,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-12",
+      "description": "NYTIMES*SUBSCRIPTION",
+      "amount": 17.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-13",
+      "description": "COSTCO WHSE #1144",
+      "amount": 217.78,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-13",
+      "description": "WHOLEFDS MKT #1457",
+      "amount": 57.18,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-13",
+      "description": "CHIPOTLE 6025",
+      "amount": 43.83,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-14",
+      "description": "STARBUCKS STORE 08074",
+      "amount": 18.28,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-14",
+      "description": "SHELL OIL 36453782",
+      "amount": 42.87,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-14",
+      "description": "COSTCO WHSE #2878",
+      "amount": 288.26,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-14",
+      "description": "EXXONMOBIL 95504938",
+      "amount": 63.11,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-15",
+      "description": "TARGET T-6456",
+      "amount": 43.11,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-16",
+      "description": "EXXONMOBIL 05988480",
+      "amount": 40.72,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-16",
+      "description": "WALGREENS #8558",
+      "amount": 22.71,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-17",
+      "description": "CHIPOTLE 9821",
+      "amount": 38.89,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-17",
+      "description": "AMAZON.COM*B16622C",
+      "amount": 117.27,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-17",
+      "description": "PELOTON* MEMBERSHIP",
+      "amount": 44.0,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-18",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 34.72,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-18",
+      "description": "WHOLEFDS MKT #4523",
+      "amount": 80.74,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-19",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 59.33,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-20",
+      "description": "SHELL OIL 65477133",
+      "amount": 59.81,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-20",
+      "description": "COSTCO WHSE #9314",
+      "amount": 254.17,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-20",
+      "description": "CVS/PHARMACY #04845",
+      "amount": 60.33,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-21",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 109.02,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-21",
+      "description": "WHOLEFDS MKT #1294",
+      "amount": 210.24,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-21",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 25.49,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-21",
+      "description": "GOOGLE *STORAGE",
+      "amount": 9.99,
+      "account": "credit_card",
+      "category": "Subscriptions",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-22",
+      "description": "TRADER JOE'S #390",
+      "amount": 122.05,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-23",
+      "description": "TRADER JOE'S #275",
+      "amount": 121.92,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-23",
+      "description": "COSTCO WHSE #9696",
+      "amount": 237.94,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-23",
+      "description": "CVS/PHARMACY #58069",
+      "amount": 9.87,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-24",
+      "description": "STARBUCKS STORE 74600",
+      "amount": 9.83,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-24",
+      "description": "WHOLEFDS MKT #6493",
+      "amount": 213.46,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-24",
+      "description": "WHOLEFDS MKT #0764",
+      "amount": 93.88,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-24",
+      "description": "DOORDASH*VARIOUS",
+      "amount": 30.63,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-25",
+      "description": "LUIGI'S TRATTORIA",
+      "amount": 105.08,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-25",
+      "description": "AUTOMATIC PAYMENT - THANK YOU",
+      "amount": -2705.82,
+      "account": "credit_card",
+      "category": "Transfer",
+      "kind": "transfer"
+    },
+    {
+      "date": "2026-06-26",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 36.87,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-26",
+      "description": "CHIPOTLE 1753",
+      "amount": 31.38,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-27",
+      "description": "TRADER JOE'S #621",
+      "amount": 47.3,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-27",
+      "description": "AMAZON.COM*DADC102",
+      "amount": 105.27,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-27",
+      "description": "COSTCO WHSE #3196",
+      "amount": 278.43,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-28",
+      "description": "WHOLEFDS MKT #0375",
+      "amount": 159.75,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-28",
+      "description": "SHELL OIL 62749144",
+      "amount": 56.89,
+      "account": "credit_card",
+      "category": "Transportation",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-28",
+      "description": "HOMEDEPOT.COM",
+      "amount": 140.7,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-28",
+      "description": "CHIPOTLE 0813",
+      "amount": 28.17,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-29",
+      "description": "TARGET T-1889",
+      "amount": 138.37,
+      "account": "credit_card",
+      "category": "Shopping",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-30",
+      "description": "KIDS PEDIATRIC ASSOC COPAY",
+      "amount": 27.54,
+      "account": "credit_card",
+      "category": "Health",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-30",
+      "description": "STARBUCKS STORE 96034",
+      "amount": 6.01,
+      "account": "credit_card",
+      "category": "Dining",
+      "kind": "spend"
+    },
+    {
+      "date": "2026-06-30",
+      "description": "TRADER JOE'S #725",
+      "amount": 78.47,
+      "account": "credit_card",
+      "category": "Groceries",
+      "kind": "spend"
+    }
+  ]
+}
