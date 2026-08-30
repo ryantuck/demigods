@@ -1,12 +1,173 @@
 #root {
-  width: 100%;
+  min-height: 100vh;
+}
+
+.launcher {
+  min-height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 30%, #4c3c91 0, #17132e 48%, #0c0a1b 100%);
+  color: #fff;
+  user-select: none;
+}
+
+.control-panel {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 660px);
   margin: 0 auto;
+  padding: 32px 20px 20px;
+  text-align: center;
 }
 
-.hover-opacity-100:hover {
-  opacity: 1 !important;
+.eyebrow {
+  margin: 0;
+  color: #d6c7ff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.delete-btn {
-  transition: opacity 0.2s ease-in-out;
+h1 {
+  margin: 4px 0;
+  font-size: clamp(2.25rem, 9vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.instructions {
+  margin: 0 0 20px;
+  color: #c9c4df;
+}
+
+.picker {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 6px 2px 12px;
+  scrollbar-width: none;
+}
+
+.picker::-webkit-scrollbar {
+  display: none;
+}
+
+.emoji-option,
+.random-toggle {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.emoji-option {
+  flex: 0 0 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.1);
+  font-size: 1.45rem;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.emoji-option:hover,
+.emoji-option:focus-visible,
+.emoji-option.selected {
+  background: #fff;
+  transform: translateY(-3px) scale(1.08);
+}
+
+.emoji-option:focus-visible,
+.random-toggle:focus-visible,
+.launch-area:focus-visible {
+  outline: 3px solid #ffdf6c;
+  outline-offset: 3px;
+}
+
+.random-toggle {
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.12);
+  color: #fff;
+  font-weight: 700;
+}
+
+.random-toggle.active {
+  background: #ffcc4d;
+  color: #3a2600;
+}
+
+.launch-area {
+  position: absolute;
+  inset: 214px 0 0;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.target {
+  display: grid;
+  place-items: center;
+  width: 150px;
+  height: 150px;
+  border: 2px dashed rgb(255 255 255 / 0.28);
+  border-radius: 50%;
+  color: #d9d2f2;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.target span {
+  font-size: 3rem;
+}
+
+.target p {
+  margin: -12px 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.launching .target {
+  background: rgb(255 255 255 / 0.12);
+  transform: scale(0.92);
+}
+
+.particle-layer {
+  position: fixed;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: fixed;
+  left: var(--x);
+  top: var(--y);
+  line-height: 1;
+  animation: launch 900ms cubic-bezier(0.12, 0.75, 0.28, 1) forwards;
+}
+
+@keyframes launch {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--rotation)) translateX(var(--distance)) rotate(var(--angle));
+  }
+}
+
+@media (max-width: 420px) {
+  .control-panel {
+    padding-top: 24px;
+  }
+
+  .picker {
+    justify-content: flex-start;
+  }
+
+  .launch-area {
+    inset: 204px 0 0;
+  }
 }
