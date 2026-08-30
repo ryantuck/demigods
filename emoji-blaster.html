@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emoji Blaster</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; min-height: 100vh; overflow: hidden; font-family: system-ui, sans-serif; color: white; background: radial-gradient(circle at 50% 30%, #4c3c91, #17132e 48%, #0c0a1b); user-select: none; }
+    .controls { position: relative; z-index: 1; max-width: 660px; margin: auto; padding: 32px 20px 20px; text-align: center; }
+    .eyebrow { margin: 0; color: #d6c7ff; font-size: .75rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 4px 0; font-size: clamp(2.25rem, 9vw, 4rem); line-height: 1; letter-spacing: -.06em; }
+    .instructions { margin: 0 0 20px; color: #c9c4df; }
+    .picker { display: flex; gap: 6px; overflow-x: auto; padding: 6px 2px 12px; scrollbar-width: none; }
+    .emoji, .random { border: 0; color: white; font: inherit; cursor: pointer; }
+    .emoji { flex: 0 0 44px; height: 44px; border-radius: 14px; background: rgb(255 255 255 / .1); font-size: 1.45rem; }
+    .emoji.selected { background: white; transform: translateY(-3px) scale(1.08); }
+    .random { padding: 9px 16px; border-radius: 999px; background: rgb(255 255 255 / .12); font-weight: 700; }
+    .random.active { color: #3a2600; background: #ffcc4d; }
+    .emoji:focus-visible, .random:focus-visible, #launch:focus-visible { outline: 3px solid #ffdf6c; outline-offset: 3px; }
+    #launch { position: absolute; inset: 214px 0 0; display: grid; place-items: center; touch-action: none; cursor: crosshair; }
+    .target { display: grid; place-items: center; width: 150px; height: 150px; border: 2px dashed rgb(255 255 255 / .28); border-radius: 50%; color: #d9d2f2; }
+    .target span { font-size: 3rem; } .target p { margin: -12px 0 0; font-size: .8rem; font-weight: 700; }
+    .particle { position: fixed; z-index: 2; pointer-events: none; line-height: 1; animation: blast .9s cubic-bezier(.12,.75,.28,1) forwards; }
+    @keyframes blast { from { opacity: 1; transform: translate(-50%,-50%) rotate(0); } to { opacity: 0; transform: translate(-50%,-50%) rotate(var(--rotation)) translateX(var(--distance)) rotate(var(--angle)); } }
+    @media (max-width: 420px) { .controls { padding-top: 24px; } #launch { inset: 204px 0 0; } }
+  </style>
+</head>
+<body>
+  <section class="controls">
+    <p class="eyebrow">Emoji blaster</p>
+    <h1>Make it rain</h1>
+    <p class="instructions">Tap and hold anywhere to launch a burst.</p>
+    <div class="picker" id="picker" aria-label="Choose an emoji"></div>
+    <button class="random" id="random" type="button" aria-pressed="false">Random mode</button>
+  </section>
+  <div id="launch" role="button" tabindex="0" aria-label="Tap and hold to launch emojis"><div class="target"><span id="preview">😀</span><p id="prompt">Press anywhere</p></div></div>
+  <script>
+    const emojis = ['😀','🥳','✨','🌈','🚀','💖','🔥','🍕','🦄','🎉','🌸','😎'];
+    const picker = document.getElementById('picker'), launch = document.getElementById('launch'), random = document.getElementById('random'), preview = document.getElementById('preview'), prompt = document.getElementById('prompt');
+    let selected = emojis[0], randomMode = false, interval, id = 0;
+    emojis.forEach(emoji => { const button = document.createElement('button'); button.className = 'emoji'; button.type = 'button'; button.textContent = emoji; button.setAttribute('aria-label', `Launch ${emoji}`); button.onclick = () => { selected = emoji; randomMode = false; render(); }; picker.append(button); });
+    function render() { [...picker.children].forEach(button => button.classList.toggle('selected', button.textContent === selected && !randomMode)); random.classList.toggle('active', randomMode); random.setAttribute('aria-pressed', randomMode); preview.textContent = randomMode ? '🎲' : selected; }
+    function burst(x, y) { for (let n = 0; n < 16; n++) { const particle = document.createElement('span'), angle = n * 22.5 + Math.random() * 14 - 7; particle.className = 'particle'; particle.textContent = randomMode ? emojis[Math.floor(Math.random() * emojis.length)] : selected; particle.style.cssText = `left:${x}px;top:${y}px;font-size:${24 + Math.random() * 18}px;--angle:${angle}deg;--distance:${90 + Math.random() * 180}px;--rotation:${Math.random() * 720 - 360}deg`; particle.id = `particle-${id++}`; document.body.append(particle); particle.addEventListener('animationend', () => particle.remove()); } }
+    function stop() { clearInterval(interval); interval = undefined; prompt.textContent = 'Press anywhere'; }
+    launch.addEventListener('pointerdown', event => { launch.setPointerCapture(event.pointerId); burst(event.clientX, event.clientY); prompt.textContent = 'Keep holding!'; interval = setInterval(() => burst(event.clientX, event.clientY), 220); });
+    ['pointerup','pointercancel','lostpointercapture'].forEach(type => launch.addEventListener(type, stop));
+    launch.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); const box = launch.getBoundingClientRect(); burst(box.left + box.width / 2, box.top + box.height / 2); } });
+    random.onclick = () => { randomMode = !randomMode; render(); };
+    render();
+  </script>
+</body>
+</html>
