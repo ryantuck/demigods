@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculus Visualization: FTC & Derivative</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --curve-color: #4CAF50; /* Green */
+            --tangent-color: #f44336; /* Red */
+            --area-color: rgba(76, 175, 80, 0.2); /* Transparent Green */
+            --axis-color: #888;
+            --grid-color: #333;
+            --highlight-color: #2196F3; /* Blue */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-weight: 300;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .chart-container {
+            background-color: #000;
+            border: 1px solid #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .explanation {
+            max-width: 640px;
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            line-height: 1.6;
+            border-left: 4px solid var(--curve-color);
+        }
+
+        .explanation h3 {
+            margin-top: 0;
+            color: var(--curve-color);
+        }
+
+        .formula {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #111;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #ccc;
+        }
+
+        .axis line, .axis path {
+            stroke: var(--axis-color);
+        }
+
+        .axis text {
+            fill: var(--axis-color);
+            font-size: 12px;
+        }
+
+        .grid line {
+            stroke: var(--grid-color);
+            stroke-opacity: 0.7;
+            shape-rendering: crispEdges;
+        }
+
+        .grid path {
+            stroke-width: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Fundamental Theorem of Calculus</h1>
+    
+    <div id="chart" class="chart-container"></div>
+
+    <div class="explanation">
+        <h3>Connecting Derivatives and Integrals</h3>
+        <p>
+            The <strong>Fundamental Theorem of Calculus</strong> bridges the gap between differentiation (slopes) and integration (areas).
+        </p>
+        <p>
+            1. <strong>Differentiation:</strong> The <span style="color:var(--tangent-color)">red dashed line</span> shows the derivative at <span class="formula">x = 4</span>. The slope is <span class="formula">0.25</span>, representing the instantaneous rate of change of the function <span class="formula">y = √x</span>.
+        </p>
+        <p>
+            2. <strong>Integration:</strong> The <span style="color: #4CAF50; opacity: 0.8;">green shaded region</span> represents the definite integral from <span class="formula">2</span> to <span class="formula">4</span>. The area is approximately <span class="formula">3.45</span>.
+        </p>
+        <div style="text-align: center; margin: 20px 0; font-size: 1.2em;">
+            \[ \text{Fundamental Theorem: } \int_{a}^{b} f'(x) \, dx = f(b) - f(a) \]
+            <p style="font-size: 0.9em; color: #ccc; text-align: left;">
+                To apply this to the graph, we view the curve \( y = \sqrt{x} \) as a <strong>rate of change</strong>, \( f'(x) \). The shaded area represents the total accumulated change in the original function \( f(x) \).
+            </p>
+            \[ \text{Area} = \int_{2}^{4} \underbrace{\sqrt{x}}_{f'(x)} \, dx = \underbrace{\left[ \frac{2}{3}x^{3/2} \right]_{2}^{4}}_{f(b) - f(a)} \approx 3.45 \]
+        </div>
+        <p>
+            The theorem tells us that the <strong>accumulated area</strong> under the derivative curve (green region) is exactly equal to the <strong>net change</strong> in the original function's value.
+        </p>
+    </div>
+
+    <script>
+        // Set dimensions and margins
+        const margin = {top: 20, right: 30, bottom: 40, left: 40},
+              width = 600 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        // Append the svg object
+        const svg = d3.select("#chart")
+          .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // X scale
+        const x = d3.scaleLinear()
+            .domain([0, 10])
+            .range([0, width]);
+
+        // Y scale
+        const y = d3.scaleLinear()
+            .domain([0, 4])
+            .range([height, 0]);
+
+        // Add X axis
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .attr("class", "axis")
+            .call(d3.axisBottom(x));
+
+        // Add Y axis
+        svg.append("g")
+            .attr("class", "axis")
+            .call(d3.axisLeft(y));
+
+        // Add Grid lines
+        function make_x_gridlines() { return d3.axisBottom(x).ticks(10) }
+        function make_y_gridlines() { return d3.axisLeft(y).ticks(8) }
+
+        svg.append("g")
+            .attr("class", "grid")
+            .attr("transform", `translate(0,${height})`)
+            .call(make_x_gridlines().tickSize(-height).tickFormat(""))
+
+        svg.append("g")
+            .attr("class", "grid")
+            .call(make_y_gridlines().tickSize(-width).tickFormat(""))
+
+        // Generate data for y = sqrt(x)
+        const data = [];
+        for (let i = 0; i <= 100; i++) {
+            const val = i / 10;
+            data.push({x: val, y: Math.sqrt(val)});
+        }
+
+        // --- NEW: Area Shading for Integration ---
+        // Filter data for the integration interval [2, 4]
+        const areaData = data.filter(d => d.x >= 2 && d.x <= 4.05); // slight buffer for visual fit
+
+        const area = d3.area()
+            .x(d => x(d.x))
+            .y0(height)
+            .y1(d => y(d.y));
+
+        svg.append("path")
+            .datum(areaData)
+            .attr("fill", "var(--area-color)")
+            .attr("d", area);
+        
+        // Add vertical lines at x=2 and x=4 to close the area visually
+        svg.append("line")
+            .attr("x1", x(2))
+            .attr("y1", y(0))
+            .attr("x2", x(2))
+            .attr("y2", y(Math.sqrt(2)))
+            .attr("stroke", "var(--curve-color)")
+            .attr("stroke-width", 1)
+            .attr("stroke-dasharray", "2,2");
+
+        svg.append("line")
+            .attr("x1", x(4))
+            .attr("y1", y(0))
+            .attr("x2", x(4))
+            .attr("y2", y(2))
+            .attr("stroke", "var(--curve-color)")
+            .attr("stroke-width", 1)
+            .attr("stroke-dasharray", "2,2");
+
+        // --- End Area Shading ---
+
+        // Add the function line path
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", "var(--curve-color)")
+            .attr("stroke-width", 2.5)
+            .attr("d", d3.line()
+                .x(d => x(d.x))
+                .y(d => y(d.y))
+            );
+
+        // Tangent line at x=4
+        const tangentData = [{x: 0, y: 1}, {x: 10, y: 3.5}];
+
+        svg.append("path")
+            .datum(tangentData)
+            .attr("fill", "none")
+            .attr("stroke", "var(--tangent-color)")
+            .attr("stroke-width", 2)
+            .attr("stroke-dasharray", "5,5")
+            .attr("d", d3.line()
+                .x(d => x(d.x))
+                .y(d => y(d.y))
+            );
+
+        // Highlight the point (4, 2)
+        svg.append("circle")
+            .attr("cx", x(4))
+            .attr("cy", y(2))
+            .attr("r", 5)
+            .attr("fill", "#fff")
+            .attr("stroke", "var(--tangent-color)")
+            .attr("stroke-width", 2);
+
+        // Labels
+        svg.append("text")
+            .attr("x", x(8))
+            .attr("y", y(Math.sqrt(8)) - 10)
+            .attr("fill", "var(--curve-color)")
+            .style("font-weight", "bold")
+            .text("y = √x");
+
+        svg.append("text")
+            .attr("x", x(4.2))
+            .attr("y", y(2) + 20)
+            .attr("fill", "var(--tangent-color)")
+            .style("font-size", "11px")
+            .text("Slope = 0.25");
+
+        // Label for the Area
+        svg.append("text")
+            .attr("x", x(2.6))
+            .attr("y", y(0.5))
+            .attr("fill", "var(--curve-color)")
+            .style("font-size", "14px")
+            .style("opacity", 0.8)
+            .text("Area ≈ 3.45");
+
+        // Axis labels
+        svg.append("text")
+            .attr("text-anchor", "end")
+            .attr("x", width)
+            .attr("y", height - 6)
+            .style("fill", "var(--axis-color)")
+            .text("x");
+
+        svg.append("text")
+            .attr("text-anchor", "end")
+            .attr("x", 10)
+            .attr("y", 10)
+            .style("fill", "var(--axis-color)")
+            .text("y");
+
+    </script>
+</body>
+</html>

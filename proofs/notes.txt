@@ -1,0 +1,14 @@
+# install elan
+curl https://elan.lean-lang.org/elan-init.sh -sSf | sh
+
+# update path
+export PATH=$PATH:$HOME/.elan/bin
+
+# initialize
+lake init
+
+# build
+lake build
+
+# run
+.lake/build/bin/greeting
