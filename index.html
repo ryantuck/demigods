@@ -117,6 +117,48 @@
         .section-left li {
             margin-bottom: 0.8rem;
         }
+
+        .recent-work {
+            max-width: 1000px;
+            margin: 0 auto 50px;
+            text-align: left;
+        }
+
+        .recent-work-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .recent-work-item {
+            margin-bottom: 18px;
+            padding: 16px 18px;
+            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .recent-work-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 0.95em;
+        }
+
+        .recent-work-meta a {
+            color: #00ffff;
+            text-decoration: none;
+        }
+
+        .recent-work-meta a:hover {
+            color: #ff00ff;
+        }
+
+        .recent-work-item p {
+            margin: 0 0 8px;
+        }
     </style>
 </head>
 <body>
@@ -124,6 +166,36 @@
         <h1>Demigods</h1>
         <h2>Experiments in Generative AI, by Ryan Tuck</h2>
         <h4 style="margin-top: -30px; margin-bottom: 50px;">All content on this page generated using agentic AI</h4>
+
+        <div class="recent-work">
+            <h3>Recent Work</h3>
+            <ul class="recent-work-list">
+                <li class="recent-work-item">
+                    <div class="recent-work-meta">
+                        <span>2026-09-04</span>
+                        <a href="https://github.com/ryantuck/demigods/commit/d81ed8f">d81ed8f</a>
+                    </div>
+                    <p>Merged the latest Mandelbrot explorer work into the site.</p>
+                    <a href="mandelbrot.html">Open the interactive Mandelbrot explorer</a>
+                </li>
+                <li class="recent-work-item">
+                    <div class="recent-work-meta">
+                        <span>2026-09-03</span>
+                        <a href="https://github.com/ryantuck/demigods/commit/14e260b">14e260b</a>
+                    </div>
+                    <p>Added an interactive Mandelbrot explorer with deep zoom into the complex plane.</p>
+                    <a href="mandelbrot.html">Explore the fractal</a>
+                </li>
+                <li class="recent-work-item">
+                    <div class="recent-work-meta">
+                        <span>2026-08-30</span>
+                        <a href="https://github.com/ryantuck/demigods/commit/40589a2">40589a2</a>
+                    </div>
+                    <p>Shipped a mobile-friendly refresh for Emoji Blaster with touch-first controls.</p>
+                    <a href="emoji-blaster.html">Play Emoji Blaster</a>
+                </li>
+            </ul>
+        </div>
 
         <h3>Game of Life</h3>
         <canvas id="miniLife" width="300" height="200" style="background: #000; border: 1px solid #333; display: inline-block;"></canvas>
