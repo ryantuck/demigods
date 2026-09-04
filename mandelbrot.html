@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mandelbrot Explorer</title>
+<!-- Loaded async: a blocking @import stalls script execution, and the page
+     must start rendering even when the font never arrives. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+<style>
+    :root {
+        --bg: #05060a;
+        --panel: rgba(10, 12, 20, 0.82);
+        --edge: #1d2740;
+        --cyan: #00ffff;
+        --magenta: #ff00ff;
+        --yellow: #ffff66;
+        --text: #cfd8e3;
+        --dim: #7b8798;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Courier New', Courier, monospace;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    #stage {
+        position: fixed;
+        inset: 0;
+        touch-action: none;
+        cursor: crosshair;
+    }
+
+    #view, #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+    }
+
+    #overlay { pointer-events: none; }
+
+    h1, h2, h3, .ttl {
+        font-family: 'Orbitron', 'Courier New', monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+    }
+
+    .glass {
+        background: var(--panel);
+        border: 1px solid var(--edge);
+        border-radius: 6px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* ---------- control panel ---------- */
+    #panel {
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        width: 268px;
+        max-height: calc(100vh - 28px);
+        display: flex;
+        flex-direction: column;
+        z-index: 20;
+        font-size: 12px;
+    }
+
+    #panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        cursor: pointer;
+        user-select: none;
+        border-bottom: 1px solid var(--edge);
+    }
+
+    #panel-head .ttl {
+        font-size: 13px;
+        color: var(--cyan);
+        text-shadow: 0 0 6px rgba(0, 255, 255, 0.7);
+    }
+
+    #panel-head .chev { color: var(--dim); font-size: 11px; }
+
+    #panel-body {
+        overflow-y: auto;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    #panel.collapsed #panel-body { display: none; }
+    #panel.collapsed #panel-head { border-bottom: none; }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+
+    .field > label {
+        color: var(--dim);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+    }
+
+    .field > label span { color: var(--cyan); letter-spacing: 0; text-transform: none; }
+
+    select, input[type="number"] {
+        width: 100%;
+        background: #0b0f18;
+        color: var(--text);
+        border: 1px solid var(--edge);
+        border-radius: 4px;
+        padding: 6px 7px;
+        font-family: inherit;
+        font-size: 12px;
+    }
+
+    select:focus, input:focus { outline: 1px solid var(--cyan); }
+
+    input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 3px;
+        background: #24304b;
+        border-radius: 2px;
+        margin: 7px 0;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: var(--cyan);
+        box-shadow: 0 0 6px rgba(0, 255, 255, 0.8);
+        cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 13px;
+        height: 13px;
+        border: none;
+        border-radius: 50%;
+        background: var(--cyan);
+        box-shadow: 0 0 6px rgba(0, 255, 255, 0.8);
+        cursor: pointer;
+    }
+
+    input[type="range"]:disabled::-webkit-slider-thumb { background: #4a5568; box-shadow: none; }
+    input[type="range"]:disabled::-moz-range-thumb { background: #4a5568; box-shadow: none; }
+
+    .btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    button {
+        flex: 1 1 auto;
+        min-width: 62px;
+        padding: 7px 8px;
+        background: #0b0f18;
+        color: var(--text);
+        border: 1px solid var(--edge);
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        cursor: pointer;
+        transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    button:hover { color: var(--cyan); border-color: var(--cyan); }
+    button:active { background: #131a29; }
+    button.on { color: var(--magenta); border-color: var(--magenta); }
+
+    .toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        user-select: none;
+        color: var(--dim);
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+    }
+
+    .toggle input { accent-color: #00cccc; width: 13px; height: 13px; }
+
+    hr { border: none; border-top: 1px solid var(--edge); margin: 2px 0; }
+
+    /* ---------- readout ---------- */
+    #hud {
+        position: fixed;
+        left: 14px;
+        bottom: 14px;
+        padding: 9px 12px;
+        font-size: 11px;
+        line-height: 1.7;
+        z-index: 20;
+        max-width: min(460px, calc(100vw - 28px));
+        pointer-events: none;
+    }
+
+    #hud .k { color: var(--dim); }
+    #hud .v { color: var(--text); }
+    #hud .z { color: var(--yellow); }
+    #hud b { color: var(--cyan); font-weight: normal; }
+
+    #warn { color: var(--magenta); display: none; }
+    #warn.show { display: inline; }
+
+    #busy {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #2b3550;
+        margin-right: 6px;
+        vertical-align: middle;
+    }
+
+    #busy.on { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); animation: pulse 0.9s ease-in-out infinite; }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+    /* ---------- julia inset ---------- */
+    #julia {
+        position: fixed;
+        right: 14px;
+        bottom: 14px;
+        width: 196px;
+        padding: 8px;
+        z-index: 20;
+        font-size: 10px;
+    }
+
+    #julia canvas {
+        width: 180px;
+        height: 180px;
+        display: block;
+        background: #000;
+        border: 1px solid var(--edge);
+        border-radius: 3px;
+    }
+
+    #julia .cap {
+        color: var(--dim);
+        margin: 6px 0 6px;
+        word-break: break-all;
+        line-height: 1.5;
+        min-height: 2.6em;
+    }
+
+    #julia.hidden { display: none; }
+
+    /* ---------- help ---------- */
+    #help {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        background: rgba(3, 4, 8, 0.86);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    #help.show { display: flex; }
+
+    #help .card {
+        max-width: 620px;
+        width: 100%;
+        padding: 22px 26px;
+        font-size: 13px;
+        line-height: 1.75;
+    }
+
+    #help h2 {
+        margin: 0 0 4px;
+        font-size: 18px;
+        color: var(--cyan);
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+    }
+
+    #help h3 {
+        font-size: 11px;
+        color: var(--magenta);
+        margin: 18px 0 6px;
+    }
+
+    #help p { color: var(--dim); margin: 0 0 6px; }
+    #help table { width: 100%; border-collapse: collapse; }
+    #help td { padding: 2px 0; vertical-align: top; }
+    #help td:first-child { width: 150px; color: var(--yellow); white-space: nowrap; padding-right: 14px; }
+    #help a { color: var(--cyan); }
+
+    kbd {
+        background: #0b0f18;
+        border: 1px solid var(--edge);
+        border-radius: 3px;
+        padding: 1px 5px;
+        font-family: inherit;
+        font-size: 11px;
+        color: var(--text);
+    }
+
+    #toast {
+        position: fixed;
+        left: 50%;
+        top: 20px;
+        transform: translateX(-50%);
+        padding: 8px 16px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--cyan);
+        z-index: 50;
+        opacity: 0;
+        transition: opacity 0.25s;
+        pointer-events: none;
+    }
+
+    #toast.show { opacity: 1; }
+
+    #home-link {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        z-index: 20;
+        padding: 7px 12px;
+        font-size: 10px;
+        color: var(--dim);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-family: 'Orbitron', 'Courier New', monospace;
+    }
+
+    #home-link:hover { color: var(--cyan); border-color: var(--cyan); }
+
+    @media (max-width: 720px) {
+        #panel { width: calc(100vw - 28px); max-width: 320px; }
+        #panel-body { max-height: 46vh; }
+        /* Collapsed, the panel shrinks to a pill so it clears the home link. */
+        #panel.collapsed { width: auto; }
+        #panel.collapsed #panel-head { gap: 14px; }
+        #julia button { min-width: 0; padding: 6px 4px; font-size: 10px; }
+        #julia { width: 128px; }
+        #julia canvas { width: 112px; height: 112px; }
+        #hud { font-size: 10px; max-width: calc(100vw - 160px); }
+    }
+</style>
+</head>
+<body>
+
+<div id="stage">
+    <canvas id="view"></canvas>
+    <canvas id="overlay"></canvas>
+</div>
+
+<div id="panel" class="glass">
+    <div id="panel-head">
+        <span class="ttl">Mandelbrot</span>
+        <span class="chev" id="chev">[ – ]</span>
+    </div>
+    <div id="panel-body">
+        <div class="field">
+            <label for="bookmark">Location</label>
+            <select id="bookmark"></select>
+        </div>
+
+        <div class="field">
+            <label for="palette">Palette</label>
+            <select id="palette"></select>
+        </div>
+
+        <div class="field">
+            <label for="density">Band density <span id="density-v"></span></label>
+            <input type="range" id="density" min="0" max="1000" value="220">
+        </div>
+
+        <div class="field">
+            <label for="cycle">Color cycle <span id="cycle-v"></span></label>
+            <input type="range" id="cycle" min="0" max="1000" value="0">
+        </div>
+
+        <hr>
+
+        <div class="field">
+            <label for="iters">Max iterations <span id="iters-v"></span></label>
+            <input type="range" id="iters" min="0" max="1000" value="300">
+            <label class="toggle"><input type="checkbox" id="auto-iters" checked> Auto with depth</label>
+        </div>
+
+        <div class="field">
+            <label for="quality">Quality</label>
+            <select id="quality">
+                <option value="0">Fast — 1x</option>
+                <option value="1" selected>Sharp — device pixels</option>
+                <option value="2">Ultra — 2x supersampled</option>
+            </select>
+        </div>
+
+        <hr>
+
+        <label class="toggle"><input type="checkbox" id="opt-julia" checked> Julia inset</label>
+        <label class="toggle"><input type="checkbox" id="opt-orbit"> Orbit trace</label>
+
+        <div class="btn-row">
+            <button id="btn-reset" title="Reset view (R)">Reset</button>
+            <button id="btn-png" title="Save PNG (S)">PNG</button>
+        </div>
+        <div class="btn-row">
+            <button id="btn-link" title="Copy shareable link (C)">Copy link</button>
+            <button id="btn-help" title="Help (H)">Help</button>
+        </div>
+    </div>
+</div>
+
+<a id="home-link" class="glass" href="index.html">Demigods</a>
+
+<div id="hud" class="glass">
+    <span id="busy"></span><span class="k">re</span> <span class="v" id="hud-re">—</span>
+    <span class="k">im</span> <span class="v" id="hud-im">—</span><br>
+    <span class="k">zoom</span> <span class="z" id="hud-zoom">—</span>
+    <span class="k">iter</span> <b id="hud-iter">—</b>
+    <span class="k">render</span> <b id="hud-ms">—</b>
+    <span id="hud-mode"></span>
+    <span id="warn"></span>
+</div>
+
+<div id="julia" class="glass">
+    <canvas id="julia-canvas"></canvas>
+    <div class="cap" id="julia-cap">hover the fractal</div>
+    <div class="btn-row">
+        <button id="btn-freeze">Freeze</button>
+        <button id="btn-enter">Open</button>
+    </div>
+</div>
+
+<div id="help">
+    <div class="card glass">
+        <h2>Mandelbrot Explorer</h2>
+        <p>The set of complex numbers <em>c</em> for which z &rarr; z&sup2; + c stays bounded from z = 0. Points outside are shaded by how fast they escape, smoothed to a continuous value so the bands have no stair-steps.</p>
+
+        <h3>Mouse &amp; touch</h3>
+        <table>
+            <tr><td>drag</td><td>pan</td></tr>
+            <tr><td>wheel / pinch</td><td>zoom at the pointer</td></tr>
+            <tr><td>double-click</td><td>zoom in 3&times; (shift: zoom out)</td></tr>
+            <tr><td>shift + drag</td><td>zoom to a box</td></tr>
+            <tr><td>hover</td><td>preview the Julia set for that point</td></tr>
+        </table>
+
+        <h3>Keyboard</h3>
+        <table>
+            <tr><td><kbd>+</kbd> <kbd>-</kbd></td><td>zoom in / out</td></tr>
+            <tr><td><kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd></td><td>pan (hold shift for a big step)</td></tr>
+            <tr><td><kbd>[</kbd> <kbd>]</kbd></td><td>halve / double max iterations</td></tr>
+            <tr><td><kbd>P</kbd></td><td>next palette</td></tr>
+            <tr><td><kbd>J</kbd> / <kbd>O</kbd></td><td>toggle Julia inset / orbit trace</td></tr>
+            <tr><td><kbd>S</kbd> / <kbd>C</kbd></td><td>save PNG / copy link</td></tr>
+            <tr><td><kbd>R</kbd></td><td>reset view</td></tr>
+            <tr><td><kbd>F</kbd></td><td>fullscreen</td></tr>
+            <tr><td><kbd>H</kbd> or <kbd>?</kbd></td><td>this panel</td></tr>
+        </table>
+
+        <h3>Notes</h3>
+        <p>The view is stored in the URL, so any link you copy reopens exactly this frame. Rendering is split across web workers with a coarse-to-fine pass, and iteration counts are cached so palette changes recolor without recomputing.</p>
+        <p>Arithmetic is IEEE double precision, which runs out at roughly 10<sup>13</sup>&times; zoom. The readout turns magenta as pixels stop being distinguishable.</p>
+
+        <div class="btn-row" style="margin-top:18px">
+            <button id="btn-close-help">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="glass"></div>
+
+<script>
+(function () {
+'use strict';
+
+/* ------------------------------------------------------------------ *
+ * Escape-time kernel. Stringified into the worker blob, so it must
+ * stay self-contained: no references to anything outside itself.
+ * ------------------------------------------------------------------ */
+function mandelChunk(job) {
+    var w = job.w, psx = job.psx, psy = job.psy, maxIter = job.maxIter;
+    var julia = job.julia, jcr = job.jcr, jci = job.jci;
+    var out = new Float32Array((job.y1 - job.y0) * w);
+    var BAIL = 65536;            // |z|^2 bailout, radius 256
+    var INV_LN2 = 1 / Math.LN2;
+    var k = 0;
+
+    for (var py = job.y0; py < job.y1; py++) {
+        var im = job.ci0 - py * psy;
+        for (var px = 0; px < w; px++, k++) {
+            var re = job.cr0 + px * psx;
+            var cr, ci, zx, zy;
+
+            if (julia) {
+                cr = jcr; ci = jci; zx = re; zy = im;
+            } else {
+                cr = re; ci = im; zx = 0; zy = 0;
+                // Skip the main cardioid and the period-2 bulb outright.
+                var xm = re - 0.25, iy2 = im * im, q = xm * xm + iy2;
+                if (q * (q + xm) <= 0.25 * iy2 || (re + 1) * (re + 1) + iy2 <= 0.0625) {
+                    out[k] = -1;
+                    continue;
+                }
+            }
+
+            var zx2 = zx * zx, zy2 = zy * zy;
+            var n = 0;
+            var ox = zx, oy = zy, since = 0, checkLen = 8;
+
+            while (n < maxIter && zx2 + zy2 <= BAIL) {
+                zy = 2 * zx * zy + ci;
+                zx = zx2 - zy2 + cr;
+                zx2 = zx * zx;
+                zy2 = zy * zy;
+                n++;
+                // Periodicity check: a cycle means the point never escapes.
+                if (zx === ox && zy === oy) { n = maxIter; break; }
+                if (++since >= checkLen) { since = 0; checkLen <<= 1; ox = zx; oy = zy; }
+            }
+
+            if (n >= maxIter) {
+                out[k] = -1;
+            } else {
+                // Smooth (renormalised) iteration count.
+                var logZn = Math.log(zx2 + zy2) * 0.5;
+                var nu = Math.log(logZn * INV_LN2) * INV_LN2;
+                var v = n + 1 - nu;
+                out[k] = v > 0 ? v : 0;
+            }
+        }
+    }
+    return out;
+}
+
+function workerMain() {
+    self.onmessage = function (e) {
+        var job = e.data;
+        var out = mandelChunk(job);
+        self.postMessage({ tk: job.tk, y0: job.y0, y1: job.y1, buf: out.buffer }, [out.buffer]);
+    };
+}
+
+/* ------------------------------------------------------------------ *
+ * Worker pool, with a time-sliced main-thread fallback for when blob
+ * workers are unavailable (e.g. a file:// page in Chrome).
+ * ------------------------------------------------------------------ */
+function createPool() {
+    var pool = { size: 1, mode: 'main' };
+    var workers = [];
+    var idle = [];
+    var queue = [];
+    var remaining = 0;
+    var token = 0;
+    var onResult = null;
+    var onDone = null;
+
+    var source = "'use strict';\n" + mandelChunk.toString() + '\n' +
+                 workerMain.toString() + '\nworkerMain();';
+
+    try {
+        var url = URL.createObjectURL(new Blob([source], { type: 'text/javascript' }));
+        var n = Math.max(2, Math.min(12, navigator.hardwareConcurrency || 4));
+        for (var i = 0; i < n; i++) {
+            var w = new Worker(url);
+            w.onmessage = makeHandler(w);
+            w.onerror = degrade;
+            workers.push(w);
+            idle.push(w);
+        }
+        URL.revokeObjectURL(url);
+        pool.mode = 'worker';
+        pool.size = n;
+    } catch (err) {
+        workers.forEach(function (x) { x.terminate(); });
+        workers = [];
+        idle = [];
+        pool.mode = 'main';
+        pool.size = 1;
+    }
+
+    function makeHandler(w) {
+        return function (e) {
+            var data = e.data;
+            var mine = data.tk === token;
+            if (mine && onResult) onResult(data);
+            if (queue.length) {
+                w.postMessage(queue.shift());
+            } else {
+                idle.push(w);
+            }
+            if (mine && --remaining <= 0 && onDone) {
+                var cb = onDone;
+                onDone = null;
+                cb();
+            }
+        };
+    }
+
+    function degrade() {
+        if (pool.mode !== 'worker') return;
+        workers.forEach(function (x) { x.terminate(); });
+        workers = [];
+        idle = [];
+        queue = [];
+        pool.mode = 'main';
+        pool.size = 1;
+        token++;
+        remaining = 0;
+        onDone = null;
+        if (pool.onDegrade) pool.onDegrade();
+    }
+
+    function runOnMainThread(myToken) {
+        var step = function () {
+            if (myToken !== token) return;
+            var t0 = performance.now();
+            while (queue.length && performance.now() - t0 < 10) {
+                var job = queue.shift();
+                var out = mandelChunk(job);
+                if (myToken !== token) return;
+                if (onResult) onResult({ tk: job.tk, y0: job.y0, y1: job.y1, buf: out.buffer });
+                remaining--;
+            }
+            if (myToken !== token) return;
+            if (remaining <= 0) {
+                if (onDone) { var cb = onDone; onDone = null; cb(); }
+            } else {
+                setTimeout(step, 0);
+            }
+        };
+        setTimeout(step, 0);
+    }
+
+    /** Cancels anything in flight and runs a fresh batch of jobs. */
+    pool.dispatch = function (jobs, resultCb, doneCb) {
+        token++;
+        var myToken = token;
+        queue = jobs;
+        remaining = jobs.length;
+        onResult = resultCb;
+        onDone = doneCb;
+        for (var i = 0; i < jobs.length; i++) jobs[i].tk = myToken;
+
+        if (!jobs.length) { onDone = null; doneCb(); return; }
+
+        if (pool.mode === 'worker') {
+            while (idle.length && queue.length) idle.pop().postMessage(queue.shift());
+        } else {
+            runOnMainThread(myToken);
+        }
+    };
+
+    pool.cancel = function () { token++; queue = []; remaining = 0; onDone = null; };
+
+    return pool;
+}
+
+/* ------------------------------------------------------------------ *
+ * Palettes. Stops are cyclic: position 1 must repeat position 0 so the
+ * gradient wraps seamlessly. Interpolation happens in linear light.
+ * ------------------------------------------------------------------ */
+var PALETTES = [
+    { name: 'Neon', interior: '#04050b', stops: [
+        [0.00, '#04060f'], [0.14, '#00ffff'], [0.30, '#0b2f7a'],
+        [0.48, '#ff00ff'], [0.66, '#ffff66'], [0.84, '#5c009c'], [1.00, '#04060f'] ] },
+    { name: 'Ultra Fractal', interior: '#000000', stops: [
+        [0.00, '#000764'], [0.16, '#206bcb'], [0.42, '#edffff'],
+        [0.6425, '#ffaa00'], [0.8575, '#000200'], [1.00, '#000764'] ] },
+    { name: 'Ember', interior: '#080300', stops: [
+        [0.00, '#000000'], [0.22, '#6b1200'], [0.45, '#ff6a00'],
+        [0.62, '#ffd98a'], [0.82, '#3b0a02'], [1.00, '#000000'] ] },
+    { name: 'Glacier', interior: '#020509', stops: [
+        [0.00, '#02060f'], [0.25, '#0f5f9c'], [0.48, '#7fe3ff'],
+        [0.66, '#ffffff'], [0.84, '#123a63'], [1.00, '#02060f'] ] },
+    { name: 'Spectrum', interior: '#000000', stops: [
+        [0.00, '#ff0040'], [0.17, '#ffcc00'], [0.34, '#22dd55'],
+        [0.50, '#00cccc'], [0.67, '#3355ff'], [0.84, '#aa22cc'], [1.00, '#ff0040'] ] },
+    { name: 'Copper', interior: '#0a0705', stops: [
+        [0.00, '#150c06'], [0.28, '#8a4a1e'], [0.52, '#e8a35c'],
+        [0.70, '#fff0d6'], [0.88, '#3d2210'], [1.00, '#150c06'] ] },
+    { name: 'Monochrome', interior: '#000000', stops: [
+        [0.00, '#000000'], [0.50, '#ffffff'], [1.00, '#000000'] ] }
+];
+
+var LUT_N = 2048;
+
+function hexToRgb(hex) {
+    var v = parseInt(hex.slice(1), 16);
+    return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+}
+
+function srgbToLinear(c) {
+    c /= 255;
+    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
+
+function linearToSrgb(v) {
+    var c = v <= 0.0031308 ? v * 12.92 : 1.055 * Math.pow(v, 1 / 2.4) - 0.055;
+    c = Math.round(c * 255);
+    return c < 0 ? 0 : c > 255 ? 255 : c;
+}
+
+function buildLut(palette) {
+    var stops = palette.stops.map(function (s) {
+        var rgb = hexToRgb(s[1]);
+        return [s[0], srgbToLinear(rgb[0]), srgbToLinear(rgb[1]), srgbToLinear(rgb[2])];
+    });
+    var lut = new Uint8Array(LUT_N * 3);
+    var si = 0;
+    for (var i = 0; i < LUT_N; i++) {
+        var t = i / LUT_N;
+        while (si < stops.length - 2 && t > stops[si + 1][0]) si++;
+        var a = stops[si], b = stops[si + 1];
+        var f = b[0] === a[0] ? 0 : (t - a[0]) / (b[0] - a[0]);
+        if (f < 0) f = 0; else if (f > 1) f = 1;
+        lut[i * 3] = linearToSrgb(a[1] + (b[1] - a[1]) * f);
+        lut[i * 3 + 1] = linearToSrgb(a[2] + (b[2] - a[2]) * f);
+        lut[i * 3 + 2] = linearToSrgb(a[3] + (b[3] - a[3]) * f);
+    }
+    var inner = hexToRgb(palette.interior);
+    return { lut: lut, ir: inner[0], ig: inner[1], ib: inner[2] };
+}
+
+/* ------------------------------------------------------------------ *
+ * State
+ * ------------------------------------------------------------------ */
+var HOME = { cx: -0.6, cy: 0, span: 3.2 };
+var MIN_PIXEL_SPAN = 1e-17;   // below this, doubles have nothing left to say
+var MAX_SAMPLES = 12e6;       // ceiling on computed samples per frame
+
+var view = { cx: HOME.cx, cy: HOME.cy, span: HOME.span, mode: 'm', jcr: -0.8, jci: 0.156 };
+var savedMandel = null;
+
+var opts = {
+    palette: 0,
+    density: 0.9,
+    cycle: 0,
+    autoIter: true,
+    maxIter: 300,
+    quality: 1,
+    julia: true,
+    orbit: false
+};
+
+var BOOKMARKS = [
+    { name: 'Home', cx: -0.6, cy: 0, span: 3.2 },
+    { name: 'Seahorse Valley', cx: -0.743643887037151, cy: 0.13182590420533, span: 2.4e-4 },
+    { name: 'Seahorse — deep', cx: -0.7436438870371587, cy: 0.1318259042053119, span: 4e-11 },
+    { name: 'Elephant Valley', cx: 0.2721950, cy: 0.00540, span: 0.02 },
+    { name: 'Triple Spiral', cx: -0.088, cy: 0.654, span: 0.028 },
+    { name: 'Spiral Garden', cx: -0.7269, cy: 0.1889, span: 0.002 },
+    { name: 'Julia Island', cx: -1.768778833, cy: 0.001738996, span: 4e-5 },
+    { name: 'Satellite', cx: -1.7490625, cy: 0, span: 8e-4 },
+    { name: 'Dendrite', cx: -0.235125, cy: 0.827215, span: 4e-3 },
+    { name: 'Nautilus', cx: -0.77568377, cy: 0.13646737, span: 0.002 },
+    { name: 'Quad spiral', cx: 0.35105826, cy: 0.06439364, span: 6e-4 }
+];
+
+var canvas = document.getElementById('view');
+var ctx = canvas.getContext('2d', { alpha: false });
+var overlay = document.getElementById('overlay');
+var octx = overlay.getContext('2d');
+var stage = document.getElementById('stage');
+
+var snapCanvas = document.createElement('canvas');
+var snapCtx = snapCanvas.getContext('2d', { alpha: false });
+var snapView = null;
+
+var tmpCanvas = document.createElement('canvas');
+var tmpCtx = tmpCanvas.getContext('2d', { alpha: false });
+
+var W = 0, H = 0, ss = 1, scale = 1;
+var finalBuf = null, finalW = 0, finalH = 0;
+var gen = 0;
+var renderT0 = 0;
+var lastMs = 0;
+var pool = createPool();
+var lut = buildLut(PALETTES[0]);
+var renderTimer = null;
+var busyEl = document.getElementById('busy');
+
+/* ------------------------------------------------------------------ *
+ * Geometry
+ * ------------------------------------------------------------------ */
+function pixelSpan() { return view.span / Math.max(1, W); }
+
+function spanY() { return view.span * (H / Math.max(1, W)); }
+
+/** CSS-space point to complex plane. */
+function screenToComplex(sx, sy) {
+    var ps = pixelSpan();
+    var dx = sx * scale, dy = sy * scale;
+    return {
+        re: view.cx + (dx - W / 2 + 0.5) * ps,
+        im: view.cy - (dy - H / 2 + 0.5) * ps
+    };
+}
+
+function clampSpan(s) {
+    var lo = MIN_PIXEL_SPAN * Math.max(1, W);
+    return Math.min(16, Math.max(lo, s));
+}
+
+function autoIterations(span) {
+    var depth = Math.max(0, Math.log(HOME.span / span) / Math.LN10);
+    return Math.min(60000, Math.round(200 + 240 * Math.pow(depth, 1.22)));
+}
+
+function currentIterations() {
+    return opts.autoIter ? autoIterations(view.span) : opts.maxIter;
+}
+
+/* ------------------------------------------------------------------ *
+ * Sizing
+ * ------------------------------------------------------------------ */
+function resize() {
+    var cssW = Math.max(1, Math.floor(window.innerWidth));
+    var cssH = Math.max(1, Math.floor(window.innerHeight));
+
+    scale = opts.quality === 0 ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+    ss = opts.quality === 2 ? 2 : 1;
+
+    var nw = Math.round(cssW * scale), nh = Math.round(cssH * scale);
+    if (nw * nh * ss * ss > MAX_SAMPLES && ss > 1) ss = 1;
+    if (nw * nh > MAX_SAMPLES) {
+        scale = 1;
+        nw = cssW;
+        nh = cssH;
+    }
+
+    W = nw; H = nh;
+    canvas.width = W; canvas.height = H;
+    canvas.style.width = cssW + 'px'; canvas.style.height = cssH + 'px';
+    overlay.width = W; overlay.height = H;
+    overlay.style.width = cssW + 'px'; overlay.style.height = cssH + 'px';
+    finalBuf = null;
+    snapView = null;
+}
+
+/* ------------------------------------------------------------------ *
+ * Rendering
+ * ------------------------------------------------------------------ */
+function makeJobs(bw, bh, maxIter) {
+    var psx = view.span / bw;
+    var psy = spanY() / bh;
+    var cr0 = view.cx - view.span / 2 + psx / 2;
+    var ci0 = view.cy + spanY() / 2 - psy / 2;
+
+    var perChunk = pool.mode === 'worker'
+        ? Math.max(1, Math.min(24, Math.ceil(bh / (pool.size * 8))))
+        : Math.max(1, Math.min(6, Math.ceil(bh / 48)));
+
+    var jobs = [];
+    for (var y = 0; y < bh; y += perChunk) {
+        jobs.push({
+            w: bw, y0: y, y1: Math.min(bh, y + perChunk),
+            cr0: cr0, ci0: ci0, psx: psx, psy: psy,
+            maxIter: maxIter,
+            julia: view.mode === 'j', jcr: view.jcr, jci: view.jci
+        });
+    }
+    return jobs;
+}
+
+function renderBuffer(myGen, bw, bh, maxIter, done) {
+    var buf = new Float32Array(bw * bh);
+    pool.dispatch(makeJobs(bw, bh, maxIter), function (res) {
+        if (myGen !== gen) return;
+        buf.set(new Float32Array(res.buf), res.y0 * bw);
+    }, function () {
+        if (myGen !== gen) return;
+        done(buf);
+    });
+}
+
+function startRender() {
+    var myGen = ++gen;
+    renderT0 = performance.now();
+    busyEl.classList.add('on');
+
+    var iters = currentIterations();
+    var passes = [];
+    if (W > 320) passes.push([Math.round(W / 8), Math.round(H / 8), 1]);
+    if (W > 160) passes.push([Math.round(W / 3), Math.round(H / 3), 1]);
+    passes.push([W * ss, H * ss, ss]);
+
+    (function runPass(i) {
+        if (myGen !== gen) return;
+        var p = passes[i];
+        var isFinal = i === passes.length - 1;
+        renderBuffer(myGen, p[0], p[1], iters, function (buf) {
+            if (myGen !== gen) return;
+            if (isFinal) {
+                finalBuf = buf; finalW = p[0]; finalH = p[1];
+                paintFinal();
+                snapshot();
+                lastMs = Math.round(performance.now() - renderT0);
+                busyEl.classList.remove('on');
+                updateHud();
+                writeHash();
+            } else {
+                paintCoarse(buf, p[0], p[1]);
+                runPass(i + 1);
+            }
+        });
+    })(0);
+}
+
+function scheduleRender(delay) {
+    if (renderTimer) clearTimeout(renderTimer);
+    renderTimer = setTimeout(function () {
+        renderTimer = null;
+        startRender();
+    }, delay === undefined ? 90 : delay);
+}
+
+/**
+ * Writes a computed buffer into an ImageData, averaging s*s samples per pixel.
+ * Escape counts run through log() before hitting the palette: a linear or sqrt
+ * ramp gives one flat wash at low zoom and dozens of cycles deep in, while log
+ * keeps the number of visible bands roughly constant at any depth.
+ */
+function colorize(buf, bw, bh, s, image) {
+    var data = image.data;
+    var L = lut.lut, ir = lut.ir, ig = lut.ig, ib = lut.ib;
+    var density = opts.density, cycle = opts.cycle;
+    var outW = bw / s, outH = bh / s;
+    var o = 0;
+
+    if (s === 1) {
+        for (var i = 0, n = bw * bh; i < n; i++) {
+            var v = buf[i];
+            if (v < 0) {
+                data[o] = ir; data[o + 1] = ig; data[o + 2] = ib;
+            } else {
+                var t = Math.log(1 + v) * density + cycle;
+                var idx = ((t - Math.floor(t)) * LUT_N) | 0;
+                if (idx >= LUT_N) idx = LUT_N - 1;
+                idx *= 3;
+                data[o] = L[idx]; data[o + 1] = L[idx + 1]; data[o + 2] = L[idx + 2];
+            }
+            data[o + 3] = 255;
+            o += 4;
+        }
+        return;
+    }
+
+    var inv = 1 / (s * s);
+    for (var y = 0; y < outH; y++) {
+        for (var x = 0; x < outW; x++) {
+            var r = 0, g = 0, b = 0;
+            for (var sy = 0; sy < s; sy++) {
+                var row = (y * s + sy) * bw + x * s;
+                for (var sx = 0; sx < s; sx++) {
+                    var val = buf[row + sx];
+                    if (val < 0) {
+                        r += ir; g += ig; b += ib;
+                    } else {
+                        var tt = Math.log(1 + val) * density + cycle;
+                        var k = ((tt - Math.floor(tt)) * LUT_N) | 0;
+                        if (k >= LUT_N) k = LUT_N - 1;
+                        k *= 3;
+                        r += L[k]; g += L[k + 1]; b += L[k + 2];
+                    }
+                }
+            }
+            data[o] = r * inv; data[o + 1] = g * inv; data[o + 2] = b * inv; data[o + 3] = 255;
+            o += 4;
+        }
+    }
+}
+
+function paintFinal() {
+    if (!finalBuf) return;
+    var image = ctx.createImageData(W, H);
+    colorize(finalBuf, finalW, finalH, ss, image);
+    ctx.putImageData(image, 0, 0);
+}
+
+function paintCoarse(buf, bw, bh) {
+    tmpCanvas.width = bw; tmpCanvas.height = bh;
+    var image = tmpCtx.createImageData(bw, bh);
+    colorize(buf, bw, bh, 1, image);
+    tmpCtx.putImageData(image, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(tmpCanvas, 0, 0, bw, bh, 0, 0, W, H);
+}
+
+function snapshot() {
+    snapCanvas.width = W; snapCanvas.height = H;
+    snapCtx.drawImage(canvas, 0, 0);
+    snapView = { cx: view.cx, cy: view.cy, span: view.span, mode: view.mode, jcr: view.jcr, jci: view.jci };
+}
+
+/**
+ * Instant feedback while panning or zooming: reproject the last completed
+ * frame into the new view rather than leaving the canvas stale.
+ */
+function paintTransformed() {
+    if (!snapView || snapView.mode !== view.mode ||
+        snapView.jcr !== view.jcr || snapView.jci !== view.jci) return;
+
+    var ps = pixelSpan();
+    var sps = snapView.span / W;
+    var reTL = snapView.cx - (W / 2) * sps;
+    var imTL = snapView.cy + (H / 2) * sps;
+    var dx = W / 2 + (reTL - view.cx) / ps;
+    var dy = H / 2 - (imTL - view.cy) / ps;
+    var f = sps / ps;
+
+    ctx.fillStyle = PALETTES[opts.palette].interior;
+    ctx.fillRect(0, 0, W, H);
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(snapCanvas, dx, dy, W * f, H * f);
+}
+
+function recolor() {
+    if (finalBuf) {
+        paintFinal();
+        snapshot();
+    }
+    drawJulia();
+}
+
+/* ------------------------------------------------------------------ *
+ * Readout
+ * ------------------------------------------------------------------ */
+function digitsFor(ps) {
+    return Math.max(6, Math.min(17, Math.ceil(-Math.log(ps) / Math.LN10) + 2));
+}
+
+function updateHud() {
+    var ps = pixelSpan();
+    var d = digitsFor(ps);
+    document.getElementById('hud-re').textContent = view.cx.toFixed(d);
+    document.getElementById('hud-im').textContent = (view.cy < 0 ? '-' : '+') + Math.abs(view.cy).toFixed(d) + 'i';
+
+    var zoom = HOME.span / view.span;
+    document.getElementById('hud-zoom').textContent =
+        zoom < 1000 ? zoom.toFixed(1) + '×' : zoom.toExponential(2).replace('e+', 'e') + '×';
+    document.getElementById('hud-iter').textContent = currentIterations();
+    document.getElementById('hud-ms').textContent = lastMs + ' ms';
+    document.getElementById('hud-mode').innerHTML = view.mode === 'j'
+        ? '<span class="k">set</span> <b>julia c = ' + view.jcr.toFixed(6) +
+          (view.jci < 0 ? ' - ' : ' + ') + Math.abs(view.jci).toFixed(6) + 'i</b>'
+        : '';
+
+    var warn = document.getElementById('warn');
+    if (ps < 4e-16) {
+        warn.textContent = ' • precision exhausted';
+        warn.classList.add('show');
+    } else if (ps < 5e-15) {
+        warn.textContent = ' • near double-precision limit';
+        warn.classList.add('show');
+    } else {
+        warn.classList.remove('show');
+    }
+
+    document.getElementById('iters-v').textContent = opts.autoIter ? 'auto' : opts.maxIter;
+    document.getElementById('density-v').textContent = opts.density.toFixed(2);
+    document.getElementById('cycle-v').textContent = opts.cycle.toFixed(2);
+}
+
+/* ------------------------------------------------------------------ *
+ * Julia inset + orbit overlay
+ * ------------------------------------------------------------------ */
+var juliaCanvas = document.getElementById('julia-canvas');
+var jctx = juliaCanvas.getContext('2d', { alpha: false });
+var juliaC = { re: -0.8, im: 0.156 };
+var juliaFrozen = false;
+var juliaPending = false;
+var JSIZE = 0;
+
+function sizeJulia() {
+    var css = window.innerWidth <= 720 ? 112 : 180;
+    var s = Math.min(window.devicePixelRatio || 1, 2);
+    JSIZE = Math.round(css * s);
+    juliaCanvas.width = JSIZE;
+    juliaCanvas.height = JSIZE;
+    juliaCanvas.style.width = css + 'px';
+    juliaCanvas.style.height = css + 'px';
+}
+
+function drawJulia() {
+    if (!opts.julia || JSIZE === 0) return;
+    var span = 3.0;
+    var ps = span / JSIZE;
+    var buf = mandelChunk({
+        w: JSIZE, y0: 0, y1: JSIZE,
+        cr0: -span / 2 + ps / 2, ci0: span / 2 - ps / 2,
+        psx: ps, psy: ps, maxIter: 160,
+        julia: true, jcr: juliaC.re, jci: juliaC.im
+    });
+    var image = jctx.createImageData(JSIZE, JSIZE);
+    colorize(buf, JSIZE, JSIZE, 1, image);
+    jctx.putImageData(image, 0, 0);
+
+    document.getElementById('julia-cap').textContent =
+        'c = ' + juliaC.re.toFixed(6) + (juliaC.im < 0 ? ' - ' : ' + ') +
+        Math.abs(juliaC.im).toFixed(6) + 'i' + (juliaFrozen ? '  [frozen]' : '');
+}
+
+function requestJulia() {
+    if (juliaPending || !opts.julia) return;
+    juliaPending = true;
+    requestAnimationFrame(function () {
+        juliaPending = false;
+        drawJulia();
+    });
+}
+
+function drawOrbit(sx, sy) {
+    octx.clearRect(0, 0, W, H);
+    if (!opts.orbit || view.mode === 'j') return;
+
+    var c = screenToComplex(sx, sy);
+    var ps = pixelSpan();
+    var zx = 0, zy = 0;
+    var pts = [];
+    for (var i = 0; i < 220; i++) {
+        var nx = zx * zx - zy * zy + c.re;
+        zy = 2 * zx * zy + c.im;
+        zx = nx;
+        if (zx * zx + zy * zy > 64) break;
+        pts.push([W / 2 + (zx - view.cx) / ps, H / 2 - (zy - view.cy) / ps]);
+    }
+    if (pts.length < 2) return;
+
+    octx.lineWidth = Math.max(1, scale);
+    octx.strokeStyle = 'rgba(0, 255, 255, 0.45)';
+    octx.beginPath();
+    octx.moveTo(pts[0][0], pts[0][1]);
+    for (var k = 1; k < pts.length; k++) octx.lineTo(pts[k][0], pts[k][1]);
+    octx.stroke();
+
+    octx.fillStyle = 'rgba(255, 0, 255, 0.9)';
+    for (var j = 0; j < pts.length; j++) {
+        octx.fillRect(pts[j][0] - scale, pts[j][1] - scale, 2 * scale, 2 * scale);
+    }
+}
+
+/* ------------------------------------------------------------------ *
+ * URL state
+ * ------------------------------------------------------------------ */
+var hashTimer = null;
+
+function writeHash() {
+    if (hashTimer) clearTimeout(hashTimer);
+    hashTimer = setTimeout(function () {
+        var d = digitsFor(pixelSpan());
+        var parts = [
+            'c=' + view.cx.toFixed(d) + ',' + view.cy.toFixed(d),
+            's=' + view.span.toExponential(6),
+            'p=' + opts.palette,
+            'd=' + opts.density.toFixed(3),
+            'y=' + opts.cycle.toFixed(3),
+            'i=' + (opts.autoIter ? 'auto' : opts.maxIter),
+            'q=' + opts.quality
+        ];
+        if (view.mode === 'j') parts.push('m=j', 'j=' + view.jcr + ',' + view.jci);
+        history.replaceState(null, '', '#' + parts.join('&'));
+    }, 300);
+}
+
+function readHash() {
+    var h = location.hash.replace(/^#/, '');
+    if (!h) return false;
+    var q = {};
+    h.split('&').forEach(function (kv) {
+        var i = kv.indexOf('=');
+        if (i > 0) q[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1));
+    });
+
+    var ok = false;
+    if (q.c) {
+        var c = q.c.split(',').map(Number);
+        if (c.length === 2 && isFinite(c[0]) && isFinite(c[1])) {
+            view.cx = c[0]; view.cy = c[1]; ok = true;
+        }
+    }
+    if (q.s && isFinite(Number(q.s)) && Number(q.s) > 0) { view.span = Number(q.s); ok = true; }
+    if (q.p !== undefined && PALETTES[+q.p]) opts.palette = +q.p;
+    if (q.d && isFinite(Number(q.d))) opts.density = Math.min(D_HI, Math.max(D_LO, Number(q.d)));
+    if (q.y && isFinite(Number(q.y))) opts.cycle = Number(q.y) % 1;
+    if (q.i) {
+        if (q.i === 'auto') opts.autoIter = true;
+        else if (isFinite(Number(q.i))) { opts.autoIter = false; opts.maxIter = Math.round(Number(q.i)); }
+    }
+    if (q.q !== undefined && +q.q >= 0 && +q.q <= 2) opts.quality = +q.q;
+    if (q.m === 'j' && q.j) {
+        var j = q.j.split(',').map(Number);
+        if (j.length === 2 && isFinite(j[0]) && isFinite(j[1])) {
+            view.mode = 'j'; view.jcr = j[0]; view.jci = j[1];
+            juliaC = { re: j[0], im: j[1] };
+            juliaFrozen = true;
+        }
+    }
+    return ok;
+}
+
+/* ------------------------------------------------------------------ *
+ * Interaction
+ * ------------------------------------------------------------------ */
+var pointers = new Map();
+var dragging = null;
+var boxSelect = null;
+var pinchPrev = null;
+
+function zoomAt(sx, sy, factor) {
+    var before = screenToComplex(sx, sy);
+    var next = clampSpan(view.span * factor);
+    if (next === view.span) return;
+    view.span = next;
+    var ps = pixelSpan();
+    view.cx = before.re - (sx * scale - W / 2 + 0.5) * ps;
+    view.cy = before.im + (sy * scale - H / 2 + 0.5) * ps;
+    afterViewChange();
+}
+
+/** Zoom about the exact view centre, so repeated presses never drift. */
+function zoomCenter(factor) {
+    var next = clampSpan(view.span * factor);
+    if (next === view.span) return;
+    view.span = next;
+    afterViewChange();
+    scheduleRender(0);
+}
+
+function afterViewChange() {
+    paintTransformed();
+    octx.clearRect(0, 0, W, H);
+    updateHud();
+    scheduleRender();
+}
+
+/**
+ * Touch events are the reliable multi-finger source; several engines only
+ * ever report the primary finger through pointer events. Mouse and pen keep
+ * using the pointer path, which also handles shift-drag box zoom.
+ */
+var HAS_TOUCH = 'ontouchstart' in window;
+
+/** One pinch step: pan by the midpoint delta, then zoom about that midpoint. */
+function applyPinch(prev, dist, mx, my) {
+    var ps = pixelSpan();
+    view.cx -= (mx - prev.mx) * scale * ps;
+    view.cy += (my - prev.my) * scale * ps;
+    if (dist > 4 && prev.dist > 4) {
+        var anchor = screenToComplex(mx, my);
+        view.span = clampSpan(view.span * (prev.dist / dist));
+        var ps2 = pixelSpan();
+        view.cx = anchor.re - (mx * scale - W / 2 + 0.5) * ps2;
+        view.cy = anchor.im + (my * scale - H / 2 + 0.5) * ps2;
+    }
+    prev.dist = dist;
+    prev.mx = mx;
+    prev.my = my;
+    afterViewChange();
+}
+
+function beginPinch() {
+    dragging = null;
+    boxSelect = null;
+    var pts = Array.from(pointers.values());
+    pinchPrev = {
+        dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
+        mx: (pts[0].x + pts[1].x) / 2,
+        my: (pts[0].y + pts[1].y) / 2
+    };
+}
+
+stage.addEventListener('pointerdown', function (e) {
+    if (HAS_TOUCH && e.pointerType === 'touch') return;
+    // A primary pointer starts a fresh gesture, so drop any pointer left
+    // behind by an up event the browser never delivered.
+    if (e.isPrimary) pointers.clear();
+    stage.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointers.size === 1) {
+        if (e.shiftKey) {
+            boxSelect = { x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY };
+        } else {
+            dragging = { x: e.clientX, y: e.clientY, moved: false };
+        }
+    } else if (pointers.size === 2) {
+        beginPinch();
+    }
+});
+
+stage.addEventListener('pointermove', function (e) {
+    if (HAS_TOUCH && e.pointerType === 'touch') return;
+    if (pointers.has(e.pointerId)) {
+        pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    } else if (e.pointerType !== 'mouse') {
+        // Some engines drop the pointerdown for a second finger. Adopt it on
+        // its first move so pinch engages instead of degrading to a pan.
+        pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (pointers.size === 2) { beginPinch(); return; }
+    }
+
+    if (pointers.size === 2 && pinchPrev) {
+        var pts = Array.from(pointers.values());
+        applyPinch(pinchPrev,
+                   Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
+                   (pts[0].x + pts[1].x) / 2,
+                   (pts[0].y + pts[1].y) / 2);
+        return;
+    }
+
+    if (boxSelect) {
+        boxSelect.x1 = e.clientX;
+        boxSelect.y1 = e.clientY;
+        drawBox();
+        return;
+    }
+
+    if (dragging) {
+        var dx = e.clientX - dragging.x, dy = e.clientY - dragging.y;
+        if (dx || dy) {
+            var p = pixelSpan();
+            view.cx -= dx * scale * p;
+            view.cy += dy * scale * p;
+            dragging.x = e.clientX;
+            dragging.y = e.clientY;
+            dragging.moved = true;
+            paintTransformed();
+            updateHud();
+            scheduleRender(140);
+        }
+        return;
+    }
+
+    if (e.pointerType === 'mouse') {
+        if (!juliaFrozen && opts.julia && view.mode === 'm') {
+            var c = screenToComplex(e.clientX, e.clientY);
+            juliaC = { re: c.re, im: c.im };
+            requestJulia();
+        }
+        if (opts.orbit) drawOrbit(e.clientX, e.clientY);
+    }
+});
+
+function endPointer(e) {
+    if (HAS_TOUCH && e.pointerType === 'touch') return;
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinchPrev = null;
+
+    if (boxSelect) {
+        var b = boxSelect;
+        boxSelect = null;
+        octx.clearRect(0, 0, W, H);
+        var w = Math.abs(b.x1 - b.x0), h = Math.abs(b.y1 - b.y0);
+        if (w > 12 && h > 12) {
+            var mx = (b.x0 + b.x1) / 2, my = (b.y0 + b.y1) / 2;
+            var center = screenToComplex(mx, my);
+            view.cx = center.re;
+            view.cy = center.im;
+            view.span = clampSpan(view.span * (w * scale / W));
+            afterViewChange();
+            scheduleRender(0);
+        }
+        return;
+    }
+
+    if (dragging) {
+        var moved = dragging.moved;
+        dragging = null;
+        if (moved) {
+            scheduleRender(0);
+        } else if (e.pointerType !== 'mouse' && view.mode === 'm' && opts.julia && !juliaFrozen) {
+            // No hover on touch, so a tap is how you aim the Julia inset.
+            var c = screenToComplex(e.clientX, e.clientY);
+            juliaC = { re: c.re, im: c.im };
+            drawJulia();
+        }
+    }
+}
+
+stage.addEventListener('pointerup', endPointer);
+stage.addEventListener('pointercancel', endPointer);
+stage.addEventListener('pointerleave', function (e) {
+    if (e.pointerType === 'mouse') octx.clearRect(0, 0, W, H);
+});
+
+function drawBox() {
+    octx.clearRect(0, 0, W, H);
+    var x = Math.min(boxSelect.x0, boxSelect.x1) * scale;
+    var y = Math.min(boxSelect.y0, boxSelect.y1) * scale;
+    var w = Math.abs(boxSelect.x1 - boxSelect.x0) * scale;
+    var h = Math.abs(boxSelect.y1 - boxSelect.y0) * scale;
+    octx.strokeStyle = 'rgba(0, 255, 255, 0.9)';
+    octx.lineWidth = Math.max(1, scale);
+    octx.setLineDash([6 * scale, 4 * scale]);
+    octx.strokeRect(x, y, w, h);
+    octx.setLineDash([]);
+    octx.fillStyle = 'rgba(0, 255, 255, 0.08)';
+    octx.fillRect(x, y, w, h);
+}
+
+/* ---- touch gestures ---- */
+var touchGesture = null;
+
+function touchList(e) {
+    var out = [];
+    for (var i = 0; i < e.touches.length; i++) {
+        out.push({ x: e.touches[i].clientX, y: e.touches[i].clientY });
+    }
+    return out;
+}
+
+function pinchFrom(t) {
+    return {
+        mode: 'pinch',
+        dist: Math.hypot(t[0].x - t[1].x, t[0].y - t[1].y),
+        mx: (t[0].x + t[1].x) / 2,
+        my: (t[0].y + t[1].y) / 2,
+        moved: true
+    };
+}
+
+function panFrom(p, moved) { return { mode: 'pan', x: p.x, y: p.y, moved: !!moved }; }
+
+stage.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    var t = touchList(e);
+    if (!t.length) return;
+    touchGesture = t.length >= 2 ? pinchFrom(t) : panFrom(t[0], false);
+}, { passive: false });
+
+stage.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    var t = touchList(e);
+    if (!t.length) return;
+
+    if (t.length >= 2) {
+        // Re-seed rather than apply when the finger count just changed, so a
+        // second finger landing does not jump the view.
+        if (!touchGesture || touchGesture.mode !== 'pinch') { touchGesture = pinchFrom(t); return; }
+        applyPinch(touchGesture,
+                   Math.hypot(t[0].x - t[1].x, t[0].y - t[1].y),
+                   (t[0].x + t[1].x) / 2,
+                   (t[0].y + t[1].y) / 2);
+        return;
+    }
+
+    if (!touchGesture || touchGesture.mode !== 'pan') { touchGesture = panFrom(t[0], true); return; }
+    var dx = t[0].x - touchGesture.x, dy = t[0].y - touchGesture.y;
+    if (dx || dy) {
+        var ps = pixelSpan();
+        view.cx -= dx * scale * ps;
+        view.cy += dy * scale * ps;
+        touchGesture.x = t[0].x;
+        touchGesture.y = t[0].y;
+        touchGesture.moved = true;
+        paintTransformed();
+        updateHud();
+        scheduleRender(140);
+    }
+}, { passive: false });
+
+function touchDone(e) {
+    if (e.touches.length) {
+        var rest = touchList(e);
+        touchGesture = rest.length >= 2 ? pinchFrom(rest) : panFrom(rest[0], true);
+        return;
+    }
+    var g = touchGesture;
+    touchGesture = null;
+    if (!g) return;
+
+    if (g.moved) {
+        scheduleRender(0);
+    } else if (view.mode === 'm' && opts.julia && !juliaFrozen && e.changedTouches.length) {
+        // No hover on touch, so a tap is how you aim the Julia inset.
+        var c = screenToComplex(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+        juliaC = { re: c.re, im: c.im };
+        drawJulia();
+    }
+}
+
+stage.addEventListener('touchend', touchDone, { passive: false });
+stage.addEventListener('touchcancel', touchDone, { passive: false });
+
+stage.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    // deltaMode: 0 = pixels, 1 = lines, 2 = pages. Clamp the normalised
+    // delta, not the exponent, or a single notch barely moves the view.
+    var unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
+    var d = Math.max(-300, Math.min(300, e.deltaY * unit));
+    var factor = Math.exp(d * 0.0025);
+    zoomAt(e.clientX, e.clientY, factor);
+}, { passive: false });
+
+stage.addEventListener('dblclick', function (e) {
+    e.preventDefault();
+    zoomAt(e.clientX, e.clientY, e.shiftKey ? 3 : 1 / 3);
+    scheduleRender(0);
+});
+
+stage.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+/* ------------------------------------------------------------------ *
+ * Controls
+ * ------------------------------------------------------------------ */
+var $ = function (id) { return document.getElementById(id); };
+
+function toast(msg) {
+    var el = $('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.classList.remove('show'); }, 1600);
+}
+
+// Sliders map 0..1000 onto their real ranges.
+var D_LO = 0.08, D_HI = 4.0;
+function densityFromSlider(v) { return D_LO * Math.pow(D_HI / D_LO, v / 1000); }
+function densityToSlider(d) {
+    return Math.round(1000 * Math.log(d / D_LO) / Math.log(D_HI / D_LO));
+}
+function itersFromSlider(v) { return Math.round(50 * Math.pow(20000 / 50, v / 1000)); }
+function itersToSlider(n) { return Math.round(1000 * Math.log(n / 50) / Math.log(20000 / 50)); }
+
+(function buildSelects() {
+    var bm = $('bookmark');
+    BOOKMARKS.forEach(function (b, i) {
+        var o = document.createElement('option');
+        o.value = i;
+        o.textContent = b.name;
+        bm.appendChild(o);
+    });
+    var pal = $('palette');
+    PALETTES.forEach(function (p, i) {
+        var o = document.createElement('option');
+        o.value = i;
+        o.textContent = p.name;
+        pal.appendChild(o);
+    });
+})();
+
+$('bookmark').addEventListener('change', function (e) {
+    var b = BOOKMARKS[+e.target.value];
+    if (!b) return;
+    if (view.mode === 'j') exitJulia(true);
+    view.cx = b.cx; view.cy = b.cy; view.span = clampSpan(b.span);
+    afterViewChange();
+    scheduleRender(0);
+    e.target.blur();
+});
+
+$('palette').addEventListener('change', function (e) {
+    setPalette(+e.target.value);
+    e.target.blur();
+});
+
+function setPalette(i) {
+    opts.palette = ((i % PALETTES.length) + PALETTES.length) % PALETTES.length;
+    lut = buildLut(PALETTES[opts.palette]);
+    $('palette').value = opts.palette;
+    document.documentElement.style.background = PALETTES[opts.palette].interior;
+    recolor();
+    writeHash();
+}
+
+$('density').addEventListener('input', function (e) {
+    opts.density = densityFromSlider(+e.target.value);
+    updateHud();
+    recolor();
+    writeHash();
+});
+
+$('cycle').addEventListener('input', function (e) {
+    opts.cycle = +e.target.value / 1000;
+    updateHud();
+    recolor();
+    writeHash();
+});
+
+$('iters').addEventListener('input', function (e) {
+    opts.autoIter = false;
+    $('auto-iters').checked = false;
+    $('iters').disabled = false;
+    opts.maxIter = itersFromSlider(+e.target.value);
+    updateHud();
+    scheduleRender(220);
+});
+
+$('auto-iters').addEventListener('change', function (e) {
+    opts.autoIter = e.target.checked;
+    $('iters').disabled = opts.autoIter;
+    if (opts.autoIter) opts.maxIter = autoIterations(view.span);
+    $('iters').value = itersToSlider(opts.maxIter);
+    updateHud();
+    scheduleRender(0);
+});
+
+$('quality').addEventListener('change', function (e) {
+    opts.quality = +e.target.value;
+    resize();
+    sizeJulia();
+    drawJulia();
+    updateHud();
+    startRender();
+    writeHash();
+    e.target.blur();
+});
+
+$('opt-julia').addEventListener('change', function (e) {
+    opts.julia = e.target.checked;
+    $('julia').classList.toggle('hidden', !opts.julia);
+    if (opts.julia) drawJulia();
+});
+
+$('opt-orbit').addEventListener('change', function (e) {
+    opts.orbit = e.target.checked;
+    if (!opts.orbit) octx.clearRect(0, 0, W, H);
+});
+
+$('btn-freeze').addEventListener('click', function () {
+    juliaFrozen = !juliaFrozen;
+    $('btn-freeze').classList.toggle('on', juliaFrozen);
+    $('btn-freeze').textContent = juliaFrozen ? 'Follow' : 'Freeze';
+    drawJulia();
+});
+
+$('btn-enter').addEventListener('click', function () {
+    if (view.mode === 'j') exitJulia(false);
+    else enterJulia(juliaC.re, juliaC.im);
+});
+
+function enterJulia(cr, ci) {
+    savedMandel = { cx: view.cx, cy: view.cy, span: view.span };
+    view.mode = 'j';
+    view.jcr = cr; view.jci = ci;
+    view.cx = 0; view.cy = 0; view.span = 3.2;
+    juliaFrozen = true;
+    $('btn-freeze').classList.add('on');
+    $('btn-freeze').textContent = 'Follow';
+    $('btn-enter').textContent = 'Back';
+    $('btn-enter').classList.add('on');
+    finalBuf = null;
+    snapView = null;
+    updateHud();
+    startRender();
+}
+
+function exitJulia(silent) {
+    view.mode = 'm';
+    if (savedMandel) {
+        view.cx = savedMandel.cx; view.cy = savedMandel.cy; view.span = savedMandel.span;
+    } else {
+        view.cx = HOME.cx; view.cy = HOME.cy; view.span = HOME.span;
+    }
+    $('btn-enter').textContent = 'Open';
+    $('btn-enter').classList.remove('on');
+    finalBuf = null;
+    snapView = null;
+    updateHud();
+    if (!silent) startRender();
+}
+
+$('btn-reset').addEventListener('click', function () {
+    if (view.mode === 'j') exitJulia(true);
+    view.cx = HOME.cx; view.cy = HOME.cy; view.span = HOME.span;
+    $('bookmark').value = '0';
+    finalBuf = null;
+    snapView = null;
+    updateHud();
+    startRender();
+});
+
+$('btn-png').addEventListener('click', function () {
+    var name = 'mandelbrot_' + view.cx.toFixed(12) + '_' + view.cy.toFixed(12) +
+               '_' + view.span.toExponential(3) + '.png';
+    var a = document.createElement('a');
+    a.download = name.replace(/[^\w.\-+]/g, '_');
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    toast('PNG saved');
+});
+
+$('btn-link').addEventListener('click', function () {
+    writeHash();
+    setTimeout(function () {
+        var url = location.href;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(function () { toast('link copied'); },
+                                                    function () { toast(url); });
+        } else {
+            toast('link is in the address bar');
+        }
+    }, 320);
+});
+
+$('btn-help').addEventListener('click', function () { $('help').classList.add('show'); });
+$('btn-close-help').addEventListener('click', function () { $('help').classList.remove('show'); });
+$('help').addEventListener('click', function (e) { if (e.target === $('help')) $('help').classList.remove('show'); });
+
+$('panel-head').addEventListener('click', function () {
+    var p = $('panel');
+    p.classList.toggle('collapsed');
+    $('chev').textContent = p.classList.contains('collapsed') ? '[ + ]' : '[ – ]';
+});
+
+/* ------------------------------------------------------------------ *
+ * Keyboard
+ * ------------------------------------------------------------------ */
+window.addEventListener('keydown', function (e) {
+    // Only text-entry fields, selects and sliders swallow keys; a focused
+    // checkbox must not silently kill every shortcut.
+    var el = e.target;
+    var tag = (el.tagName || '').toLowerCase();
+    if (tag === 'textarea' || tag === 'select') return;
+    if (tag === 'input' && el.type !== 'checkbox') return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    var step = e.shiftKey ? 0.35 : 0.12;
+    var handled = true;
+
+    switch (e.key) {
+        case '+': case '=': zoomCenter(1 / 1.6); break;
+        case '-': case '_': zoomCenter(1.6); break;
+        case 'ArrowLeft': view.cx -= view.span * step; afterViewChange(); break;
+        case 'ArrowRight': view.cx += view.span * step; afterViewChange(); break;
+        case 'ArrowUp': view.cy += spanY() * step; afterViewChange(); break;
+        case 'ArrowDown': view.cy -= spanY() * step; afterViewChange(); break;
+        case '[':
+            opts.autoIter = false; $('auto-iters').checked = false; $('iters').disabled = false;
+            opts.maxIter = Math.max(50, Math.round(currentIterations() / 2));
+            $('iters').value = itersToSlider(opts.maxIter);
+            updateHud(); startRender();
+            break;
+        case ']':
+            opts.autoIter = false; $('auto-iters').checked = false; $('iters').disabled = false;
+            opts.maxIter = Math.min(200000, Math.round(currentIterations() * 2));
+            $('iters').value = itersToSlider(Math.min(20000, opts.maxIter));
+            updateHud(); startRender();
+            break;
+        case 'p': case 'P': setPalette(opts.palette + 1); toast(PALETTES[opts.palette].name); break;
+        case 'j': case 'J': $('opt-julia').checked = !opts.julia; $('opt-julia').dispatchEvent(new Event('change')); break;
+        case 'o': case 'O': $('opt-orbit').checked = !opts.orbit; $('opt-orbit').dispatchEvent(new Event('change')); break;
+        case 'r': case 'R': $('btn-reset').click(); break;
+        case 's': case 'S': $('btn-png').click(); break;
+        case 'c': case 'C': $('btn-link').click(); break;
+        case 'f': case 'F':
+            if (document.fullscreenElement) document.exitFullscreen();
+            else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+            break;
+        case 'h': case 'H': case '?': $('help').classList.toggle('show'); break;
+        case 'Escape': $('help').classList.remove('show'); break;
+        default: handled = false;
+    }
+    if (handled) e.preventDefault();
+});
+
+/* ------------------------------------------------------------------ *
+ * Boot
+ * ------------------------------------------------------------------ */
+var resizeTimer = null;
+window.addEventListener('resize', function () {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+        resizeTimer = null;
+        resize();
+        sizeJulia();
+        drawJulia();
+        updateHud();
+        startRender();
+    }, 160);
+});
+
+pool.onDegrade = function () {
+    toast('workers unavailable — single thread');
+    startRender();
+};
+
+function syncControls() {
+    $('palette').value = opts.palette;
+    $('density').value = densityToSlider(opts.density);
+    $('cycle').value = Math.round(opts.cycle * 1000);
+    $('quality').value = opts.quality;
+    $('auto-iters').checked = opts.autoIter;
+    $('iters').disabled = opts.autoIter;
+    $('iters').value = itersToSlider(Math.min(20000, Math.max(50, opts.autoIter ? autoIterations(view.span) : opts.maxIter)));
+    $('opt-julia').checked = opts.julia;
+    $('opt-orbit').checked = opts.orbit;
+    $('julia').classList.toggle('hidden', !opts.julia);
+    if (view.mode === 'j') {
+        $('btn-enter').textContent = 'Back';
+        $('btn-enter').classList.add('on');
+    }
+    if (juliaFrozen) {
+        $('btn-freeze').classList.add('on');
+        $('btn-freeze').textContent = 'Follow';
+    }
+}
+
+if (window.innerWidth <= 720) {
+    $('panel').classList.add('collapsed');
+    $('chev').textContent = '[ + ]';
+}
+
+readHash();
+resize();
+view.span = clampSpan(view.span);
+lut = buildLut(PALETTES[opts.palette]);
+document.documentElement.style.background = PALETTES[opts.palette].interior;
+syncControls();
+sizeJulia();
+if (view.mode === 'm') juliaC = { re: view.jcr, im: view.jci };
+drawJulia();
+updateHud();
+startRender();
+
+window.addEventListener('hashchange', function () {
+    if (readHash()) {
+        view.span = clampSpan(view.span);
+        syncControls();
+        lut = buildLut(PALETTES[opts.palette]);
+        finalBuf = null;
+        snapView = null;
+        updateHud();
+        startRender();
+    }
+});
+
+})();
+</script>
+</body>
+</html>

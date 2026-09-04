@@ -132,6 +132,13 @@
             <a href="game_of_life.html" style="color: #00ffff; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.3s ease;" onmouseover="this.style.color='#ff00ff'; this.style.borderBottom='1px solid #ff00ff';" onmouseout="this.style.color='#00ffff'; this.style.borderBottom='1px solid transparent';">interactive game of life</a>
         </div>
 
+        <h3>Mandelbrot Explorer</h3>
+        <canvas id="miniMandel" width="300" height="200" style="background: #000; border: 1px solid #333; display: inline-block;"></canvas>
+        <div style="margin-top: 10px; font-size: 0.9em; margin-bottom: 40px;">
+            <span style="color: #888;">deep zoom into the complex plane</span><br>
+            <a href="mandelbrot.html" style="color: #00ffff; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.3s ease;" onmouseover="this.style.color='#ff00ff'; this.style.borderBottom='1px solid #ff00ff';" onmouseout="this.style.color='#00ffff'; this.style.borderBottom='1px solid transparent';">interactive mandelbrot explorer</a>
+        </div>
+
         <h3>Static HTML Tic Tac Toe</h3>
         <ul class="problem-list">
             <li><a href="tictactoe.html">Tic Tac Toe (Persisted State)</a></li>
@@ -292,6 +299,61 @@ If no response is available to provide to the user, the model should use a defau
             }
 
             setInterval(nextGen, 150);
+        })();
+
+        (function () {
+            const canvas = document.getElementById('miniMandel');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width, H = canvas.height;
+            const span = 3.2, centerX = -0.6, centerY = 0, ps = span / W;
+            const maxIter = 320, INV_LN2 = 1 / Math.LN2;
+
+            // Same neon ramp as the explorer page, cycled through log(escape).
+            const stops = [
+                [0.00, 4, 6, 15], [0.14, 0, 255, 255], [0.30, 11, 47, 122],
+                [0.48, 255, 0, 255], [0.66, 255, 255, 102], [0.84, 92, 0, 156],
+                [1.00, 4, 6, 15]
+            ];
+            const lut = new Uint8Array(256 * 3);
+            for (let i = 0, si = 0; i < 256; i++) {
+                const t = i / 256;
+                while (si < stops.length - 2 && t > stops[si + 1][0]) si++;
+                const a = stops[si], b = stops[si + 1];
+                const f = (t - a[0]) / (b[0] - a[0]);
+                for (let k = 0; k < 3; k++) lut[i * 3 + k] = a[k + 1] + (b[k + 1] - a[k + 1]) * f;
+            }
+
+            const img = ctx.createImageData(W, H);
+            const data = img.data;
+            let o = 0;
+            for (let py = 0; py < H; py++) {
+                const ci = centerY + (H / 2 - py) * ps;
+                for (let px = 0; px < W; px++) {
+                    const cr = centerX + (px - W / 2) * ps;
+                    let zx = 0, zy = 0, zx2 = 0, zy2 = 0, n = 0;
+                    while (n < maxIter && zx2 + zy2 <= 65536) {
+                        zy = 2 * zx * zy + ci;
+                        zx = zx2 - zy2 + cr;
+                        zx2 = zx * zx;
+                        zy2 = zy * zy;
+                        n++;
+                    }
+                    if (n >= maxIter) {
+                        data[o] = 4; data[o + 1] = 5; data[o + 2] = 11;
+                    } else {
+                        const v = Math.max(0, n + 1 - Math.log(Math.log(zx2 + zy2) * 0.5 * INV_LN2) * INV_LN2);
+                        const t = Math.log(1 + v) * 0.9;
+                        let idx = ((t - Math.floor(t)) * 256) | 0;
+                        if (idx > 255) idx = 255;
+                        idx *= 3;
+                        data[o] = lut[idx]; data[o + 1] = lut[idx + 1]; data[o + 2] = lut[idx + 2];
+                    }
+                    data[o + 3] = 255;
+                    o += 4;
+                }
+            }
+            ctx.putImageData(img, 0, 0);
         })();
     </script>
 </body>
