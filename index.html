@@ -172,6 +172,14 @@
             <ul class="recent-work-list">
                 <li class="recent-work-item">
                     <div class="recent-work-meta">
+                        <span>2026-09-10</span>
+                        <a href="https://github.com/ryantuck/demigods/commit/52e4156">52e4156</a>
+                    </div>
+                    <p>Added a Julia set explorer that sweeps itself along the boundary of the Mandelbrot set.</p>
+                    <a href="julia.html">Watch the fractal change</a>
+                </li>
+                <li class="recent-work-item">
+                    <div class="recent-work-meta">
                         <span>2026-09-04</span>
                         <a href="https://github.com/ryantuck/demigods/commit/d81ed8f">d81ed8f</a>
                     </div>
@@ -209,6 +217,13 @@
         <div style="margin-top: 10px; font-size: 0.9em; margin-bottom: 40px;">
             <span style="color: #888;">deep zoom into the complex plane</span><br>
             <a href="mandelbrot.html" style="color: #00ffff; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.3s ease;" onmouseover="this.style.color='#ff00ff'; this.style.borderBottom='1px solid #ff00ff';" onmouseout="this.style.color='#00ffff'; this.style.borderBottom='1px solid transparent';">interactive mandelbrot explorer</a>
+        </div>
+
+        <h3>Julia Set Explorer</h3>
+        <canvas id="miniJulia" width="300" height="200" style="background: #000; border: 1px solid #333; display: inline-block;"></canvas>
+        <div style="margin-top: 10px; font-size: 0.9em; margin-bottom: 40px;">
+            <span style="color: #888;">a different fractal for every point of the mandelbrot boundary</span><br>
+            <a href="julia.html" style="color: #00ffff; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.3s ease;" onmouseover="this.style.color='#ff00ff'; this.style.borderBottom='1px solid #ff00ff';" onmouseout="this.style.color='#00ffff'; this.style.borderBottom='1px solid transparent';">interactive julia set explorer</a>
         </div>
 
         <h3>Static HTML Tic Tac Toe</h3>
@@ -426,6 +441,123 @@ If no response is available to provide to the user, the model should use a defau
                 }
             }
             ctx.putImageData(img, 0, 0);
+        })();
+
+        (function () {
+            const canvas = document.getElementById('miniJulia');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            // Render at quarter resolution and let the browser upscale. The
+            // sweep is the point here, not the pixels, and a small buffer keeps
+            // a frame to a couple of milliseconds on the main thread.
+            const RW = 150, RH = 100;
+            const buf = document.createElement('canvas');
+            buf.width = RW; buf.height = RH;
+            const bctx = buf.getContext('2d');
+            const img = bctx.createImageData(RW, RH);
+            const data = img.data;
+
+            const stops = [
+                [0.00, 4, 6, 15], [0.14, 0, 255, 255], [0.30, 11, 47, 122],
+                [0.48, 255, 0, 255], [0.66, 255, 255, 102], [0.84, 92, 0, 156],
+                [1.00, 4, 6, 15]
+            ];
+            const lut = new Uint8Array(256 * 3);
+            for (let i = 0, si = 0; i < 256; i++) {
+                const t = i / 256;
+                while (si < stops.length - 2 && t > stops[si + 1][0]) si++;
+                const a = stops[si], b = stops[si + 1];
+                const f = (t - a[0]) / (b[0] - a[0]);
+                for (let k = 0; k < 3; k++) lut[i * 3 + k] = a[k + 1] + (b[k + 1] - a[k + 1]) * f;
+            }
+
+            const maxIter = 110, INV_LN2 = 1 / Math.LN2, ps = 3.0 / RW;
+            const DENSITY = 0.035, FADE = 14;
+
+            // The same walk the explorer makes: around the boundary of the main
+            // cardioid, nudged a little inside so the set stays connected.
+            function paramAt(t) {
+                const th = t * 2 * Math.PI / 96;
+                const x = 0.5 * Math.cos(th) - 0.25 * Math.cos(2 * th);
+                const y = 0.5 * Math.sin(th) - 0.25 * Math.sin(2 * th);
+                const nx = x + 0.1, m = Math.sqrt(nx * nx + y * y) || 1;
+                const d = 0.024 * (0.55 * Math.sin(0.1130 * t)
+                                 + 0.30 * Math.sin(0.0731 * t + 2.1)
+                                 + 0.15 * Math.sin(0.0417 * t + 4.3) - 0.25);
+                return [x + nx / m * d, y + y / m * d];
+            }
+
+            function render(cr, ci) {
+                let o = 0;
+                for (let py = 0; py < RH; py++) {
+                    const zy0 = (RH / 2 - py) * ps;
+                    for (let px = 0; px < RW; px++) {
+                        let zx = (px - RW / 2) * ps, zy = zy0;
+                        let zx2 = zx * zx, zy2 = zy * zy, n = 0, trap = 1e9;
+                        while (n < maxIter && zx2 + zy2 <= 262144) {
+                            zy = 2 * zx * zy + ci;
+                            zx = zx2 - zy2 + cr;
+                            zx2 = zx * zx; zy2 = zy * zy;
+                            if (zx2 + zy2 < trap) trap = zx2 + zy2;
+                            n++;
+                        }
+                        if (n >= maxIter) {
+                            const g = 1 - Math.exp(-2.6 * Math.sqrt(trap));
+                            const w = 0.34 * g * g;
+                            let k = ((0.5 - g * 0.4) % 1 + 1) % 1;
+                            k = (k * 256 | 0) * 3;
+                            data[o] = 4 + lut[k] * w;
+                            data[o + 1] = 6 + lut[k + 1] * w;
+                            data[o + 2] = 15 + lut[k + 2] * w;
+                        } else {
+                            const sn = Math.max(0, n + 1 - Math.log(0.5 * Math.log(zx2 + zy2)) * INV_LN2);
+                            const t = sn * DENSITY;
+                            let k = ((t - Math.floor(t)) * 256) | 0;
+                            if (k > 255) k = 255;
+                            k *= 3;
+                            // Same falloff as the explorer: the widest bands are
+                            // the ones that escape soonest, so they stay dark
+                            // instead of flooding the frame.
+                            const e = sn >= FADE ? 1 : (sn / FADE) * (sn / FADE) * (3 - 2 * sn / FADE);
+                            data[o] = 4 + (lut[k] - 4) * e;
+                            data[o + 1] = 6 + (lut[k + 1] - 6) * e;
+                            data[o + 2] = 15 + (lut[k + 2] - 15) * e;
+                        }
+                        data[o + 3] = 255;
+                        o += 4;
+                    }
+                }
+                bctx.putImageData(img, 0, 0);
+                ctx.drawImage(buf, 0, 0, canvas.width, canvas.height);
+            }
+
+            const reduced = window.matchMedia
+                && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reduced) {
+                render(-0.122561, 0.744862);
+                return;
+            }
+
+            // Only spend cycles while the preview is actually on screen.
+            let onScreen = true;
+            if ('IntersectionObserver' in window) {
+                onScreen = false;
+                new IntersectionObserver(function (entries) {
+                    onScreen = entries[0].isIntersecting;
+                }).observe(canvas);
+            }
+
+            let start = null, last = -1e9;
+            requestAnimationFrame(function loop(now) {
+                requestAnimationFrame(loop);
+                if (!onScreen || document.hidden) return;
+                if (start === null) start = now;
+                if (now - last < 100) return;   // ~10fps is plenty for a teaser
+                last = now;
+                const c = paramAt((now - start) / 1000);
+                render(c[0], c[1]);
+            });
         })();
     </script>
 </body>
