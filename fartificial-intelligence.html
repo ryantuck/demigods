@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fartificial Intelligence</title>
+  <style>
+    :root {
+      --cream: #fffaf3;
+      --foam: #f1e4d1;
+      --tan: #d9b58f;
+      --cocoa: #8f5f34;
+      --truffle: #5c3820;
+      --espresso: #2d170d;
+      --shadow: rgba(45, 23, 13, 0.2);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--espresso);
+      background:
+        radial-gradient(circle at top, #fffefe 0%, rgba(255,255,255,0.92) 22%, transparent 23%),
+        linear-gradient(180deg, #fffefb 0%, #f6ebdc 22%, #d8b08a 66%, #8f5f34 100%);
+    }
+
+    .page {
+      width: min(1200px, calc(100% - 32px));
+      margin: 24px auto;
+      padding: 24px;
+      border-radius: 28px;
+      border: 1px solid rgba(92, 56, 32, 0.18);
+      background: rgba(255, 250, 243, 0.9);
+      box-shadow: 0 28px 80px var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--cocoa);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.6rem, 7vw, 5.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.08em;
+    }
+
+    .subtitle {
+      max-width: 62ch;
+      margin: 0;
+      color: rgba(45, 23, 13, 0.82);
+      font-size: clamp(1rem, 2vw, 1.15rem);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 430px) minmax(320px, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid rgba(92, 56, 32, 0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(241,228,209,0.94));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      letter-spacing: -0.03em;
+    }
+
+    .panel p {
+      margin: 0 0 16px;
+      color: rgba(45, 23, 13, 0.75);
+      line-height: 1.5;
+    }
+
+    .frequency-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .frequency-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(92, 56, 32, 0.12);
+      background: rgba(255,255,255,0.72);
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .frequency-pill:hover {
+      transform: translateY(-1px);
+      border-color: rgba(92, 56, 32, 0.32);
+    }
+
+    .frequency-pill input {
+      accent-color: var(--cocoa);
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      flex: none;
+    }
+
+    .frequency-pill strong,
+    .frequency-pill span {
+      display: block;
+    }
+
+    .frequency-pill strong {
+      font-size: 0.97rem;
+    }
+
+    .frequency-pill span {
+      color: rgba(45, 23, 13, 0.6);
+      font-size: 0.82rem;
+    }
+
+    .frequency-pill.active {
+      background: linear-gradient(180deg, rgba(143,95,52,0.18), rgba(217,181,143,0.35));
+      border-color: rgba(92, 56, 32, 0.34);
+    }
+
+    .controls,
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button,
+    .meter {
+      border-radius: 18px;
+      border: 0;
+      font: inherit;
+    }
+
+    button {
+      padding: 14px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--cream);
+      background: linear-gradient(180deg, var(--cocoa), var(--truffle));
+      box-shadow: 0 10px 18px rgba(92, 56, 32, 0.22);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(92, 56, 32, 0.28);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    button.secondary {
+      color: var(--truffle);
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(241,228,209,0.95));
+      border: 1px solid rgba(92, 56, 32, 0.16);
+      box-shadow: none;
+    }
+
+    .meter {
+      position: relative;
+      overflow: hidden;
+      min-height: 92px;
+      padding: 14px;
+      border: 1px solid rgba(92, 56, 32, 0.14);
+      background: rgba(255,255,255,0.62);
+    }
+
+    .meter-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 0.84rem;
+      color: rgba(45, 23, 13, 0.66);
+    }
+
+    .meter strong {
+      display: block;
+      font-size: 1.6rem;
+      letter-spacing: -0.05em;
+    }
+
+    .meter-fill {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 10px;
+      transform-origin: left center;
+      transform: scaleX(0.1);
+      background: linear-gradient(90deg, rgba(217,181,143,0.55), rgba(92,56,32,0.9));
+    }
+
+    .visual-panel {
+      display: grid;
+      gap: 18px;
+    }
+
+    .scope-shell {
+      position: relative;
+      min-height: 440px;
+      padding: 16px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #fffdf9 0%, #f3e6d6 100%);
+      border: 1px solid rgba(92, 56, 32, 0.14);
+      overflow: hidden;
+    }
+
+    #waveform {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,233,218,0.92)),
+        repeating-linear-gradient(90deg, rgba(143,95,52,0.06) 0, rgba(143,95,52,0.06) 1px, transparent 1px, transparent 48px),
+        repeating-linear-gradient(180deg, rgba(143,95,52,0.08) 0, rgba(143,95,52,0.08) 1px, transparent 1px, transparent 48px);
+    }
+
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.68);
+      border: 1px solid rgba(92, 56, 32, 0.14);
+    }
+
+    .status-bar strong {
+      display: block;
+      font-size: 0.92rem;
+    }
+
+    .status-bar span {
+      color: rgba(45, 23, 13, 0.7);
+      font-size: 0.84rem;
+    }
+
+    .recipe {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .recipe-chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(92, 56, 32, 0.1);
+      color: var(--truffle);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .scope-shell {
+        min-height: 320px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 18px, 1200px);
+        padding: 18px;
+        margin: 9px auto;
+      }
+
+      .controls,
+      .stats,
+      .frequency-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Brown noise laboratory</p>
+      <h1>Fartificial Intelligence</h1>
+      <p class="subtitle">Build a custom butt-tonal stack by toggling frequencies, then let the model emit varying-length synthesized toots while the waveform wiggles alongside.</p>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <h2>Frequency buffet</h2>
+        <p>Mix up to ten resonant bands. The generator blends the selected frequencies into each puff with pitch drift, filtered noise, and duration jitter.</p>
+        <div class="frequency-grid" id="frequencyGrid"></div>
+
+        <div class="controls">
+          <button id="playOne" type="button">Play one toot</button>
+          <button id="playLoop" type="button">Start cloud</button>
+          <button id="stopLoop" class="secondary" type="button" disabled>Stop</button>
+        </div>
+
+        <div class="stats">
+          <div class="meter">
+            <div class="meter-label"><span>Current toot</span><span id="durationLabel">0.00s</span></div>
+            <strong id="lengthLabel">Idle</strong>
+            <div class="meter-fill" id="durationFill"></div>
+          </div>
+          <div class="meter">
+            <div class="meter-label"><span>Pressure</span><span id="pressureLabel">0%</span></div>
+            <strong id="intensityLabel">Warm-up</strong>
+            <div class="meter-fill" id="pressureFill"></div>
+          </div>
+          <div class="meter">
+            <div class="meter-label"><span>Flavor</span><span id="flavorLabel">Classic</span></div>
+            <strong id="mixLabel">4 harmonics</strong>
+            <div class="meter-fill" id="mixFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="visual-panel">
+        <div class="scope-shell">
+          <canvas id="waveform" width="960" height="520" aria-label="Live waveform"></canvas>
+        </div>
+        <div class="status-bar">
+          <div>
+            <strong id="statusText">Standing by for a tasteful trumpet.</strong>
+            <span>Audio starts after a button press because browsers insist on manners.</span>
+          </div>
+          <div class="recipe" id="recipe"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const presets = [
+      { frequency: 38, label: 'Sub-rumble' },
+      { frequency: 52, label: 'Cheek flap' },
+      { frequency: 68, label: 'Warm buzz' },
+      { frequency: 83, label: 'Pipe wobble' },
+      { frequency: 97, label: 'Bass croak' },
+      { frequency: 121, label: 'Tubey honk' },
+      { frequency: 146, label: 'Bark edge' },
+      { frequency: 172, label: 'Nasal fizz' },
+      { frequency: 208, label: 'Squeak line' },
+      { frequency: 246, label: 'Whistle tail' }
+    ];
+
+    const defaultSelection = new Set([38, 68, 97, 146]);
+    const frequencyGrid = document.getElementById('frequencyGrid');
+    const recipe = document.getElementById('recipe');
+    const playOne = document.getElementById('playOne');
+    const playLoop = document.getElementById('playLoop');
+    const stopLoop = document.getElementById('stopLoop');
+    const statusText = document.getElementById('statusText');
+    const waveform = document.getElementById('waveform');
+    const waveCtx = waveform.getContext('2d');
+    const durationLabel = document.getElementById('durationLabel');
+    const lengthLabel = document.getElementById('lengthLabel');
+    const durationFill = document.getElementById('durationFill');
+    const pressureLabel = document.getElementById('pressureLabel');
+    const pressureFill = document.getElementById('pressureFill');
+    const intensityLabel = document.getElementById('intensityLabel');
+    const flavorLabel = document.getElementById('flavorLabel');
+    const mixLabel = document.getElementById('mixLabel');
+    const mixFill = document.getElementById('mixFill');
+
+    let audioContext;
+    let analyser;
+    let masterGain;
+    let loopTimeout;
+    let isLooping = false;
+    let activeSources = new Set();
+
+    const fftSize = 2048;
+    const scopeData = new Uint8Array(fftSize);
+
+    function selectedFrequencies() {
+      const checked = [...frequencyGrid.querySelectorAll('input:checked')].map(input => Number(input.value));
+      return checked.length ? checked : [68, 97, 146];
+    }
+
+    function renderRecipe() {
+      recipe.innerHTML = '';
+      selectedFrequencies().forEach(frequency => {
+        const chip = document.createElement('span');
+        chip.className = 'recipe-chip';
+        chip.textContent = `${frequency} Hz`;
+        recipe.append(chip);
+      });
+      mixLabel.textContent = `${selectedFrequencies().length} harmonics`;
+      mixFill.style.transform = `scaleX(${Math.min(1, selectedFrequencies().length / presets.length)})`;
+    }
+
+    function renderFrequencyControls() {
+      presets.forEach(({ frequency, label }) => {
+        const pill = document.createElement('label');
+        pill.className = 'frequency-pill';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = String(frequency);
+        input.checked = defaultSelection.has(frequency);
+        const text = document.createElement('div');
+        text.innerHTML = `<strong>${frequency} Hz</strong><span>${label}</span>`;
+        pill.append(input, text);
+        frequencyGrid.append(pill);
+        input.addEventListener('change', () => {
+          pill.classList.toggle('active', input.checked);
+          renderRecipe();
+        });
+        pill.classList.toggle('active', input.checked);
+      });
+      renderRecipe();
+    }
+
+    function ensureAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = fftSize;
+        analyser.smoothingTimeConstant = 0.78;
+        masterGain = audioContext.createGain();
+        masterGain.gain.value = 0.85;
+        masterGain.connect(analyser);
+        analyser.connect(audioContext.destination);
+      }
+      if (audioContext.state === 'suspended') {
+        return audioContext.resume();
+      }
+      return Promise.resolve();
+    }
+
+    function buildNoiseBuffer(duration) {
+      const length = Math.max(1, Math.floor(audioContext.sampleRate * duration));
+      const buffer = audioContext.createBuffer(1, length, audioContext.sampleRate);
+      const data = buffer.getChannelData(0);
+      let brown = 0;
+      for (let index = 0; index < length; index += 1) {
+        const white = Math.random() * 2 - 1;
+        brown = (brown + 0.02 * white) / 1.02;
+        data[index] = brown * 2.7;
+      }
+      return buffer;
+    }
+
+    function describeIntensity(intensity, duration) {
+      if (duration > 1.3 && intensity > 0.72) return 'Catastrophic';
+      if (duration > 1 && intensity > 0.58) return 'Majestic';
+      if (intensity > 0.52) return 'Breezy';
+      if (duration < 0.7) return 'Chirpy';
+      return 'Classic';
+    }
+
+    function describeFlavor(frequencies) {
+      const average = frequencies.reduce((sum, value) => sum + value, 0) / frequencies.length;
+      if (average < 75) return 'Thunderous';
+      if (average < 120) return 'Buttery';
+      if (average < 170) return 'Nutty';
+      return 'Peppery';
+    }
+
+    function releaseSource(node, cleanup) {
+      node.addEventListener('ended', () => {
+        activeSources.delete(node);
+        cleanup?.();
+      }, { once: true });
+      activeSources.add(node);
+    }
+
+    function playToot() {
+      if (!audioContext || !analyser || !masterGain) return;
+
+      const frequencies = selectedFrequencies();
+      const now = audioContext.currentTime;
+      const duration = 0.45 + Math.random() * 1.35;
+      const intensity = 0.38 + Math.random() * 0.52;
+      const pitchDrop = 0.82 - Math.random() * 0.16;
+      const masterEnvelope = audioContext.createGain();
+      masterEnvelope.gain.setValueAtTime(0.0001, now);
+      masterEnvelope.gain.exponentialRampToValueAtTime(0.62 * intensity, now + 0.06);
+      masterEnvelope.gain.exponentialRampToValueAtTime(0.18 * intensity, now + duration * 0.45);
+      masterEnvelope.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      masterEnvelope.connect(masterGain);
+
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(260 + intensity * 420, now);
+      filter.frequency.exponentialRampToValueAtTime(130 + intensity * 190, now + duration);
+      filter.Q.value = 0.75;
+      filter.connect(masterEnvelope);
+
+      const rumbleGain = audioContext.createGain();
+      rumbleGain.gain.value = 0.7;
+      rumbleGain.connect(filter);
+
+      frequencies.forEach((frequency, index) => {
+        const oscillator = audioContext.createOscillator();
+        const voiceGain = audioContext.createGain();
+        oscillator.type = index % 2 === 0 ? 'sawtooth' : 'triangle';
+        oscillator.frequency.setValueAtTime(frequency * (1 + Math.random() * 0.07), now);
+        oscillator.frequency.exponentialRampToValueAtTime(Math.max(24, frequency * pitchDrop), now + duration);
+        voiceGain.gain.setValueAtTime((0.17 + Math.random() * 0.05) / Math.sqrt(index + 1), now);
+        voiceGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        oscillator.connect(voiceGain);
+        voiceGain.connect(rumbleGain);
+        oscillator.start(now);
+        oscillator.stop(now + duration + 0.02);
+        releaseSource(oscillator);
+      });
+
+      const noise = audioContext.createBufferSource();
+      const noiseGain = audioContext.createGain();
+      const bandpass = audioContext.createBiquadFilter();
+      bandpass.type = 'bandpass';
+      bandpass.frequency.setValueAtTime(110 + Math.random() * 120, now);
+      bandpass.Q.value = 0.95;
+      noise.buffer = buildNoiseBuffer(duration + 0.08);
+      noise.playbackRate.value = 0.95 + Math.random() * 0.18;
+      noiseGain.gain.setValueAtTime(0.0001, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.16 + intensity * 0.2, now + 0.03);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      noise.connect(bandpass);
+      bandpass.connect(noiseGain);
+      noiseGain.connect(filter);
+      noise.start(now);
+      noise.stop(now + duration + 0.05);
+      releaseSource(noise, () => {
+        noise.disconnect();
+        bandpass.disconnect();
+        noiseGain.disconnect();
+        filter.disconnect();
+        rumbleGain.disconnect();
+        masterEnvelope.disconnect();
+      });
+
+      durationLabel.textContent = `${duration.toFixed(2)}s`;
+      lengthLabel.textContent = duration < 0.8 ? 'Quick pop' : duration < 1.25 ? 'Full-bodied' : 'Long haul';
+      durationFill.style.transform = `scaleX(${Math.min(1, duration / 1.8)})`;
+      pressureLabel.textContent = `${Math.round(intensity * 100)}%`;
+      pressureFill.style.transform = `scaleX(${intensity})`;
+      intensityLabel.textContent = describeIntensity(intensity, duration);
+      flavorLabel.textContent = describeFlavor(frequencies);
+      statusText.textContent = `Dispensing a ${describeFlavor(frequencies).toLowerCase()} ${describeIntensity(intensity, duration).toLowerCase()} toot with ${frequencies.length} active frequencies.`;
+    }
+
+    function clearLoop() {
+      if (loopTimeout) {
+        clearTimeout(loopTimeout);
+        loopTimeout = undefined;
+      }
+    }
+
+    function queueLoop() {
+      if (!isLooping) return;
+      playToot();
+      const wait = 280 + Math.random() * 1400;
+      loopTimeout = setTimeout(queueLoop, wait);
+    }
+
+    function stopEverything() {
+      clearLoop();
+      isLooping = false;
+      playLoop.disabled = false;
+      stopLoop.disabled = true;
+      activeSources.forEach(source => {
+        try { source.stop(); } catch (error) {}
+      });
+      activeSources.clear();
+      durationLabel.textContent = '0.00s';
+      lengthLabel.textContent = 'Idle';
+      durationFill.style.transform = 'scaleX(0.1)';
+      pressureLabel.textContent = '0%';
+      pressureFill.style.transform = 'scaleX(0.1)';
+      intensityLabel.textContent = 'Warm-up';
+      statusText.textContent = 'Standing by for a tasteful trumpet.';
+    }
+
+    async function handlePlayOne() {
+      await ensureAudio();
+      playToot();
+    }
+
+    async function handleLoop() {
+      await ensureAudio();
+      isLooping = true;
+      playLoop.disabled = true;
+      stopLoop.disabled = false;
+      statusText.textContent = 'Cloud formation underway.';
+      queueLoop();
+    }
+
+    function drawWaveform() {
+      const width = waveform.width;
+      const height = waveform.height;
+      waveCtx.clearRect(0, 0, width, height);
+
+      for (let row = 0; row <= 10; row += 1) {
+        const y = (row / 10) * height;
+        waveCtx.strokeStyle = row === 5 ? 'rgba(92,56,32,0.22)' : 'rgba(92,56,32,0.08)';
+        waveCtx.lineWidth = row === 5 ? 2 : 1;
+        waveCtx.beginPath();
+        waveCtx.moveTo(0, y);
+        waveCtx.lineTo(width, y);
+        waveCtx.stroke();
+      }
+
+      if (analyser) {
+        analyser.getByteTimeDomainData(scopeData);
+      } else {
+        for (let index = 0; index < scopeData.length; index += 1) {
+          scopeData[index] = 128;
+        }
+      }
+
+      const gradient = waveCtx.createLinearGradient(0, 0, width, 0);
+      gradient.addColorStop(0, '#d9b58f');
+      gradient.addColorStop(0.5, '#8f5f34');
+      gradient.addColorStop(1, '#2d170d');
+      waveCtx.lineWidth = 4;
+      waveCtx.strokeStyle = gradient;
+      waveCtx.lineCap = 'round';
+      waveCtx.beginPath();
+
+      const slice = width / scopeData.length;
+      for (let index = 0; index < scopeData.length; index += 1) {
+        const x = index * slice;
+        const y = (scopeData[index] / 255) * height;
+        if (index === 0) {
+          waveCtx.moveTo(x, y);
+        } else {
+          waveCtx.lineTo(x, y);
+        }
+      }
+      waveCtx.stroke();
+
+      requestAnimationFrame(drawWaveform);
+    }
+
+    playOne.addEventListener('click', handlePlayOne);
+    playLoop.addEventListener('click', handleLoop);
+    stopLoop.addEventListener('click', stopEverything);
+
+    renderFrequencyControls();
+    drawWaveform();
+  </script>
+</body>
+</html>
