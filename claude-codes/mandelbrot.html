@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mandelbrot Set</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #111;
+    color: #eee;
+    font-family: system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 12px 0 4px;
+  }
+  #info {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-bottom: 8px;
+  }
+  canvas {
+    border: 1px solid #333;
+    cursor: crosshair;
+    max-width: 95vw;
+  }
+  button {
+    margin-top: 8px;
+    background: #333;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 6px 14px;
+    cursor: pointer;
+  }
+  button:hover { background: #444; }
+</style>
+</head>
+<body>
+<h1>Mandelbrot Set</h1>
+<div id="info">Click to zoom in &middot; Shift+click to zoom out</div>
+<canvas id="canvas" width="800" height="600"></canvas>
+<button id="reset">Reset view</button>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width;
+const H = canvas.height;
+
+const DEFAULT_VIEW = { centerX: -0.5, centerY: 0, scale: 3.2 };
+let view = { ...DEFAULT_VIEW };
+const MAX_ITER = 300;
+
+// Precomputed color palette with smooth gradient
+const palette = [];
+for (let i = 0; i <= MAX_ITER; i++) {
+  const t = i / MAX_ITER;
+  palette.push([
+    Math.round(9 * (1 - t) * t * t * t * 255),
+    Math.round(15 * (1 - t) * (1 - t) * t * t * 255),
+    Math.round(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255),
+  ]);
+}
+
+function render() {
+  const img = ctx.createImageData(W, H);
+  const data = img.data;
+  const aspect = H / W;
+  const xMin = view.centerX - view.scale / 2;
+  const yMin = view.centerY - (view.scale * aspect) / 2;
+  const dx = view.scale / W;
+  const dy = (view.scale * aspect) / H;
+
+  for (let py = 0; py < H; py++) {
+    const cy = yMin + py * dy;
+    for (let px = 0; px < W; px++) {
+      const cx = xMin + px * dx;
+
+      // Iterate z = z^2 + c until escape or max iterations
+      let x = 0, y = 0, x2 = 0, y2 = 0, iter = 0;
+      while (x2 + y2 <= 4 && iter < MAX_ITER) {
+        y = 2 * x * y + cy;
+        x = x2 - y2 + cx;
+        x2 = x * x;
+        y2 = y * y;
+        iter++;
+      }
+
+      const idx = (py * W + px) * 4;
+      if (iter === MAX_ITER) {
+        data[idx] = data[idx + 1] = data[idx + 2] = 0;
+      } else {
+        // Smooth coloring to avoid visible banding
+        const log_zn = Math.log(x2 + y2) / 2;
+        const nu = Math.log(log_zn / Math.LN2) / Math.LN2;
+        const smooth = iter + 1 - nu;
+        const c = palette[Math.max(0, Math.min(MAX_ITER, Math.floor(smooth)))];
+        data[idx] = c[0];
+        data[idx + 1] = c[1];
+        data[idx + 2] = c[2];
+      }
+      data[idx + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const px = (e.clientX - rect.left) * (W / rect.width);
+  const py = (e.clientY - rect.top) * (H / rect.height);
+  const aspect = H / W;
+  view.centerX = view.centerX - view.scale / 2 + px * (view.scale / W);
+  view.centerY = view.centerY - (view.scale * aspect) / 2 + py * ((view.scale * aspect) / H);
+  view.scale *= e.shiftKey ? 2 : 0.5;
+  render();
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  view = { ...DEFAULT_VIEW };
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
