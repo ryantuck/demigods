@@ -1,0 +1,5 @@
+name = "erdos508"
+defaultTargets = ["Erdos508"]
+
+[[lean_lib]]
+name = "Erdos508"

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy Rotation: Dark Matter vs. Visible Matter Only</title>
+<style>
+  :root {
+    --bg: #0b0e17;
+    --panel: #121627;
+    --text: #d7dcf0;
+    --muted: #8a93b8;
+    --accent: #6ea8ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  header {
+    text-align: center;
+    padding: 1.2rem 1rem 0.4rem;
+  }
+  header h1 {
+    margin: 0 0 0.3rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+  header p {
+    margin: 0 auto;
+    max-width: 64rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+  .galaxies {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .galaxy-panel {
+    background: var(--panel);
+    border-radius: 10px;
+    padding: 0.7rem;
+  }
+  .galaxy-panel h2 {
+    margin: 0.1rem 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  .galaxy-panel h2 .sub {
+    display: block;
+    font-weight: 400;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+  }
+  canvas { display: block; border-radius: 6px; background: #06080f; }
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0 1rem 2rem;
+  }
+  .controls {
+    background: var(--panel);
+    border-radius: 10px;
+    padding: 1rem;
+    min-width: 16rem;
+    font-size: 0.9rem;
+  }
+  .controls h2 { margin: 0 0 0.7rem; font-size: 1rem; }
+  .control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+  .control-row label { color: var(--muted); }
+  input[type="range"] { width: 9rem; accent-color: var(--accent); }
+  button {
+    background: #1d2540;
+    color: var(--text);
+    border: 1px solid #2c3760;
+    border-radius: 6px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  button:hover { background: #27305280; border-color: var(--accent); }
+  .legend {
+    margin-top: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .swatch {
+    display: inline-block;
+    width: 1.6em;
+    height: 0.25em;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-right: 0.4em;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Disk Galaxy Rotation &mdash; With and Without Dark Matter</h1>
+  <p>
+    Both galaxies start identical: same stars, same spiral pattern, same visible mass.
+    The left galaxy sits inside a dark matter halo, so its rotation curve stays flat and
+    the outskirts keep pace. The right galaxy has only its visible matter; outer stars
+    orbit slower and slower (Keplerian falloff), the outskirts visibly lag, and the spiral
+    pattern shears apart differently. The chart below shows the rotation curves driving
+    each simulation &mdash; the flat observed curve is the classic evidence for dark matter.
+  </p>
+</header>
+
+<div class="galaxies">
+  <div class="galaxy-panel">
+    <h2>With dark matter halo
+      <span class="sub">flat rotation curve &mdash; what we actually observe</span></h2>
+    <canvas id="galaxyDM" width="460" height="460"></canvas>
+  </div>
+  <div class="galaxy-panel">
+    <h2>Visible matter only
+      <span class="sub">Keplerian falloff &mdash; what Newton predicts without dark matter</span></h2>
+    <canvas id="galaxyNoDM" width="460" height="460"></canvas>
+  </div>
+</div>
+
+<div class="bottom">
+  <div class="galaxy-panel">
+    <h2>Rotation curves <span class="sub">orbital speed vs. distance from galactic center</span></h2>
+    <canvas id="curvePlot" width="460" height="300"></canvas>
+    <div class="legend">
+      <div><span class="swatch" style="background:#6ea8ff"></span>Total with dark matter (flat)</div>
+      <div><span class="swatch" style="background:#ff8a5c"></span>Visible matter only (falls off)</div>
+      <div><span class="swatch" style="background:#7a64d8"></span>Dark matter halo contribution</div>
+    </div>
+  </div>
+  <div class="controls">
+    <h2>Controls</h2>
+    <div class="control-row">
+      <label for="speed">Simulation speed</label>
+      <input type="range" id="speed" min="0" max="3" step="0.05" value="1">
+    </div>
+    <div class="control-row">
+      <label for="halo">Halo strength</label>
+      <input type="range" id="halo" min="0" max="1.5" step="0.05" value="1">
+    </div>
+    <div class="control-row">
+      <button id="pauseBtn">Pause</button>
+      <button id="resetBtn">Reset stars</button>
+    </div>
+    <div class="legend">
+      Stars are colored by orbital speed (blue = slow, white/yellow = fast).
+      Halo strength scales the dark matter halo on the left galaxy and in the chart;
+      drag it to zero and the two galaxies match.
+    </div>
+  </div>
+</div>
+
+<script src="galaxy.js"></script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rolling Race: Ball vs Disc</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #0b0e14;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e6e6e6;
+  }
+  #hud {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: rgba(10, 14, 22, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 14px 16px;
+    width: 270px;
+    backdrop-filter: blur(6px);
+    user-select: none;
+  }
+  #hud h1 {
+    font-size: 15px;
+    margin: 0 0 10px;
+    letter-spacing: 0.4px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin: 4px 0;
+  }
+  .row .val { font-variant-numeric: tabular-nums; }
+  .ball-color { color: #ff7849; font-weight: 600; }
+  .disc-color { color: #4da3ff; font-weight: 600; }
+  #angle-row {
+    margin: 10px 0 6px;
+    font-size: 13px;
+  }
+  input[type="range"] { width: 100%; }
+  button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0b0e14;
+    background: #7ee787;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+  button:hover { background: #9ff0a6; }
+  #result {
+    margin-top: 10px;
+    font-size: 13px;
+    min-height: 34px;
+    color: #ffd866;
+  }
+  #physics-note {
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: #9aa4b2;
+    line-height: 1.45;
+  }
+  #hint {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #8b93a1;
+    background: rgba(10, 14, 22, 0.6);
+    padding: 4px 12px;
+    border-radius: 6px;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+<div id="hud">
+  <h1>&#127937; Rolling Race: Ball vs Disc</h1>
+  <div class="row"><span>Time</span><span class="val" id="time">0.00 s</span></div>
+  <div class="row"><span class="ball-color">Ball (sphere)</span><span class="val" id="ball-stats">0.00 m/s</span></div>
+  <div class="row"><span class="disc-color">Disc</span><span class="val" id="disc-stats">0.00 m/s</span></div>
+  <div id="angle-row">
+    Incline: <span id="angle-label">5.0&deg;</span>
+    <input type="range" id="angle" min="2" max="15" step="0.5" value="5">
+  </div>
+  <button id="restart">Restart race</button>
+  <div id="result"></div>
+  <div id="physics-note">
+    Rolling without slipping: a = g&middot;sin&theta; / (1 + I/mr&sup2;).<br>
+    Ball: I = &#8534;mr&sup2; &rarr; a = (5/7)g&middot;sin&theta;<br>
+    Disc: I = &frac12;mr&sup2; &rarr; a = (2/3)g&middot;sin&theta;<br>
+    The ball always wins &mdash; less of its energy goes into spinning.
+  </div>
+</div>
+<div id="hint">drag to orbit &middot; scroll to zoom</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ---------- constants ----------
+const G = 9.81;
+const RADIUS = 0.5;            // both bodies share the same radius (m)
+const RAMP_LENGTH = 16;        // along the slope (m)
+const RAMP_WIDTH = 5;
+const START_OFFSET = 1.2;      // from the top edge of the ramp
+const FINISH_OFFSET = 1.2;     // from the bottom edge
+const TRACK = RAMP_LENGTH - START_OFFSET - FINISH_OFFSET;
+
+let angleDeg = 5;
+
+// ---------- renderer / scene / camera ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x101624);
+scene.fog = new THREE.Fog(0x101624, 30, 70);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+camera.position.set(11, 6, 13);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0.5, 2);
+controls.enableDamping = true;
+controls.maxPolarAngle = Math.PI * 0.49;
+
+// ---------- lights ----------
+scene.add(new THREE.HemisphereLight(0xbfd4ff, 0x202830, 0.6));
+
+const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+sun.position.set(8, 14, 6);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -15;
+sun.shadow.camera.right = 15;
+sun.shadow.camera.top = 15;
+sun.shadow.camera.bottom = -15;
+scene.add(sun);
+
+// ---------- ground ----------
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(120, 120),
+  new THREE.MeshStandardMaterial({ color: 0x1a2230, roughness: 1 })
+);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -2.5;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// ---------- ramp group (tilting it tilts everything riding on it) ----------
+// Local +z runs down the slope once the group is rotated about x.
+const ramp = new THREE.Group();
+scene.add(ramp);
+
+const rampMesh = new THREE.Mesh(
+  new THREE.BoxGeometry(RAMP_WIDTH, 0.3, RAMP_LENGTH),
+  new THREE.MeshStandardMaterial({ color: 0x2e3a4e, roughness: 0.9 })
+);
+rampMesh.position.y = -0.15;
+rampMesh.receiveShadow = true;
+rampMesh.castShadow = true;
+ramp.add(rampMesh);
+
+// center divider + edge lines
+function laneStripe(x, color, width) {
+  const stripe = new THREE.Mesh(
+    new THREE.PlaneGeometry(width, RAMP_LENGTH),
+    new THREE.MeshStandardMaterial({ color, roughness: 0.8 })
+  );
+  stripe.rotation.x = -Math.PI / 2;
+  stripe.position.set(x, 0.002, 0);
+  stripe.receiveShadow = true;
+  ramp.add(stripe);
+}
+laneStripe(0, 0x4a5a72, 0.07);
+laneStripe(-RAMP_WIDTH / 2 + 0.1, 0x4a5a72, 0.07);
+laneStripe(RAMP_WIDTH / 2 - 0.1, 0x4a5a72, 0.07);
+
+// start and finish lines
+function crossLine(z, color) {
+  const line = new THREE.Mesh(
+    new THREE.PlaneGeometry(RAMP_WIDTH, 0.18),
+    new THREE.MeshStandardMaterial({ color, roughness: 0.7 })
+  );
+  line.rotation.x = -Math.PI / 2;
+  line.position.set(0, 0.003, z);
+  ramp.add(line);
+}
+const Z_START = -RAMP_LENGTH / 2 + START_OFFSET;
+const Z_FINISH = RAMP_LENGTH / 2 - FINISH_OFFSET;
+crossLine(Z_START, 0xdddddd);
+
+// checkered finish line
+{
+  const c = document.createElement('canvas');
+  c.width = 128; c.height = 16;
+  const ctx = c.getContext('2d');
+  for (let i = 0; i < 16; i++) {
+    for (let j = 0; j < 2; j++) {
+      ctx.fillStyle = (i + j) % 2 ? '#111' : '#eee';
+      ctx.fillRect(i * 8, j * 8, 8, 8);
+    }
+  }
+  const tex = new THREE.CanvasTexture(c);
+  const finish = new THREE.Mesh(
+    new THREE.PlaneGeometry(RAMP_WIDTH, 0.4),
+    new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7 })
+  );
+  finish.rotation.x = -Math.PI / 2;
+  finish.position.set(0, 0.004, Z_FINISH);
+  ramp.add(finish);
+}
+
+// ---------- textures so the spin is visible ----------
+function ballTexture() {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 256;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#ff7849';
+  ctx.fillRect(0, 0, 512, 256);
+  ctx.fillStyle = '#c23a10';
+  for (let i = 0; i < 8; i++) if (i % 2 === 0) ctx.fillRect(i * 64, 0, 64, 256);
+  ctx.fillStyle = '#ffd9c2';
+  ctx.fillRect(0, 118, 512, 20);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function discCapTexture() {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 256;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#4da3ff';
+  ctx.fillRect(0, 0, 256, 256);
+  ctx.translate(128, 128);
+  ctx.fillStyle = '#1c5fae';
+  for (let i = 0; i < 6; i++) {
+    ctx.rotate(Math.PI / 3);
+    ctx.fillRect(-8, 0, 16, 124);
+  }
+  ctx.beginPath();
+  ctx.arc(0, 0, 26, 0, Math.PI * 2);
+  ctx.fillStyle = '#dceaff';
+  ctx.fill();
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// ---------- the two racers ----------
+const ballMesh = new THREE.Mesh(
+  new THREE.SphereGeometry(RADIUS, 48, 32),
+  new THREE.MeshStandardMaterial({ map: ballTexture(), roughness: 0.45, metalness: 0.05 })
+);
+ballMesh.castShadow = true;
+ramp.add(ballMesh);
+
+const discThickness = 0.22;
+const discGeom = new THREE.CylinderGeometry(RADIUS, RADIUS, discThickness, 64);
+discGeom.rotateZ(Math.PI / 2); // axis along x, so the disc rolls like a coin on edge
+const discSide = new THREE.MeshStandardMaterial({ color: 0x2f7fd6, roughness: 0.45, metalness: 0.05 });
+const discCap = new THREE.MeshStandardMaterial({ map: discCapTexture(), roughness: 0.45, metalness: 0.05 });
+const discMesh = new THREE.Mesh(discGeom, [discSide, discCap, discCap]);
+discMesh.castShadow = true;
+ramp.add(discMesh);
+
+// a = factor * g * sin(theta), with factor = 1 / (1 + I/mr^2)
+const bodies = [
+  { name: 'Ball', mesh: ballMesh, factor: 5 / 7, laneX: -RAMP_WIDTH / 4, dist: 0, speed: 0, finishTime: null, statsEl: document.getElementById('ball-stats') },
+  { name: 'Disc', mesh: discMesh, factor: 2 / 3, laneX: RAMP_WIDTH / 4, dist: 0, speed: 0, finishTime: null, statsEl: document.getElementById('disc-stats') },
+];
+
+// ---------- simulation state ----------
+const timeEl = document.getElementById('time');
+const resultEl = document.getElementById('result');
+const angleInput = document.getElementById('angle');
+const angleLabel = document.getElementById('angle-label');
+
+let elapsed = 0;
+
+function applyAngle() {
+  ramp.rotation.x = THREE.MathUtils.degToRad(angleDeg);
+}
+
+function reset() {
+  elapsed = 0;
+  resultEl.textContent = '';
+  for (const b of bodies) {
+    b.dist = 0;
+    b.speed = 0;
+    b.finishTime = null;
+  }
+  applyAngle();
+}
+
+angleInput.addEventListener('input', () => {
+  angleDeg = parseFloat(angleInput.value);
+  angleLabel.textContent = angleDeg.toFixed(1) + '°';
+  reset();
+});
+document.getElementById('restart').addEventListener('click', reset);
+
+function announceIfDone() {
+  if (!bodies.every(b => b.finishTime !== null) || resultEl.textContent) return;
+  const [winner, loser] = [...bodies].sort((a, b) => a.finishTime - b.finishTime);
+  resultEl.innerHTML =
+    `&#127942; <b>${winner.name}</b> wins in ${winner.finishTime.toFixed(2)} s ` +
+    `(${loser.name}: ${loser.finishTime.toFixed(2)} s)`;
+}
+
+// ---------- animation loop ----------
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+
+  const allDone = bodies.every(b => b.finishTime !== null);
+  if (!allDone) elapsed += dt;
+
+  const sinT = Math.sin(THREE.MathUtils.degToRad(angleDeg));
+
+  for (const b of bodies) {
+    if (b.finishTime === null) {
+      const a = b.factor * G * sinT;
+      b.speed += a * dt;
+      b.dist += b.speed * dt;
+      if (b.dist >= TRACK) {
+        b.dist = TRACK;
+        b.finishTime = elapsed;
+        b.speed = Math.sqrt(2 * a * TRACK); // exact value at the line
+      }
+    }
+    b.mesh.position.set(b.laneX, RADIUS, Z_START + b.dist);
+    b.mesh.rotation.x = -b.dist / RADIUS; // rolling without slipping
+    b.statsEl.textContent = b.finishTime !== null
+      ? `done · ${b.finishTime.toFixed(2)} s`
+      : `${b.speed.toFixed(2)} m/s`;
+  }
+
+  announceIfDone();
+  timeEl.textContent = elapsed.toFixed(2) + ' s';
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+reset();
+animate();
+</script>
+</body>
+</html>
