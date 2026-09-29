@@ -40,7 +40,8 @@
         }
 
         h1 {
-            font-size: 5em;
+            /* The title is ~6em wide; 12vw keeps it inside the 80%-wide container on phones. */
+            font-size: min(5em, 12vw);
             color: #00ffff;
             text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 80px #00ffff;
             margin-bottom: 0;
