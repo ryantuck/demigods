@@ -51,6 +51,6 @@ Requires Lean 4 (the toolchain is pinned to `v4.21.0` in
 installed it is fetched automatically):
 
 ```sh
-cd claude-codes/erdos508
+cd erdos508
 lake build
 ```
