@@ -13,9 +13,9 @@
   --bg: #f2f3ef; --surface: #fbfbf9; --ink: #151815; --ink-2: #4a514a; --muted: #747c74; --line: #d6dad2;
   --sign: #0e6a44; --sign-ink: #ffffff; --accent: #0e6a44; --accent-wash: rgba(14,106,68,.10);
   --water: #cdd8dd; --land: #f6f6f2; --land-line: #c9cec6; --road: #1d221d; --halo: rgba(251,251,249,.88);
-  --gwb: #2a78d6; --tzb: #d65948; --mid: #d3d1c8;
-  --g1: #b7d3f6; --g2: #86b6ef; --g3: #3987e5; --g4: #1c5cab; --g5: #0d366b;
-  --t1: #f4c3ba; --t2: #ea9b8e; --t3: #d65948; --t4: #9e3528; --t5: #621c14;
+  --gwb: #2a78d6; --tzb: #d65948;
+  /* Map scale: neutral at a toss-up, darkening through the mid hue to a dark end as the win gets surer. */
+  --div-mid: #e4e2dc; --div-b-mid: #3987e5; --div-b-end: #0b2d5c; --div-r-mid: #d65948; --div-r-end: #561510;
   --font: "Overpass", "Highway Gothic", "Helvetica Neue", Arial, sans-serif;
   --mono: "Overpass Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
@@ -24,9 +24,8 @@
     --bg: #101210; --surface: #181b18; --ink: #edf0eb; --ink-2: #b7beb6; --muted: #868d85; --line: #2b302b;
     --sign: #0e6a44; --sign-ink: #ffffff; --accent: #4fbf8a; --accent-wash: rgba(79,191,138,.14);
     --water: #15232a; --land: #1d201d; --land-line: #353b35; --road: #f2f5f0; --halo: rgba(24,27,24,.85);
-    --gwb: #3987e5; --tzb: #d65948; --mid: #4a4a45;
-    --g1: #1c5cab; --g2: #2a78d6; --g3: #5598e7; --g4: #86b6ef; --g5: #b7d3f6;
-    --t1: #9e3528; --t2: #c74a3a; --t3: #dc7262; --t4: #ea9b8e; --t5: #f4c3ba;
+    --gwb: #3987e5; --tzb: #d65948;
+    --div-mid: #a9a79f; --div-b-mid: #3d7fd6; --div-b-end: #0b2d5c; --div-r-mid: #cf5443; --div-r-end: #561510;
     color-scheme: dark;
   }
 }
@@ -34,9 +33,8 @@
   --bg: #101210; --surface: #181b18; --ink: #edf0eb; --ink-2: #b7beb6; --muted: #868d85; --line: #2b302b;
   --sign: #0e6a44; --sign-ink: #ffffff; --accent: #4fbf8a; --accent-wash: rgba(79,191,138,.14);
   --water: #15232a; --land: #1d201d; --land-line: #353b35; --road: #f2f5f0; --halo: rgba(24,27,24,.85);
-  --gwb: #3987e5; --tzb: #d65948; --mid: #4a4a45;
-  --g1: #1c5cab; --g2: #2a78d6; --g3: #5598e7; --g4: #86b6ef; --g5: #b7d3f6;
-  --t1: #9e3528; --t2: #c74a3a; --t3: #dc7262; --t4: #ea9b8e; --t5: #f4c3ba;
+  --gwb: #3987e5; --tzb: #d65948;
+  --div-mid: #a9a79f; --div-b-mid: #3d7fd6; --div-b-end: #0b2d5c; --div-r-mid: #cf5443; --div-r-end: #561510;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -78,11 +76,12 @@ body { background: var(--bg); color: var(--ink); font-family: var(--font); font-
 /* Legend */
 .legend { display: grid; gap: 6px; }
 .legend-title { font-size: 13px; font-weight: 600; color: var(--ink-2); }
-.ramp { display: grid; grid-template-columns: repeat(11, 1fr); gap: 2px; }
-.ramp span { height: 14px; border-radius: 2px; }
-.ramp-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-2); gap: 8px; }
-.ramp-labels span:nth-child(2) { text-align: center; }
-.ramp-labels span:last-child { text-align: right; }
+.grad { height: 14px; border-radius: 3px; }
+.ticks { position: relative; height: 18px; font-size: 12px; color: var(--ink-2); }
+.ticks span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.ticks span:first-child { transform: none; }
+.ticks span:last-child { transform: translateX(-100%); }
+@media (max-width: 480px) { .ticks span.inner { display: none; } }
 .keyline { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-2); align-items: center; }
 .keyline svg { vertical-align: middle; margin-right: 6px; }
 
@@ -565,34 +564,73 @@ details.card summary { cursor: pointer; font-weight: 800; font-size: 16px; }
     if (view === 'odds') return pWin[i] - 0.5;
     return p90T[i] - p90G[i];
   }
-  const MIN_EDGES = [2, 5, 10, 20, 30];
-  const P_EDGES = [0.6, 0.7, 0.8, 0.9, 0.97];
-  function bin(i) {
-    if (view === 'odds') {
-      const p = pWin[i], q = 1 - p;
-      if (p >= 0.4 && p <= 0.6) return 0;
-      let k = 0; const x = p > 0.5 ? p : q; while (k < 5 && x >= P_EDGES[k]) k++;
-      return p > 0.5 ? k : -k;
-    }
-    const v = value(i), a = Math.abs(v);
-    if (a < MIN_EDGES[0]) return 0;
-    let k = 0; while (k < 5 && a >= MIN_EDGES[k]) k++;
-    return v > 0 ? k : -k;
+  // Strength in [-1, 1]: -1 is a sure TZB win, +1 a sure GWB win. Minute margins saturate at 30.
+  const MINUTES_FULL = 30;
+  function strength(i) {
+    if (view === 'odds') return (pWin[i] - 0.5) * 2;
+    return Math.max(-1, Math.min(1, value(i) / MINUTES_FULL));
   }
 
   // ---------- colors ----------
-  let COL = {};
+  // The scale is interpolated in OKLab: midpoint -> mid hue at half strength -> dark end at full strength.
+  const s2l = c => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  const l2s = c => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
+  function hexLab(h) {
+    const [r, g, b] = [1, 3, 5].map(i => s2l(parseInt(h.slice(i, i + 2), 16) / 255));
+    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b), m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b), q = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+    return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * q, 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * q, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * q];
+  }
+  function labRgb([L, a, b]) {
+    const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3, m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3, q = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+    return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * q, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * q, -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * q]
+      .map(c => Math.round(255 * l2s(Math.min(1, Math.max(0, c)))));
+  }
+  let COL = {}, LUT = [];
+  const LUT_N = 200;
   function readColors() {
     const cs = getComputedStyle(document.documentElement);
     const g = n => cs.getPropertyValue(n).trim();
-    COL = { mid: g('--mid'), land: g('--land'), landLine: g('--land-line'), ink: g('--ink'), ink2: g('--ink-2'), surface: g('--surface'), road: g('--road'), gwb: g('--gwb'), tzb: g('--tzb'), muted: g('--muted'), line: g('--line'),
-      G: [1, 2, 3, 4, 5].map(k => g('--g' + k)), T: [1, 2, 3, 4, 5].map(k => g('--t' + k)) };
+    COL = { land: g('--land'), landLine: g('--land-line'), ink: g('--ink'), ink2: g('--ink-2'), surface: g('--surface'), road: g('--road'), gwb: g('--gwb'), tzb: g('--tzb'), muted: g('--muted'), line: g('--line') };
+    const [mid, bMid, bEnd, rMid, rEnd] = ['--div-mid', '--div-b-mid', '--div-b-end', '--div-r-mid', '--div-r-end'].map(n => hexLab(g(n)));
+    LUT = [];
+    for (let k = 0; k <= LUT_N; k++) {
+      const v = k / LUT_N * 2 - 1, a = Math.abs(v), [half, end] = v >= 0 ? [bMid, bEnd] : [rMid, rEnd];
+      const [from, to, t] = a <= 0.5 ? [mid, half, a / 0.5] : [half, end, (a - 0.5) / 0.5];
+      LUT.push(labRgb(from.map((x, j) => x + (to[j] - x) * t)));
+    }
   }
-  const binColor = b => b === 0 ? COL.mid : b > 0 ? COL.G[b - 1] : COL.T[-b - 1];
+  const rgbAt = v => LUT[Math.round((Math.max(-1, Math.min(1, v)) + 1) / 2 * LUT_N)];
+  const cssAt = v => 'rgb(' + rgbAt(v).join(',') + ')';
 
   // ---------- canvas ----------
   const cv = $('heat'), ctx = cv.getContext('2d');
   function ringPath(c2, rings, s) { for (const r of rings) { r.forEach(([x, y], k) => k ? c2.lineTo(px(x) * s, py(y) * s) : c2.moveTo(px(x) * s, py(y) * s)); c2.closePath(); } }
+  // One pixel per grid cell; drawImage scales it up with smoothing, so colors blend from cell to cell.
+  const gridCv = document.createElement('canvas'); gridCv.width = COLS; gridCv.height = ROWS;
+  const gctx = gridCv.getContext('2d');
+  function paintGrid() {
+    const img = gctx.createImageData(COLS, ROWS), d = img.data, filled = new Uint8Array(ROWS * COLS);
+    for (let i = 0; i < NC; i++) {
+      const o = cells[i].r * COLS + cells[i].c, [r, g, b] = rgbAt(strength(i));
+      d[o * 4] = r; d[o * 4 + 1] = g; d[o * 4 + 2] = b; d[o * 4 + 3] = 255; filled[o] = 1;
+    }
+    // Grow two pixels past the coast so the smoothing never fades toward transparent inside the clip.
+    for (let pass = 0; pass < 2; pass++) {
+      const add = [];
+      for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+        const o = r * COLS + c; if (filled[o]) continue;
+        let n = 0, R = 0, G = 0, B = 0;
+        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+          const rr = r + dr, cc = c + dc;
+          if (rr < 0 || cc < 0 || rr >= ROWS || cc >= COLS || !filled[rr * COLS + cc]) continue;
+          const q = (rr * COLS + cc) * 4; n++; R += d[q]; G += d[q + 1]; B += d[q + 2];
+        }
+        if (n) add.push([o, R / n, G / n, B / n]);
+      }
+      for (const [o, R, G, B] of add) { d[o * 4] = R; d[o * 4 + 1] = G; d[o * 4 + 2] = B; d[o * 4 + 3] = 255; filled[o] = 1; }
+    }
+    gctx.putImageData(img, 0, 0);
+  }
   function drawCanvas() {
     const w = mapEl.clientWidth, h = mapEl.clientHeight, dpr = Math.min(window.devicePixelRatio || 1, 2);
     if (!w || !h) return;
@@ -604,14 +642,10 @@ details.card summary { cursor: pointer; font-weight: 800; font-size: 16px; }
     ctx.lineWidth = 0.8; ctx.strokeStyle = COL.landLine; ctx.stroke();
     ctx.save();
     ctx.beginPath(); ringPath(ctx, GEO.bronx, s); ringPath(ctx, GEO.westchester, s); ctx.clip('evenodd');
-    const groups = new Map();
-    for (let i = 0; i < NC; i++) { const b = bin(i); if (!groups.has(b)) groups.set(b, []); groups.get(b).push(i); }
+    paintGrid();
     const cw = DLON * KX * SC * s, ch = DLAT * SC * s;
-    for (const [b, list] of groups) {
-      ctx.beginPath();
-      for (const i of list) { const cl = cells[i]; ctx.rect(px(cl.lon) * s - cw / 2 - 0.3, py(cl.lat) * s - ch / 2 - 0.3, cw + 0.6, ch + 0.6); }
-      ctx.fillStyle = binColor(b); ctx.fill();
-    }
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(gridCv, 0, 0, COLS * cw, ROWS * ch);
     ctx.restore();
   }
 
@@ -633,7 +667,9 @@ details.card summary { cursor: pointer; font-weight: 800; font-size: 16px; }
   const gRoads = el('g', { fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, ov);
   const MAJOR = /I-95|I-87|I-287|I-684|Thruway|Cross Bronx|Deegan/;
   for (const [road, cls, mph, seq] of M.R) {
-    el('path', { d: lineD(seq.map(n => M.N[n])), stroke: 'var(--road)', 'stroke-opacity': cls === 'art' ? 0.35 : 0.55, 'stroke-width': MAJOR.test(road) ? 1.7 : 1.1, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': cls === 'art' ? '3 2.5' : '' }, gRoads);
+    const d = lineD(seq.map(n => M.N[n])), w = MAJOR.test(road) ? 1.7 : 1.1;
+    el('path', { d, stroke: 'var(--surface)', 'stroke-opacity': 0.45, 'stroke-width': w + 2, 'vector-effect': 'non-scaling-stroke' }, gRoads);
+    el('path', { d, stroke: 'var(--road)', 'stroke-opacity': cls === 'art' ? 0.45 : 0.65, 'stroke-width': w, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': cls === 'art' ? '3 2.5' : '' }, gRoads);
   }
   el('path', { d: ringD(GEO.bronx), fill: 'none', stroke: 'var(--ink-2)', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke', 'stroke-opacity': 0.7 }, ov);
   el('path', { d: ringD(GEO.westchester), fill: 'none', stroke: 'var(--ink-2)', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke', 'stroke-opacity': 0.7 }, ov);
@@ -723,18 +759,18 @@ details.card summary { cursor: pointer; font-weight: 800; font-size: 16px; }
   // ---------- legend ----------
   function drawLegend() {
     const L = $('legend');
-    const sw = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5].map(b => `<span style="background:${binColor(b)}"></span>`).join('');
+    const stops = Array.from({ length: 41 }, (_, k) => cssAt(k / 20 - 1)).join(',');
     let title, labels;
-    if (view === 'odds') { title = 'Chance the GWB gets there first'; labels = ['TZB 97%+ of trips', '40–60%', 'GWB 97%+ of trips']; }
-    else if (view === 'traffic') { title = 'Minutes saved by the faster bridge'; labels = ['TZB by 30+', 'within 2 min', 'GWB by 30+']; }
-    else { title = 'Minutes saved on the worst 1-in-10 trip'; labels = ['TZB by 30+', 'within 2 min', 'GWB by 30+']; }
+    if (view === 'odds') { title = 'Share of simulated trips each bridge wins'; labels = ['TZB 100%', 'TZB 75%', '50/50', 'GWB 75%', 'GWB 100%']; }
+    else if (view === 'traffic') { title = 'Minutes saved by the faster bridge'; labels = ['TZB by 30+', 'TZB by 15', 'tie', 'GWB by 15', 'GWB by 30+']; }
+    else { title = 'Minutes saved on the worst 1-in-10 trip'; labels = ['TZB by 30+', 'TZB by 15', 'tie', 'GWB by 15', 'GWB by 30+']; }
     const lineLabel = view === 'odds' ? 'Even odds' : 'Break-even';
     const showFree = !(view === 'traffic' && scen.dG === 0 && scen.dT === 0 && scen.c === 0);
-    L.innerHTML = `<div class="legend-title">${title}</div><div class="ramp" aria-hidden="true">${sw}</div>
-      <div class="ramp-labels"><span>${labels[0]}</span><span>${labels[1]}</span><span>${labels[2]}</span></div>
+    L.innerHTML = `<div class="legend-title">${title}</div><div class="grad" aria-hidden="true" style="background:linear-gradient(to right,${stops})"></div>
+      <div class="ticks">${labels.map((t, k) => `<span class="${k % 2 ? 'inner' : ''}" style="left:${k * 25}%">${t}</span>`).join('')}</div>
       <div class="keyline"><span><svg width="26" height="8"><line x1="1" y1="4" x2="25" y2="4" stroke="${COL.ink}" stroke-width="2.2" stroke-linecap="round"/></svg>${lineLabel}</span>
       ${showFree ? `<span><svg width="26" height="8"><line x1="1" y1="4" x2="25" y2="4" stroke="${COL.ink}" stroke-width="1.6" stroke-dasharray="1 4" stroke-linecap="round"/></svg>Break-even on empty roads</span>` : ''}
-      <span><svg width="26" height="8"><line x1="1" y1="4" x2="25" y2="4" stroke="${COL.road}" stroke-opacity=".55" stroke-width="1.6"/></svg>Highways in the model</span></div>`;
+      <span><svg width="26" height="8"><line x1="1" y1="4" x2="25" y2="4" stroke="${COL.surface}" stroke-opacity=".45" stroke-width="3.6" stroke-linecap="round"/><line x1="1" y1="4" x2="25" y2="4" stroke="${COL.road}" stroke-opacity=".65" stroke-width="1.6"/></svg>Highways in the model</span></div>`;
   }
 
   // ---------- share stat ----------
