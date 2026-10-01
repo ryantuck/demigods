@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GWB or Tappan Zee?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;800&family=Overpass+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a guide-sign header, then the map beside a control rail; stacks to one column under 900px. */
+:root {
+  --bg: #f2f3ef; --surface: #fbfbf9; --ink: #151815; --ink-2: #4a514a; --muted: #747c74; --line: #d6dad2;
+  --sign: #0e6a44; --sign-ink: #ffffff; --accent: #0e6a44; --accent-wash: rgba(14,106,68,.10);
+  --water: #cdd8dd; --land: #f6f6f2; --land-line: #c9cec6; --road: #1d221d; --halo: rgba(251,251,249,.88);
+  --gwb: #2a78d6; --tzb: #d65948; --mid: #d3d1c8;
+  --g1: #b7d3f6; --g2: #86b6ef; --g3: #3987e5; --g4: #1c5cab; --g5: #0d366b;
+  --t1: #f4c3ba; --t2: #ea9b8e; --t3: #d65948; --t4: #9e3528; --t5: #621c14;
+  --font: "Overpass", "Highway Gothic", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Overpass Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101210; --surface: #181b18; --ink: #edf0eb; --ink-2: #b7beb6; --muted: #868d85; --line: #2b302b;
+    --sign: #0e6a44; --sign-ink: #ffffff; --accent: #4fbf8a; --accent-wash: rgba(79,191,138,.14);
+    --water: #15232a; --land: #1d201d; --land-line: #353b35; --road: #f2f5f0; --halo: rgba(24,27,24,.85);
+    --gwb: #3987e5; --tzb: #d65948; --mid: #4a4a45;
+    --g1: #1c5cab; --g2: #2a78d6; --g3: #5598e7; --g4: #86b6ef; --g5: #b7d3f6;
+    --t1: #9e3528; --t2: #c74a3a; --t3: #dc7262; --t4: #ea9b8e; --t5: #f4c3ba;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101210; --surface: #181b18; --ink: #edf0eb; --ink-2: #b7beb6; --muted: #868d85; --line: #2b302b;
+  --sign: #0e6a44; --sign-ink: #ffffff; --accent: #4fbf8a; --accent-wash: rgba(79,191,138,.14);
+  --water: #15232a; --land: #1d201d; --land-line: #353b35; --road: #f2f5f0; --halo: rgba(24,27,24,.85);
+  --gwb: #3987e5; --tzb: #d65948; --mid: #4a4a45;
+  --g1: #1c5cab; --g2: #2a78d6; --g3: #5598e7; --g4: #86b6ef; --g5: #b7d3f6;
+  --t1: #9e3528; --t2: #c74a3a; --t3: #dc7262; --t4: #ea9b8e; --t5: #f4c3ba;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5; }
+.page { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 18px 48px; display: grid; gap: 20px; }
+.sig { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+/* Header styled as an overhead guide sign */
+.sign { background: var(--sign); color: var(--sign-ink); border-radius: 14px; padding: 6px; }
+.sign-inner { border: 2.5px solid var(--sign-ink); border-radius: 10px; padding: 14px 20px 16px; display: grid; gap: 4px; }
+.sign-top { font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; opacity: .92; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.shield { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 22px; padding: 0 6px; border-radius: 4px 4px 9px 9px; background: var(--sign-ink); color: var(--sign); font-size: 12px; font-weight: 800; letter-spacing: 0; }
+.sign h1 { margin: 0; font-weight: 800; font-size: clamp(30px, 5vw, 52px); line-height: 1.02; letter-spacing: -.01em; text-wrap: balance; }
+.sign-arrows { display: flex; gap: 22px; flex-wrap: wrap; font-weight: 600; font-size: 14px; opacity: .95; }
+.dek { margin: 0; max-width: 68ch; color: var(--ink-2); font-size: 16px; text-wrap: pretty; }
+
+.main { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: minmax(0, 1fr); } }
+
+/* Map */
+.mapcol { display: grid; gap: 10px; min-width: 0; }
+.map { position: relative; width: min(100%, calc(88vh * var(--map-ar, 0.684))); aspect-ratio: var(--map-ar, 0.684); margin-inline: auto; background: var(--water); border-radius: 10px; overflow: hidden; border: 1px solid var(--line); touch-action: manipulation; }
+.map canvas, .map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.labels { position: absolute; inset: 0; pointer-events: none; }
+.lbl { position: absolute; font-size: 11.5px; font-weight: 600; white-space: nowrap; color: var(--ink); line-height: 1;
+  text-shadow: 0 0 2px var(--halo), 0 0 3px var(--halo), 0 0 4px var(--halo); }
+.lbl.ctx { font-weight: 600; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); text-shadow: none; }
+.lbl.water { font-style: italic; font-weight: 400; font-size: 12px; letter-spacing: .06em; color: var(--muted); text-shadow: none; }
+.lbl.bridge { font-weight: 800; font-size: 12.5px; }
+.lbl.road { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--ink-2); }
+@media (max-width: 560px) { .lbl.minor, .lbl.road { display: none; } .lbl { font-size: 10.5px; } }
+.tip { position: absolute; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.35; box-shadow: 0 6px 18px rgba(0,0,0,.14); min-width: 170px; z-index: 3; }
+.tip b { font-weight: 800; }
+.tip .row { display: flex; justify-content: space-between; gap: 14px; font-family: var(--mono); font-size: 12px; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+
+/* Legend */
+.legend { display: grid; gap: 6px; }
+.legend-title { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.ramp { display: grid; grid-template-columns: repeat(11, 1fr); gap: 2px; }
+.ramp span { height: 14px; border-radius: 2px; }
+.ramp-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-2); gap: 8px; }
+.ramp-labels span:nth-child(2) { text-align: center; }
+.ramp-labels span:last-child { text-align: right; }
+.keyline { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-2); align-items: center; }
+.keyline svg { vertical-align: middle; margin-right: 6px; }
+
+/* Rail */
+.rail { display: grid; gap: 16px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 3px; }
+.tabs button { font: inherit; font-size: 14px; font-weight: 600; border: 0; background: transparent; color: var(--ink-2); padding: 8px 6px; border-radius: 7px; cursor: pointer; line-height: 1.2; }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12), inset 0 -2px 0 var(--accent); }
+.tabs button:focus-visible, .chips button:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.panel { display: grid; gap: 12px; }
+.panel p { margin: 0; color: var(--ink-2); font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.chips button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); }
+.slider { display: grid; gap: 4px; }
+.slider label { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; font-weight: 600; }
+.slider output { font-family: var(--mono); font-weight: 600; font-size: 13px; color: var(--ink); white-space: nowrap; }
+.slider small { color: var(--muted); font-size: 12px; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.stat { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.stat strong { font-size: 30px; font-weight: 800; line-height: 1; }
+.stat span { color: var(--ink-2); font-size: 14px; }
+.split { display: flex; gap: 16px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
+.split b { font-family: var(--mono); color: var(--ink); font-weight: 600; }
+.bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 2px; }
+.bar i { display: block; height: 100%; }
+
+.place-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.place-head h2 { margin: 0; font-size: 20px; font-weight: 800; }
+select { font: inherit; font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { text-align: right; padding: 5px 6px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+thead th { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+td.num { font-family: var(--mono); font-size: 13px; }
+.verdict { font-size: 14px; color: var(--ink); margin: 0; }
+.hist { position: relative; }
+.hist svg { width: 100%; height: auto; display: block; overflow: visible; }
+.hist .tip { min-width: 140px; }
+
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 20px; }
+.notes h3 { margin: 0 0 6px; font-size: 16px; font-weight: 800; }
+.notes p, .notes li { color: var(--ink-2); font-size: 14px; max-width: 68ch; }
+.notes ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.notes p { margin: 0 0 8px; }
+.notes a { color: var(--accent); }
+details.card summary { cursor: pointer; font-weight: 800; font-size: 16px; }
+.tablewrap { overflow-x: auto; }
+@media (prefers-reduced-motion: no-preference) { .tabs button, .chips button { transition: background .15s, box-shadow .15s; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="sig">[AI - Claude]: GWB or Tappan Zee?</div>
+
+  <header class="sign" aria-label="Title">
+    <div class="sign-inner">
+      <div class="sign-top"><span class="shield">95</span> NJ Turnpike · Exit 11 · Bronx &amp; Westchester</div>
+      <h1>GWB or Tappan Zee?</h1>
+      <div class="sign-arrows"><span>↗ George Washington Br · 31.5 mi</span><span>↑ Garden State Pkwy to Mario Cuomo Br · 55 mi</span></div>
+    </div>
+  </header>
+
+  <p class="dek">Every spot in the Bronx and Westchester, colored by which Hudson crossing gets there first from the split at exit 11. The Turnpike and GWB route is 23 miles shorter. The Garden State and Tappan Zee route is longer but steadier. Click anywhere on the map to see the trip-time spread for that spot.</p>
+
+  <div class="main">
+    <div class="mapcol">
+      <div class="map" id="map" aria-label="Map of the Bronx and Westchester colored by faster bridge">
+        <canvas id="heat"></canvas>
+        <svg id="ov" aria-hidden="true"></svg>
+        <div class="labels" id="labels"></div>
+        <div class="tip" id="tip" hidden></div>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <div class="rail">
+      <div class="card">
+        <div class="tabs" role="tablist" aria-label="Map view">
+          <button role="tab" id="tab-traffic" aria-selected="false" aria-controls="panel-traffic">Set the traffic</button>
+          <button role="tab" id="tab-odds" aria-selected="true" aria-controls="panel-odds">Odds</button>
+          <button role="tab" id="tab-worst" aria-selected="false" aria-controls="panel-worst">Worst 1 in 10</button>
+        </div>
+
+        <div class="panel" id="panel-traffic" role="tabpanel" aria-labelledby="tab-traffic" hidden>
+          <p>Pick a moment, or set each delay by hand. Colors show how many minutes the faster bridge saves.</p>
+          <div class="chips" id="presets"></div>
+          <div class="slider">
+            <label for="dG">GWB approach + bridge <output id="dG-out"></output></label>
+            <input type="range" id="dG" min="0" max="90" step="1">
+            <small>Extra minutes from the I-95 split in Ridgefield Park to the Harlem River.</small>
+          </div>
+          <div class="slider">
+            <label for="dT">Garden State + Thruway + bridge <output id="dT-out"></output></label>
+            <input type="range" id="dT" min="0" max="60" step="1">
+            <small>Extra minutes from exit 11 to the Tarrytown end of the Mario Cuomo Bridge.</small>
+          </div>
+          <div class="slider">
+            <label for="cg">Bronx &amp; Westchester expressways <output id="cg-out"></output></label>
+            <input type="range" id="cg" min="0" max="100" step="1">
+            <small>Slows the Cross Bronx most, other Bronx highways next, Westchester parkways least.</small>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-odds" role="tabpanel" aria-labelledby="tab-odds">
+          <p>Share of 300 simulated weekday daytime trips on which the GWB arrives first. Each trip draws a GWB-side state and a Tappan Zee-side delay from the assumptions below.</p>
+          <table aria-label="Delay assumptions">
+            <thead><tr><th>Extra delay</th><th>Typical</th><th>1 in 10</th><th>1 in 100</th></tr></thead>
+            <tbody id="assume"></tbody>
+          </table>
+          <p>The GWB side also drags the Cross Bronx down with it: on a jammed day the Cross Bronx crawls at 10 to 20 mph.</p>
+        </div>
+
+        <div class="panel" id="panel-worst" role="tabpanel" aria-labelledby="tab-worst" hidden>
+          <p>Compares each bridge's 90th-percentile trip, the bad day that comes about once in ten trips. A driver who has to be on time should read this map instead of the odds.</p>
+        </div>
+
+        <div class="stat"><strong id="share"></strong><span id="share-label"></span></div>
+        <div class="bar" id="share-bar" aria-hidden="true"></div>
+        <div class="split" id="share-split"></div>
+      </div>
+
+      <div class="card" id="place">
+        <div class="place-head">
+          <h2 id="place-name">White Plains</h2>
+          <select id="place-pick" aria-label="Pick a town"></select>
+        </div>
+        <table aria-label="Trip times for the selected spot">
+          <thead><tr><th></th><th>Empty roads</th><th>Typical</th><th>1 in 10</th><th>Wins</th></tr></thead>
+          <tbody id="place-rows"></tbody>
+        </table>
+        <p class="verdict" id="place-verdict"></p>
+        <div class="hist" id="hist"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div>
+      <h3>What the map says</h3>
+      <ul id="findings"></ul>
+    </div>
+    <div>
+      <h3>How it's built</h3>
+      <p>Both trips start where the Turnpike and the Parkway split at exit 11. The GWB leg runs 31.5 miles up the Turnpike to the Manhattan end of the bridge (31.5 min with no traffic). The Tappan Zee leg runs 55 miles up the Garden State, the Parkway connector, and the Thruway to the Tarrytown landing (52 min).</p>
+      <p>On the New York side, a hand-built network of about 120 highway segments (Cross Bronx, Deegan, Thruway, Henry Hudson, Saw Mill, Bronx River, Sprain, Hutch, I-95, I-287, I-684, Taconic, 9A, US-9) carries each trip to the exit nearest the destination, and local streets finish it at 13 mph in the Bronx, 18 to 23 mph in southern and central Westchester, and 29 mph up north, with a 35% detour factor.</p>
+      <p>The map is crude on purpose: interchange positions are approximate, tolls are ignored, and the Palisades Parkway and Bear Mountain Bridge are left out.</p>
+    </div>
+    <div>
+      <h3>Where the traffic numbers come from</h3>
+      <p>The delay assumptions are loose calibrations, not measurements. Reported NY-bound GWB congestion runs 30 to 35 minutes from I-95 to the Alexander Hamilton Bridge, against about 6 minutes clear, and incidents push it near two hours (<a href="https://patch.com/new-jersey/fortlee/1-hour-delay-nyc-bound-george-washington-bridge" target="_blank" rel="noopener">Patch</a>, <a href="https://patch.com/new-jersey/fortlee/nearly-2-hour-delay-gwb-fort-lee" target="_blank" rel="noopener">Patch</a>). INRIX ranks the Cross Bronx the most congested corridor in the country, averaging 9.8 mph in its congested hours and costing about 29 minutes a trip (<a href="https://www.nbcnewyork.com/news/local/Congested-Road-New-York-Cross-Bronx-Traffic-INRIX-Study-414367723.html" target="_blank" rel="noopener">NBC New York</a>, <a href="https://www.nysun.com/article/new-york-cross-bronx-westbound-has-worst-bottleneck-in-us" target="_blank" rel="noopener">NY Sun</a>). Mario Cuomo Bridge crashes can back traffic up seven miles (<a href="https://cbsnews.com/newyork/news/mario-cuomo-bridge-crash-traffic-delays" target="_blank" rel="noopener">CBS New York</a>), but day-to-day spikes there are smaller.</p>
+      <p>The GWB being spikier is built into these inputs. The map shows what follows from that assumption. It cannot confirm the assumption itself.</p>
+    </div>
+  </div>
+
+  <details class="card">
+    <summary>All towns as a table</summary>
+    <div class="tablewrap">
+      <table aria-label="Trip times by town">
+        <thead><tr><th>Town</th><th>Empty roads GWB</th><th>Empty roads TZB</th><th>GWB wins</th><th>Typical GWB</th><th>Typical TZB</th><th>1 in 10 GWB</th><th>1 in 10 TZB</th></tr></thead>
+        <tbody id="town-table"></tbody>
+      </table>
+    </div>
+  </details>
+</div>
+
+<script>
+// Crude routing model: NJ Turnpike exit 11 -> Bronx / Westchester via GWB or Tappan Zee.
+// Shared by the page (inlined) and the node sanity check.
+(function (root) {
+  // ---- Nodes: [lat, lon] at interchanges / bends ----
+  const N = {
+    GWB_NY: [40.8500, -73.9445], DEEGAN_CBX: [40.8448, -73.9258],
+    CBX_JEROME: [40.8443, -73.9115], CBX_3AVE: [40.8410, -73.8985], CBX_SOBLVD: [40.8390, -73.8845],
+    CBX_BRP: [40.8355, -73.8775], CBX_WPR: [40.8335, -73.8620], BRUCKNER_INT: [40.8268, -73.8395],
+    I95_PELHAM: [40.8575, -73.8335], I95_COOP: [40.8720, -73.8305], I95_LINE: [40.8885, -73.8205],
+    I95_X15: [40.8975, -73.8040], I95_X16: [40.9130, -73.7800], I95_X17: [40.9320, -73.7560],
+    I95_X18: [40.9520, -73.7350], I95_X19: [40.9700, -73.7000], I95_287: [40.9930, -73.6830],
+    I95_PC: [41.0010, -73.6700], I95_CT: [41.0070, -73.6570],
+    HUTCH_PELHAM: [40.8600, -73.8250], HUTCH_LINE: [40.8900, -73.8130], HUTCH_CCP: [40.9445, -73.7915],
+    HUTCH_X21: [40.9700, -73.7750], HUTCH_X23: [40.9860, -73.7650], HUTCH_X25: [41.0050, -73.7470],
+    HUTCH_287: [41.0230, -73.7290], HUTCH_PURCH: [41.0350, -73.7050], HUTCH_CT: [41.0440, -73.6820],
+    DEEGAN_YANKEE: [40.8285, -73.9305], DEEGAN_TRIBORO: [40.8060, -73.9240],
+    BRUCKNER_HUNTS: [40.8150, -73.8890], BRUCKNER_SHERIDAN: [40.8220, -73.8710],
+    DEEGAN_FORDHAM: [40.8615, -73.9150], DEEGAN_230: [40.8780, -73.9050], DEEGAN_VCP: [40.8900, -73.8900],
+    DEEGAN_LINE: [40.9095, -73.8785], TW_X4: [40.9330, -73.8680], TW_X6: [40.9600, -73.8600],
+    TW_X7: [41.0050, -73.8430], TW_X8: [41.0555, -73.8225], TW_X9: [41.0670, -73.8560], TZB_E: [41.0700, -73.8690],
+    HHP_DYCKMAN: [40.8650, -73.9300], HHP_HHB: [40.8790, -73.9205], HHP_RIVERDALE: [40.8960, -73.9040],
+    SM_LINE: [40.9100, -73.8960], SM_CCP: [40.9320, -73.8810], SM_EXEC: [40.9600, -73.8700],
+    SM_ARDSLEY: [41.0130, -73.8500], SM_ELMSFORD: [41.0530, -73.8190], HAWTHORNE: [41.1000, -73.7960],
+    SM_PLEAS: [41.1350, -73.7850], SM_CHAPPAQUA: [41.1650, -73.7700], SM_KISCO: [41.2020, -73.7370],
+    I684_KATONAH: [41.2600, -73.6960],
+    CCP_CENTRAL: [40.9340, -73.8590], BRP_CCP: [40.9380, -73.8380],
+    BRP_FORDHAM: [40.8580, -73.8710], BRP_GUNHILL: [40.8760, -73.8690], BRP_233: [40.8920, -73.8630],
+    BRP_LINE: [40.9030, -73.8620], BRP_SPRAIN: [40.9525, -73.8310], BRP_SCARSDALE: [40.9900, -73.8100],
+    BRP_HARTSDALE: [41.0170, -73.7970], BRP_287: [41.0365, -73.7770], BRP_KENSICO: [41.0780, -73.7700],
+    SPRAIN_JACKSON: [40.9800, -73.8280], SPRAIN_ARDSLEY: [41.0120, -73.8230], SPRAIN_287: [41.0475, -73.8040],
+    I287_X8: [41.0280, -73.7520], I287_684: [41.0200, -73.7150], I287_RYEBROOK: [41.0040, -73.6960],
+    I684_X1: [41.0560, -73.7070], I684_ARMONK: [41.1250, -73.7130], I684_X4: [41.2000, -73.6880],
+    I684_PURDYS: [41.3250, -73.6650], I684_N: [41.3550, -73.6550],
+    TAC_MILLWOOD: [41.1950, -73.7990], TAC_YORKTOWN: [41.2750, -73.8000], TAC_N: [41.3350, -73.7950],
+    R9A_117: [41.1300, -73.8200], R9A_OSSINING: [41.1700, -73.8420], CROTON: [41.1900, -73.8700],
+    US9_CROTON: [41.2100, -73.8870], US9_MONTROSE: [41.2450, -73.9230], PEEKSKILL: [41.2850, -73.9200],
+    US9_N: [41.3200, -73.9600],
+    US9_SLEEPY: [41.0900, -73.8620], US9_SCARB: [41.1350, -73.8620], US9_OSSINING: [41.1620, -73.8630],
+    US9_IRVINGTON: [41.0400, -73.8660], US9_DOBBS: [41.0140, -73.8720], US9_HASTINGS: [40.9940, -73.8770],
+    US9_YONKERS: [40.9360, -73.8990], US9_LINE: [40.9100, -73.8970],
+    R202_CORTLANDT: [41.2900, -73.8700], R202_YKTN_HTS: [41.2710, -73.7780], R100_SOMERS: [41.3000, -73.7250],
+    PELHAMPKWY_W: [40.8580, -73.8520], MOSHOLU: [40.8820, -73.8800],
+  };
+
+  // ---- Roads: [name, class, speed mph (free flow), [node, node, ...]] ----
+  // class: 'bx' = Bronx expressway (hit hard by congestion), 'cbx' = Cross Bronx,
+  // 'wc' = Westchester highway, 'art' = arterial / boulevard.
+  const R = [
+    ['Trans-Manhattan / Alexander Hamilton', 'cbx', 40, ['GWB_NY', 'DEEGAN_CBX']],
+    ['Cross Bronx Expwy (I-95)', 'cbx', 48, ['DEEGAN_CBX', 'CBX_JEROME', 'CBX_3AVE', 'CBX_SOBLVD', 'CBX_BRP', 'CBX_WPR', 'BRUCKNER_INT']],
+    ['I-95', 'bx', 52, ['BRUCKNER_INT', 'I95_PELHAM', 'I95_COOP', 'I95_LINE']],
+    ['New England Thruway (I-95)', 'wc', 56, ['I95_LINE', 'I95_X15', 'I95_X16', 'I95_X17', 'I95_X18', 'I95_X19', 'I95_287', 'I95_PC', 'I95_CT']],
+    ['Hutchinson River Pkwy', 'bx', 48, ['BRUCKNER_INT', 'HUTCH_PELHAM', 'HUTCH_LINE']],
+    ['Hutchinson River Pkwy', 'wc', 50, ['HUTCH_LINE', 'HUTCH_CCP', 'HUTCH_X21', 'HUTCH_X23', 'HUTCH_X25', 'HUTCH_287', 'HUTCH_PURCH', 'HUTCH_CT']],
+    ['Major Deegan (I-87)', 'bx', 50, ['DEEGAN_TRIBORO', 'DEEGAN_YANKEE', 'DEEGAN_CBX', 'DEEGAN_FORDHAM', 'DEEGAN_230', 'DEEGAN_VCP', 'DEEGAN_LINE']],
+    ['Bruckner Expwy (I-278)', 'bx', 42, ['DEEGAN_TRIBORO', 'BRUCKNER_HUNTS', 'BRUCKNER_SHERIDAN', 'BRUCKNER_INT']],
+    ['NYS Thruway (I-87)', 'wc', 58, ['DEEGAN_LINE', 'TW_X4', 'TW_X6', 'TW_X7', 'TW_X8', 'TW_X9', 'TZB_E']],
+    ['Henry Hudson Pkwy', 'bx', 45, ['GWB_NY', 'HHP_DYCKMAN', 'HHP_HHB', 'HHP_RIVERDALE', 'SM_LINE']],
+    ['Saw Mill River Pkwy', 'wc', 46, ['SM_LINE', 'SM_CCP', 'SM_EXEC', 'SM_ARDSLEY', 'SM_ELMSFORD', 'HAWTHORNE', 'SM_PLEAS', 'SM_CHAPPAQUA', 'SM_KISCO', 'I684_KATONAH']],
+    ['Cross County Pkwy', 'wc', 46, ['SM_CCP', 'TW_X4', 'CCP_CENTRAL', 'BRP_CCP', 'HUTCH_CCP']],
+    ['Bronx River Pkwy', 'bx', 40, ['CBX_BRP', 'BRP_FORDHAM', 'BRP_GUNHILL', 'BRP_233', 'BRP_LINE']],
+    ['Bronx River Pkwy', 'wc', 44, ['BRP_LINE', 'BRP_CCP', 'BRP_SPRAIN', 'BRP_SCARSDALE', 'BRP_HARTSDALE', 'BRP_287', 'BRP_KENSICO']],
+    ['Sprain Brook Pkwy', 'wc', 54, ['BRP_SPRAIN', 'SPRAIN_JACKSON', 'SPRAIN_ARDSLEY', 'SPRAIN_287', 'HAWTHORNE']],
+    ['I-287 (Cross Westchester)', 'wc', 56, ['TW_X8', 'SPRAIN_287', 'BRP_287', 'I287_X8', 'HUTCH_287', 'I287_684', 'I287_RYEBROOK', 'I95_287']],
+    ['I-684', 'wc', 62, ['I287_684', 'I684_X1', 'I684_ARMONK', 'I684_X4', 'I684_KATONAH', 'I684_PURDYS', 'I684_N']],
+    ['Hutch–I-684 link', 'wc', 45, ['HUTCH_PURCH', 'I684_X1']],
+    ['Thruway–Saw Mill link', 'wc', 35, ['TW_X8', 'SM_ELMSFORD']],
+    ['Taconic State Pkwy', 'wc', 54, ['BRP_KENSICO', 'HAWTHORNE', 'TAC_MILLWOOD', 'TAC_YORKTOWN', 'TAC_N']],
+    ['NY-9A', 'wc', 46, ['HAWTHORNE', 'R9A_117', 'R9A_OSSINING', 'CROTON']],
+    ['US-9 (Croton–Peekskill)', 'wc', 52, ['CROTON', 'US9_CROTON', 'US9_MONTROSE', 'PEEKSKILL', 'US9_N']],
+    ['US-9 (river towns, north)', 'art', 28, ['TW_X9', 'US9_SLEEPY', 'US9_SCARB', 'US9_OSSINING', 'CROTON']],
+    ['US-9 (river towns, south)', 'art', 24, ['TW_X9', 'US9_IRVINGTON', 'US9_DOBBS', 'US9_HASTINGS', 'US9_YONKERS', 'US9_LINE', 'DEEGAN_230']],
+    ['US-202 / NY-35', 'art', 36, ['PEEKSKILL', 'R202_CORTLANDT', 'TAC_YORKTOWN', 'R202_YKTN_HTS', 'R100_SOMERS', 'I684_KATONAH']],
+    ['Pelham Pkwy', 'art', 28, ['BRP_FORDHAM', 'PELHAMPKWY_W', 'I95_PELHAM', 'HUTCH_PELHAM']],
+    ['Mosholu Pkwy', 'art', 32, ['BRP_GUNHILL', 'MOSHOLU', 'DEEGAN_VCP']],
+  ];
+
+  // NJ legs, exit 11 -> bridge's New York end (miles, free-flow minutes)
+  const NJ = {
+    gwb: { miles: 31.5, min: 31.5, via: 'NJ Turnpike + I-95, upper/lower level' },
+    tzb: { miles: 54.0, min: 52.0, via: 'Garden State Pkwy + Thruway, Mario Cuomo Bridge' },
+  };
+
+  const toRad = Math.PI / 180;
+  function miles(a, b) {
+    const dLat = (b[0] - a[0]) * toRad, dLon = (b[1] - a[1]) * toRad;
+    const s = Math.sin(dLat / 2) ** 2 + Math.cos(a[0] * toRad) * Math.cos(b[0] * toRad) * Math.sin(dLon / 2) ** 2;
+    return 3958.8 * 2 * Math.asin(Math.sqrt(s));
+  }
+
+  const names = Object.keys(N);
+  const idx = Object.fromEntries(names.map((k, i) => [k, i]));
+  const edges = []; // {a, b, mi, mph, cls, road}
+  for (const [road, cls, mph, seq] of R) {
+    for (let i = 0; i + 1 < seq.length; i++) {
+      const a = idx[seq[i]], b = idx[seq[i + 1]];
+      if (a === undefined || b === undefined) throw new Error('bad node ' + seq[i] + '/' + seq[i + 1]);
+      edges.push({ a, b, mi: miles(N[seq[i]], N[seq[i + 1]]) * 1.08, mph, cls, road });
+    }
+  }
+  const adj = names.map(() => []);
+  edges.forEach((e, k) => { adj[e.a].push(k); adj[e.b].push(k); });
+
+  // Congestion level c in [0,1] slows each road class differently.
+  // At c = 1 the Cross Bronx crawls at ~9.6 mph (INRIX: 9.8 mph when congested).
+  const SLOW = { cbx: 0.80, bx: 0.60, wc: 0.35, art: 0.30 };
+  function edgeMinutes(e, c) { return 60 * e.mi / (e.mph * (1 - SLOW[e.cls] * c)); }
+
+  function dijkstra(src, c) {
+    const n = names.length, dist = new Float64Array(n).fill(Infinity), done = new Uint8Array(n);
+    dist[src] = 0;
+    for (let it = 0; it < n; it++) {
+      let u = -1, best = Infinity;
+      for (let i = 0; i < n; i++) if (!done[i] && dist[i] < best) { best = dist[i]; u = i; }
+      if (u < 0) break;
+      done[u] = 1;
+      for (const k of adj[u]) {
+        const e = edges[k], v = e.a === u ? e.b : e.a, w = best + edgeMinutes(e, c);
+        if (w < dist[v]) dist[v] = w;
+      }
+    }
+    return dist;
+  }
+
+  // Local streets from a highway node to the exact destination.
+  const CIRCUITY = 1.35;
+  function localMph(lat, lon, inBronx) {
+    if (inBronx) return 13;
+    if (lat < 40.965) return 18;   // Yonkers, Mount Vernon, New Rochelle, Pelham
+    if (lat < 41.10) return 23;    // White Plains, Scarsdale, river towns
+    return 29;                     // northern Westchester
+  }
+  const RAMP = 1.0; // minutes to get off the highway and onto local streets
+
+  function localLegs(lat, lon, inBronx, K) {
+    const v = localMph(lat, lon, inBronx), out = [];
+    for (let i = 0; i < names.length; i++) {
+      const m = miles([lat, lon], N[names[i]]);
+      out.push([i, RAMP + 60 * CIRCUITY * m / v]);
+    }
+    out.sort((p, q) => p[1] - q[1]);
+    return out.slice(0, K);
+  }
+
+  // Trip time from exit 11 to a destination given per-node distances.
+  function tripMinutes(legs, distG, distT, dG, dT) {
+    let g = Infinity, t = Infinity;
+    for (const [i, m] of legs) {
+      if (distG[i] + m < g) g = distG[i] + m;
+      if (distT[i] + m < t) t = distT[i] + m;
+    }
+    return [NJ.gwb.min + dG + g, NJ.tzb.min + dT + t];
+  }
+
+  // ---- Delay model for the Monte Carlo ("a random weekday daytime trip") ----
+  // Deterministic PRNG so every viewer sees the same odds.
+  function rng(seed) {
+    let s = seed >>> 0;
+    return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+  function normal(r) { let u = 0, v = 0; while (u === 0) u = r(); while (v === 0) v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  const logn = (r, med, sig) => med * Math.exp(sig * normal(r));
+
+  // GWB side: NJ approach + bridge + Trans-Manhattan, and the Bronx congestion that comes with it.
+  const REGIMES = [
+    { name: 'clear', p: 0.45, med: 3, sig: 0.5, c: [0.0, 0.3], tzbMed: 4 },
+    { name: 'slow', p: 0.40, med: 15, sig: 0.45, c: [0.3, 0.7], tzbMed: 6 },
+    { name: 'jammed', p: 0.15, med: 40, sig: 0.5, c: [0.6, 1.0], tzbMed: 8 },
+  ];
+  // TZB side: GSP + Thruway + Mario Cuomo Bridge. Rush hour nudges its median too; a crash adds 15-45 min.
+  const TZB_DELAY = { sig: 0.6, incidentP: 0.06, incident: [15, 45] };
+
+  function drawScenario(r) {
+    let u = r(), reg = REGIMES[REGIMES.length - 1];
+    for (const g of REGIMES) { if (u < g.p) { reg = g; break; } u -= g.p; }
+    const dG = logn(r, reg.med, reg.sig);
+    const c = reg.c[0] + (reg.c[1] - reg.c[0]) * r();
+    let dT = logn(r, reg.tzbMed, TZB_DELAY.sig);
+    if (r() < TZB_DELAY.incidentP) dT += TZB_DELAY.incident[0] + (TZB_DELAY.incident[1] - TZB_DELAY.incident[0]) * r();
+    return { dG, dT, c, regime: reg.name };
+  }
+
+  root.HudsonModel = { N, R, NJ, names, idx, edges, miles, dijkstra, localLegs, tripMinutes, rng, drawScenario, REGIMES, TZB_DELAY, SLOW };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(function () {
+  const M = window.HudsonModel;
+  const GEO = {"bronx":[[[-73.811,40.8051],[-73.8305,40.8032],[-73.8627,40.7973],[-73.8667,40.7937],[-73.871,40.787],[-73.8849,40.7866],[-73.8899,40.7874],[-73.8906,40.7901],[-73.8922,40.7904],[-73.9125,40.7962],[-73.9285,40.8035],[-73.9315,40.808],[-73.9335,40.814],[-73.934,40.821],[-73.933,40.829],[-73.9315,40.836],[-73.9295,40.842],[-73.9215,40.853],[-73.9135,40.863],[-73.91,40.868],[-73.907,40.8735],[-73.9071,40.8763],[-73.9114,40.8793],[-73.9152,40.8756],[-73.925,40.8791],[-73.92,40.892],[-73.91,40.9152],[-73.824,40.8899],[-73.8236,40.8899],[-73.8236,40.8904],[-73.8231,40.8906],[-73.8232,40.8912],[-73.7835,40.881],[-73.7848,40.8785],[-73.7855,40.8691],[-73.7888,40.8585],[-73.7881,40.8541],[-73.7848,40.8518],[-73.7822,40.8474],[-73.7823,40.8424],[-73.7812,40.8389],[-73.7839,40.8368],[-73.7854,40.838],[-73.7882,40.842],[-73.791,40.8466],[-73.7895,40.8514],[-73.7923,40.8558],[-73.7938,40.8556],[-73.7973,40.8522],[-73.7995,40.848],[-73.8069,40.8495],[-73.8128,40.8467],[-73.8156,40.8351],[-73.8152,40.8311],[-73.8119,40.8254],[-73.8045,40.8185],[-73.7973,40.8156],[-73.786,40.8009],[-73.7934,40.7999],[-73.811,40.8051]],[[-73.7663,40.8573],[-73.7651,40.8542],[-73.766,40.845],[-73.7696,40.8447],[-73.773,40.8481],[-73.7737,40.8548],[-73.7734,40.8594],[-73.7706,40.8603],[-73.7663,40.8573]]],"westchester":[[[-73.7673,40.8869],[-73.7663,40.8811],[-73.767,40.8801],[-73.7709,40.8793],[-73.7753,40.8822],[-73.7752,40.8842],[-73.7728,40.8846],[-73.7723,40.8875],[-73.7706,40.8884],[-73.7673,40.8869]],[[-73.6322,41.1449],[-73.7278,41.1007],[-73.6705,41.0301],[-73.6547,41.0117],[-73.6573,40.9852],[-73.656,40.9796],[-73.66,40.9684],[-73.6621,40.9662],[-73.6645,40.9672],[-73.6781,40.9628],[-73.6833,40.949],[-73.6865,40.9452],[-73.698,40.9396],[-73.7217,40.932],[-73.7318,40.925],[-73.7568,40.9126],[-73.7813,40.8854],[-73.7835,40.881],[-73.8232,40.8912],[-73.8236,40.8899],[-73.824,40.8899],[-73.91,40.9152],[-73.906,40.924],[-73.899,40.95],[-73.89,40.973],[-73.885,40.995],[-73.879,41.012],[-73.876,41.027],[-73.874,41.04],[-73.872,41.058],[-73.869,41.07],[-73.866,41.077],[-73.866,41.088],[-73.87,41.095],[-73.87,41.115],[-73.867,41.136],[-73.87,41.157],[-73.88,41.172],[-73.9,41.18],[-73.897,41.19],[-73.885,41.188],[-73.888,41.197],[-73.9,41.212],[-73.912,41.23],[-73.935,41.247],[-73.9585,41.2531],[-73.9594,41.2557],[-73.95,41.262],[-73.932,41.285],[-73.938,41.3],[-73.965,41.315],[-73.9727,41.3227],[-73.5447,41.3664],[-73.551,41.2954],[-73.4827,41.2128],[-73.6322,41.1449]]],"context":[[[-73.4682,41.0513],[-73.4774,41.036],[-73.4933,41.0482],[-73.5169,41.0387],[-73.5168,41.0295],[-73.5227,41.0193],[-73.5289,41.0164],[-73.5312,41.0219],[-73.5302,41.0288],[-73.5328,41.0317],[-73.5353,41.0319],[-73.5515,41.0243],[-73.562,41.0168],[-73.5677,41.0109],[-73.5701,41.0016],[-73.584,41.0009],[-73.585,41.0105],[-73.5957,41.016],[-73.604,41.0151],[-73.6435,41.0022],[-73.6512,40.9952],[-73.6573,40.9852],[-73.6547,41.0117],[-73.7278,41.1007],[-73.4827,41.2128],[-73.551,41.2954],[-73.5447,41.3664],[-73.9727,41.3227],[-73.98,41.33],[-73.96,41.36],[-73.95,41.38],[-73.962,41.38],[-73.985,41.345],[-73.992,41.32],[-73.985,41.3],[-73.983,41.27],[-73.972,41.24],[-73.96,41.215],[-73.96,41.195],[-73.915,41.14],[-73.91,41.11],[-73.915,41.09],[-73.922,41.073],[-73.918,41.05],[-73.905,41.035],[-73.91,41.01],[-73.905,40.99],[-73.912,40.96],[-73.92,40.94],[-73.94,40.88],[-73.955,40.86],[-73.962,40.853],[-73.975,40.83],[-73.985,40.81],[-73.998,40.79],[-74.0055,40.775],[-74.03,40.775],[-74.03,41.385],[-73.465,41.385],[-73.465,41.0524],[-73.4682,41.0513]],[[-73.991,40.775],[-73.953,40.835],[-73.947,40.85],[-73.937,40.862],[-73.925,40.8791],[-73.9152,40.8756],[-73.9114,40.8793],[-73.9071,40.8763],[-73.907,40.8735],[-73.9135,40.863],[-73.9295,40.842],[-73.933,40.829],[-73.934,40.821],[-73.9335,40.814],[-73.9315,40.808],[-73.9285,40.8035],[-73.921,40.8],[-73.9125,40.7962],[-73.8906,40.7901],[-73.8899,40.7874],[-73.8849,40.7866],[-73.871,40.787],[-73.8667,40.7937],[-73.8627,40.7973],[-73.8305,40.8032],[-73.811,40.8051],[-73.7934,40.7999],[-73.786,40.8009],[-73.7814,40.7949],[-73.776,40.7953],[-73.7683,40.8008],[-73.754,40.8209],[-73.7544,40.8268],[-73.7283,40.8529],[-73.7267,40.8568],[-73.7307,40.8654],[-73.7296,40.8665],[-73.7137,40.8701],[-73.6756,40.857],[-73.6559,40.8639],[-73.6544,40.8782],[-73.6411,40.8926],[-73.6338,40.8982],[-73.627,40.8994],[-73.6176,40.8979],[-73.6019,40.9028],[-73.5952,40.9073],[-73.57,40.9154],[-73.5662,40.9158],[-73.5481,40.9087],[-73.5193,40.9143],[-73.515,40.9128],[-73.4999,40.9182],[-73.4971,40.9228],[-73.465,40.8565],[-73.465,40.775],[-73.991,40.775]],[[-73.9585,41.2531],[-73.962,41.254],[-73.9594,41.2557],[-73.9585,41.2531]]],"extent":[-74.03,40.775,-73.465,41.385]};
+  const EXT = [-74.01, 40.78, -73.47, 41.375];
+  const KX = Math.cos(41.08 * Math.PI / 180);
+  const SC = 1000 / (EXT[3] - EXT[1]);
+  const VW = Math.round((EXT[2] - EXT[0]) * KX * SC), VH = 1000;
+  const px = lon => (lon - EXT[0]) * KX * SC, py = lat => (EXT[3] - lat) * SC;
+  const unx = x => EXT[0] + x / (KX * SC), uny = y => EXT[3] - y / SC;
+  const $ = id => document.getElementById(id);
+  const mapEl = $('map');
+  mapEl.style.setProperty('--map-ar', (VW / VH).toFixed(4));
+
+  // ---------- places ----------
+  const PLACES = [
+    ['Mott Haven', 40.809, -73.923, 'r', 0], ['Fordham', 40.862, -73.890, 'r', 0], ['Riverdale', 40.890, -73.912, 'r', 1],
+    ['Parkchester', 40.837, -73.860, 'r', 1], ['Co-op City', 40.874, -73.829, 'r', 0], ['Throgs Neck', 40.818, -73.820, 'r', 1],
+    ['Yonkers', 40.931, -73.899, 'r', 0], ['Mount Vernon', 40.912, -73.837, 'r', 1], ['New Rochelle', 40.911, -73.782, 'r', 0],
+    ['Bronxville', 40.938, -73.832, 'r', 1], ['Scarsdale', 40.989, -73.808, 'r', 0], ['White Plains', 41.034, -73.763, 'r', 0],
+    ['Rye', 40.981, -73.684, 'r', 0], ['Port Chester', 41.002, -73.666, 'r', 1], ['Mamaroneck', 40.949, -73.733, 'r', 0],
+    ['Harrison', 40.969, -73.713, 'r', 1], ['Hastings', 40.995, -73.879, 'r', 1], ['Dobbs Ferry', 41.015, -73.873, 'r', 1],
+    ['Ardsley', 41.011, -73.844, 'r', 1], ['Tarrytown', 41.076, -73.859, 'r', 0], ['Elmsford', 41.055, -73.820, 'r', 1],
+    ['Valhalla', 41.075, -73.775, 'r', 1], ['Armonk', 41.126, -73.714, 'r', 0], ['Pleasantville', 41.133, -73.792, 'r', 1],
+    ['Ossining', 41.163, -73.861, 'r', 0], ['Mount Kisco', 41.204, -73.727, 'r', 0], ['Peekskill', 41.290, -73.920, 'r', 0],
+    ['Yorktown Heights', 41.271, -73.778, 'r', 0], ['Bedford', 41.204, -73.644, 'r', 1], ['Pound Ridge', 41.209, -73.575, 'r', 0],
+    ['Croton', 41.208, -73.891, 'r', 1], ['Katonah', 41.259, -73.685, 'r', 1],
+  ].map(([name, lat, lon, side, minor]) => ({ name, lat, lon, side, minor: !!minor }));
+
+  // ---------- geometry helpers ----------
+  function ringBox(r) { let a = 1e9, b = 1e9, c = -1e9, d = -1e9; for (const [x, y] of r) { a = Math.min(a, x); b = Math.min(b, y); c = Math.max(c, x); d = Math.max(d, y); } return [a, b, c, d]; }
+  const prep = rings => rings.map(r => ({ r, b: ringBox(r) }));
+  const BX = prep(GEO.bronx), WC = prep(GEO.westchester);
+  function inRings(lon, lat, rings) {
+    let ins = false;
+    for (const { r, b } of rings) {
+      if (lon < b[0] || lon > b[2] || lat < b[1] || lat > b[3]) continue;
+      for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+        const xi = r[i][0], yi = r[i][1], xj = r[j][0], yj = r[j][1];
+        if ((yi > lat) !== (yj > lat) && lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) ins = !ins;
+      }
+    }
+    return ins;
+  }
+  const inBronx = (lat, lon) => inRings(lon, lat, BX), inWest = (lat, lon) => inRings(lon, lat, WC);
+
+  // ---------- grid ----------
+  const DLAT = 0.0033, DLON = DLAT / KX;
+  const ROWS = Math.ceil((EXT[3] - EXT[1]) / DLAT), COLS = Math.ceil((EXT[2] - EXT[0]) / DLON);
+  const KL = 8, NN = M.names.length;
+  const cellAt = new Int32Array(ROWS * COLS).fill(-1);
+  const cells = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const lat = EXT[3] - (r + 0.5) * DLAT, lon = EXT[0] + (c + 0.5) * DLON;
+    const pts = [[lat, lon], [lat + DLAT / 2, lon - DLON / 2], [lat + DLAT / 2, lon + DLON / 2], [lat - DLAT / 2, lon - DLON / 2], [lat - DLAT / 2, lon + DLON / 2]];
+    let bx = false, wc = false;
+    for (const [a, b] of pts) { if (inBronx(a, b)) { bx = true; break; } }
+    for (const [a, b] of pts) { if (inWest(a, b)) { wc = true; break; } }
+    if (!bx && !wc) continue;
+    const isBx = inBronx(lat, lon) || (bx && !inWest(lat, lon));
+    cellAt[r * COLS + c] = cells.length;
+    cells.push({ r, c, lat, lon, bx: isBx, real: inBronx(lat, lon) || inWest(lat, lon) });
+  }
+  const NC = cells.length;
+  const legI = new Int16Array(NC * KL), legM = new Float32Array(NC * KL);
+  cells.forEach((cl, i) => { M.localLegs(cl.lat, cl.lon, cl.bx, KL).forEach(([n, m], k) => { legI[i * KL + k] = n; legM[i * KL + k] = m; }); });
+
+  function bestOf(i, dg, dt, offG, offT) {
+    let g = Infinity, t = Infinity;
+    for (let k = 0; k < KL; k++) { const n = legI[i * KL + k], m = legM[i * KL + k]; const a = dg[offG + n] + m, b = dt[offT + n] + m; if (a < g) g = a; if (b < t) t = b; }
+    return [g, t];
+  }
+
+  // ---------- scenario (deterministic) ----------
+  function scenario(dG, dT, c) {
+    const g = M.dijkstra(M.idx.GWB_NY, c), t = M.dijkstra(M.idx.TZB_E, c);
+    const G = new Float32Array(NC), T = new Float32Array(NC);
+    for (let i = 0; i < NC; i++) { const [a, b] = bestOf(i, g, t, 0, 0); G[i] = M.NJ.gwb.min + dG + a; T[i] = M.NJ.tzb.min + dT + b; }
+    return { G, T, g, t, dG, dT, c };
+  }
+  const FREE = scenario(0, 0, 0);
+
+  // ---------- Monte Carlo ----------
+  const D = 300;
+  const rnd = M.rng(7);
+  const draws = [];
+  const DG = new Float64Array(D * NN), DT = new Float64Array(D * NN);
+  for (let d = 0; d < D; d++) {
+    const s = M.drawScenario(rnd); draws.push(s);
+    DG.set(M.dijkstra(M.idx.GWB_NY, s.c), d * NN); DT.set(M.dijkstra(M.idx.TZB_E, s.c), d * NN);
+  }
+  const pWin = new Float32Array(NC), medG = new Float32Array(NC), medT = new Float32Array(NC), p90G = new Float32Array(NC), p90T = new Float32Array(NC);
+  const QI50 = Math.floor(0.5 * (D - 1)), QI90 = Math.floor(0.9 * (D - 1));
+  function samplesFor(legsI, legsM) {
+    const G = new Float32Array(D), T = new Float32Array(D);
+    let w = 0;
+    for (let d = 0; d < D; d++) {
+      let g = Infinity, t = Infinity; const o = d * NN;
+      for (let k = 0; k < legsI.length; k++) { const n = legsI[k], m = legsM[k]; const a = DG[o + n] + m, b = DT[o + n] + m; if (a < g) g = a; if (b < t) t = b; }
+      G[d] = M.NJ.gwb.min + draws[d].dG + g; T[d] = M.NJ.tzb.min + draws[d].dT + t;
+      w += G[d] < T[d] ? 1 : G[d] === T[d] ? 0.5 : 0;
+    }
+    return { G, T, p: w / D };
+  }
+  for (let i = 0; i < NC; i++) {
+    const s = samplesFor(legI.subarray(i * KL, i * KL + KL), legM.subarray(i * KL, i * KL + KL));
+    pWin[i] = s.p; s.G.sort(); s.T.sort();
+    medG[i] = s.G[QI50]; medT[i] = s.T[QI50]; p90G[i] = s.G[QI90]; p90T[i] = s.T[QI90];
+  }
+
+  // ---------- state ----------
+  const PRESETS = [
+    { id: 'empty', name: 'Empty roads', dG: 0, dT: 0, c: 0 },
+    { id: 'weekday', name: 'Ordinary weekday', dG: 8, dT: 4, c: 30 },
+    { id: 'friday', name: 'Friday 4 p.m.', dG: 35, dT: 15, c: 75 },
+    { id: 'meltdown', name: 'GWB meltdown', dG: 75, dT: 8, c: 90 },
+  ];
+  let view = 'odds';
+  let scen = { dG: 8, dT: 4, c: 30 };
+  let cur = scenario(scen.dG, scen.dT, scen.c / 100);
+  let sel = PLACES.find(p => p.name === 'White Plains');
+
+  // value per cell for the active view; positive favours the GWB
+  function value(i) {
+    if (view === 'traffic') return cur.T[i] - cur.G[i];
+    if (view === 'odds') return pWin[i] - 0.5;
+    return p90T[i] - p90G[i];
+  }
+  const MIN_EDGES = [2, 5, 10, 20, 30];
+  const P_EDGES = [0.6, 0.7, 0.8, 0.9, 0.97];
+  function bin(i) {
+    if (view === 'odds') {
+      const p = pWin[i], q = 1 - p;
+      if (p >= 0.4 && p <= 0.6) return 0;
+      let k = 0; const x = p > 0.5 ? p : q; while (k < 5 && x >= P_EDGES[k]) k++;
+      return p > 0.5 ? k : -k;
+    }
+    const v = value(i), a = Math.abs(v);
+    if (a < MIN_EDGES[0]) return 0;
+    let k = 0; while (k < 5 && a >= MIN_EDGES[k]) k++;
+    return v > 0 ? k : -k;
+  }
+
+  // ---------- colors ----------
+  let COL = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    const g = n => cs.getPropertyValue(n).trim();
+    COL = { mid: g('--mid'), land: g('--land'), landLine: g('--land-line'), ink: g('--ink'), ink2: g('--ink-2'), surface: g('--surface'), road: g('--road'), gwb: g('--gwb'), tzb: g('--tzb'), muted: g('--muted'), line: g('--line'),
+      G: [1, 2, 3, 4, 5].map(k => g('--g' + k)), T: [1, 2, 3, 4, 5].map(k => g('--t' + k)) };
+  }
+  const binColor = b => b === 0 ? COL.mid : b > 0 ? COL.G[b - 1] : COL.T[-b - 1];
+
+  // ---------- canvas ----------
+  const cv = $('heat'), ctx = cv.getContext('2d');
+  function ringPath(c2, rings, s) { for (const r of rings) { r.forEach(([x, y], k) => k ? c2.lineTo(px(x) * s, py(y) * s) : c2.moveTo(px(x) * s, py(y) * s)); c2.closePath(); } }
+  function drawCanvas() {
+    const w = mapEl.clientWidth, h = mapEl.clientHeight, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (!w || !h) return;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    const s = w / VW;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    ctx.beginPath(); ringPath(ctx, GEO.context, s); ctx.fillStyle = COL.land; ctx.fill('evenodd');
+    ctx.lineWidth = 0.8; ctx.strokeStyle = COL.landLine; ctx.stroke();
+    ctx.save();
+    ctx.beginPath(); ringPath(ctx, GEO.bronx, s); ringPath(ctx, GEO.westchester, s); ctx.clip('evenodd');
+    const groups = new Map();
+    for (let i = 0; i < NC; i++) { const b = bin(i); if (!groups.has(b)) groups.set(b, []); groups.get(b).push(i); }
+    const cw = DLON * KX * SC * s, ch = DLAT * SC * s;
+    for (const [b, list] of groups) {
+      ctx.beginPath();
+      for (const i of list) { const cl = cells[i]; ctx.rect(px(cl.lon) * s - cw / 2 - 0.3, py(cl.lat) * s - ch / 2 - 0.3, cw + 0.6, ch + 0.6); }
+      ctx.fillStyle = binColor(b); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // ---------- svg overlay ----------
+  const ov = $('ov');
+  ov.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
+  ov.setAttribute('preserveAspectRatio', 'none');
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (tag, attrs, parent) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) { const v = attrs[k]; if (typeof v === 'string' && v.startsWith('var(')) e.style.setProperty(k, v); else e.setAttribute(k, v); }
+    if (parent) parent.appendChild(e); return e;
+  };
+  const ringD = rings => rings.map(r => 'M' + r.map(([x, y]) => px(x).toFixed(1) + ' ' + py(y).toFixed(1)).join('L') + 'Z').join('');
+  const lineD = pts => 'M' + pts.map(([la, lo]) => px(lo).toFixed(1) + ' ' + py(la).toFixed(1)).join('L');
+  const defs = el('defs', {}, ov);
+  const clip = el('clipPath', { id: 'landclip' }, defs);
+  el('path', { d: ringD(GEO.bronx) + ringD(GEO.westchester), 'clip-rule': 'evenodd' }, clip);
+  const gRoads = el('g', { fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, ov);
+  const MAJOR = /I-95|I-87|I-287|I-684|Thruway|Cross Bronx|Deegan/;
+  for (const [road, cls, mph, seq] of M.R) {
+    el('path', { d: lineD(seq.map(n => M.N[n])), stroke: 'var(--road)', 'stroke-opacity': cls === 'art' ? 0.35 : 0.55, 'stroke-width': MAJOR.test(road) ? 1.7 : 1.1, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': cls === 'art' ? '3 2.5' : '' }, gRoads);
+  }
+  el('path', { d: ringD(GEO.bronx), fill: 'none', stroke: 'var(--ink-2)', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke', 'stroke-opacity': 0.7 }, ov);
+  el('path', { d: ringD(GEO.westchester), fill: 'none', stroke: 'var(--ink-2)', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke', 'stroke-opacity': 0.7 }, ov);
+  const gC = el('g', { 'clip-path': 'url(#landclip)', fill: 'none', 'stroke-linecap': 'round' }, ov);
+  const freeLine = el('path', { stroke: 'var(--ink)', 'stroke-width': 1.6, 'stroke-dasharray': '1 4', 'vector-effect': 'non-scaling-stroke' }, gC);
+  const curCase = el('path', { stroke: 'var(--surface)', 'stroke-width': 5, 'stroke-opacity': 0.85, 'vector-effect': 'non-scaling-stroke' }, gC);
+  const curLine = el('path', { stroke: 'var(--ink)', 'stroke-width': 2.2, 'vector-effect': 'non-scaling-stroke' }, gC);
+  // NJ approaches and the two bridges
+  const gB = el('g', { fill: 'none', 'stroke-linecap': 'round' }, ov);
+  el('path', { d: lineD([[40.835, -74.012], [40.856, -73.996], [40.8533, -73.962]]), stroke: 'var(--ink-2)', 'stroke-width': 1.6, 'stroke-dasharray': '5 4', 'vector-effect': 'non-scaling-stroke' }, gB);
+  el('path', { d: lineD([[41.098, -74.012], [41.098, -73.962], [41.0732, -73.922]]), stroke: 'var(--ink-2)', 'stroke-width': 1.6, 'stroke-dasharray': '5 4', 'vector-effect': 'non-scaling-stroke' }, gB);
+  for (const seg of [[[40.8533, -73.962], [40.8500, -73.9445]], [[41.0732, -73.922], [41.0700, -73.869]]]) {
+    el('path', { d: lineD(seg), stroke: 'var(--surface)', 'stroke-width': 7, 'vector-effect': 'non-scaling-stroke' }, gB);
+    el('path', { d: lineD(seg), stroke: 'var(--ink)', 'stroke-width': 4, 'vector-effect': 'non-scaling-stroke' }, gB);
+  }
+  const gP = el('g', {}, ov);
+  for (const p of PLACES) el('circle', { cx: px(p.lon), cy: py(p.lat), r: 2.6, fill: 'var(--ink)', stroke: 'var(--surface)', 'stroke-width': 1.2, class: p.minor ? 'dot minor' : 'dot' }, gP);
+  const selRing = el('circle', { r: 8, fill: 'none', stroke: 'var(--ink)', 'stroke-width': 2.2, 'vector-effect': 'non-scaling-stroke' }, ov);
+  const selCase = el('circle', { r: 8, fill: 'none', stroke: 'var(--surface)', 'stroke-width': 5, 'vector-effect': 'non-scaling-stroke' }, ov);
+  ov.insertBefore(selCase, selRing);
+
+  // ---------- html labels ----------
+  const lab = $('labels');
+  function addLabel(text, lat, lon, cls, dx = 0, dy = 0, anchor = 'l') {
+    const s = document.createElement('div'); s.className = 'lbl ' + (cls || ''); s.textContent = text;
+    s.style.left = (px(lon) / VW * 100) + '%'; s.style.top = (py(lat) / VH * 100) + '%';
+    const tx = anchor === 'l' ? '0' : anchor === 'r' ? '-100%' : '-50%';
+    s.style.transform = `translate(calc(${tx} + ${dx}px), calc(-50% + ${dy}px))`;
+    lab.appendChild(s); return s;
+  }
+  const LABEL_SIDE = { 'Mount Vernon': 'r', 'Dobbs Ferry': 'r', 'Hastings': 'r' };
+  for (const p of PLACES) {
+    const side = LABEL_SIDE[p.name] || 'l';
+    addLabel(p.name, p.lat, p.lon, p.minor ? 'minor' : '', side === 'l' ? 6 : -6, 0, side);
+  }
+  addLabel('GWB', 40.8517, -73.953, 'bridge', 0, 13, 'c');
+  addLabel('Tappan Zee', 41.0716, -73.896, 'bridge', 0, -13, 'c');
+  addLabel('NJ Tpk', 40.838, -74.004, 'ctx', 2, 10, 'l');
+  addLabel('GSP', 41.098, -74.004, 'ctx', 2, -10, 'l');
+  addLabel('N.J.', 40.95, -74.008, 'ctx', 2, 0, 'l');
+  addLabel('Connecticut', 41.15, -73.56, 'ctx', 0, 0, 'c');
+  addLabel('Putnam', 41.368, -73.72, 'ctx', 0, 0, 'c');
+  addLabel('Queens', 40.788, -73.80, 'ctx', 0, 0, 'c');
+  addLabel('Long Island Sound', 40.905, -73.64, 'water', 0, 0, 'c');
+  addLabel('Hudson', 41.155, -73.905, 'water', 0, 0, 'c');
+  addLabel('Westchester', 41.105, -73.64, 'ctx', 0, 0, 'c');
+  addLabel('Saw Mill', 41.17, -73.765, 'road', 6, 0, 'l');
+  addLabel('Taconic', 41.24, -73.80, 'road', -6, 0, 'r');
+  addLabel('I-684', 41.16, -73.70, 'road', 6, 0, 'l');
+  addLabel('Hutch', 40.995, -73.757, 'road', 6, 0, 'l');
+  addLabel('I-95', 40.94, -73.745, 'road', 6, 6, 'l');
+  addLabel('I-87', 40.975, -73.852, 'road', -4, 0, 'r');
+  addLabel('Cross Bronx', 40.836, -73.905, 'road', 0, 10, 'c');
+
+  // ---------- contour (marching squares on cell centres) ----------
+  function contour(valFn) {
+    const V = new Float32Array(ROWS * COLS).fill(NaN);
+    for (let i = 0; i < NC; i++) V[cells[i].r * COLS + cells[i].c] = valFn(i);
+    const P = (r, c) => [px(EXT[0] + (c + 0.5) * DLON), py(EXT[3] - (r + 0.5) * DLAT)];
+    const lerp = (a, b, va, vb) => { const t = va / (va - vb); return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]; };
+    let d = '';
+    for (let r = 0; r + 1 < ROWS; r++) for (let c = 0; c + 1 < COLS; c++) {
+      const tl = V[r * COLS + c], tr = V[r * COLS + c + 1], br = V[(r + 1) * COLS + c + 1], bl = V[(r + 1) * COLS + c];
+      if (Number.isNaN(tl) || Number.isNaN(tr) || Number.isNaN(br) || Number.isNaN(bl)) continue;
+      const k = (tl > 0 ? 8 : 0) | (tr > 0 ? 4 : 0) | (br > 0 ? 2 : 0) | (bl > 0 ? 1 : 0);
+      if (k === 0 || k === 15) continue;
+      const pTL = P(r, c), pTR = P(r, c + 1), pBR = P(r + 1, c + 1), pBL = P(r + 1, c);
+      const T = () => lerp(pTL, pTR, tl, tr), Rt = () => lerp(pTR, pBR, tr, br), B = () => lerp(pBL, pBR, bl, br), L = () => lerp(pTL, pBL, tl, bl);
+      const seg = (a, b) => { d += 'M' + a[0].toFixed(1) + ' ' + a[1].toFixed(1) + 'L' + b[0].toFixed(1) + ' ' + b[1].toFixed(1); };
+      const ctr = (tl + tr + br + bl) / 4 > 0;
+      switch (k) {
+        case 1: case 14: seg(L(), B()); break;
+        case 2: case 13: seg(B(), Rt()); break;
+        case 3: case 12: seg(L(), Rt()); break;
+        case 4: case 11: seg(T(), Rt()); break;
+        case 6: case 9: seg(T(), B()); break;
+        case 7: case 8: seg(T(), L()); break;
+        case 5: if (ctr) { seg(T(), L()); seg(B(), Rt()); } else { seg(T(), Rt()); seg(L(), B()); } break;
+        case 10: if (ctr) { seg(T(), Rt()); seg(L(), B()); } else { seg(T(), L()); seg(B(), Rt()); } break;
+      }
+    }
+    return d;
+  }
+  const FREE_D = contour(i => FREE.T[i] - FREE.G[i]);
+  freeLine.setAttribute('d', FREE_D);
+
+  // ---------- legend ----------
+  function drawLegend() {
+    const L = $('legend');
+    const sw = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5].map(b => `<span style="background:${binColor(b)}"></span>`).join('');
+    let title, labels;
+    if (view === 'odds') { title = 'Chance the GWB gets there first'; labels = ['TZB 97%+ of trips', '40–60%', 'GWB 97%+ of trips']; }
+    else if (view === 'traffic') { title = 'Minutes saved by the faster bridge'; labels = ['TZB by 30+', 'within 2 min', 'GWB by 30+']; }
+    else { title = 'Minutes saved on the worst 1-in-10 trip'; labels = ['TZB by 30+', 'within 2 min', 'GWB by 30+']; }
+    const lineLabel = view === 'odds' ? 'Even odds' : 'Break-even';
+    const showFree = !(view === 'traffic' && scen.dG === 0 && scen.dT === 0 && scen.c === 0);
+    L.innerHTML = `<div class="legend-title">${title}</div><div class="ramp" aria-hidden="true">${sw}</div>
+      <div class="ramp-labels"><span>${labels[0]}</span><span>${labels[1]}</span><span>${labels[2]}</span></div>
+      <div class="keyline"><span><svg width="26" height="8"><line x1="1" y1="4" x2="25" y2="4" stroke="${COL.ink}" stroke-width="2.2" stroke-linecap="round"/></svg>${lineLabel}</span>
+      ${showFree ? `<span><svg width="26" height="8"><line x1="1" y1="4" x2="25" y2="4" stroke="${COL.ink}" stroke-width="1.6" stroke-dasharray="1 4" stroke-linecap="round"/></svg>Break-even on empty roads</span>` : ''}
+      <span><svg width="26" height="8"><line x1="1" y1="4" x2="25" y2="4" stroke="${COL.road}" stroke-opacity=".55" stroke-width="1.6"/></svg>Highways in the model</span></div>`;
+  }
+
+  // ---------- share stat ----------
+  function drawShare() {
+    let g = 0, n = 0, gb = 0, nb = 0, gw = 0, nw = 0;
+    for (let i = 0; i < NC; i++) {
+      if (!cells[i].real) continue;
+      const v = value(i), win = v > 0 ? 1 : v === 0 ? 0.5 : 0;
+      n++; g += win; if (cells[i].bx) { nb++; gb += win; } else { nw++; gw += win; }
+    }
+    const pct = x => Math.round(100 * x) + '%';
+    $('share').textContent = pct(g / n);
+    $('share-label').textContent = view === 'odds' ? 'of the land is a better-than-even bet for the GWB' : view === 'traffic' ? 'of the land is faster by GWB in this traffic' : 'of the land has a better worst case by GWB';
+    $('share-bar').innerHTML = `<i style="width:${100 * g / n}%;background:${COL.gwb}"></i><i style="flex:1;background:${COL.tzb}"></i>`;
+    $('share-split').innerHTML = `<span><span class="sw" style="background:${COL.gwb}"></span>Bronx <b>${pct(gb / nb)}</b> GWB</span><span>Westchester <b>${pct(gw / nw)}</b> GWB</span><span><span class="sw" style="background:${COL.tzb}"></span>TZB <b>${pct(1 - g / n)}</b></span>`;
+  }
+
+  // ---------- selected place ----------
+  function legsAt(lat, lon) {
+    const bx = inBronx(lat, lon);
+    const L = M.localLegs(lat, lon, bx, KL);
+    return { I: L.map(x => x[0]), Mn: L.map(x => x[1]) };
+  }
+  function placeStats(lat, lon) {
+    const L = legsAt(lat, lon);
+    const pair = (g, t, dG, dT) => { let a = Infinity, b = Infinity; L.I.forEach((n, k) => { a = Math.min(a, g[n] + L.Mn[k]); b = Math.min(b, t[n] + L.Mn[k]); }); return [M.NJ.gwb.min + dG + a, M.NJ.tzb.min + dT + b]; };
+    const free = pair(FREE.g, FREE.t, 0, 0), now = pair(cur.g, cur.t, scen.dG, scen.dT);
+    const s = samplesFor(L.I, L.Mn);
+    const Gs = Float32Array.from(s.G).sort(), Ts = Float32Array.from(s.T).sort();
+    return { free, now, p: s.p, G: s.G, T: s.T, medG: Gs[QI50], medT: Ts[QI50], p90G: Gs[QI90], p90T: Ts[QI90] };
+  }
+  const fmt = m => Math.round(m) + ' min';
+  function drawPlace() {
+    const st = placeStats(sel.lat, sel.lon);
+    $('place-name').textContent = sel.name;
+    const pick = $('place-pick'); pick.value = PLACES.includes(sel) ? sel.name : '';
+    const row = (name, color, f, med, p90, wins) => `<tr><td><span class="sw" style="background:${color}"></span>${name}</td><td class="num">${fmt(f)}</td><td class="num">${fmt(med)}</td><td class="num">${fmt(p90)}</td><td class="num">${Math.round(wins * 100)}%</td></tr>`;
+    $('place-rows').innerHTML = row('GWB', COL.gwb, st.free[0], st.medG, st.p90G, st.p) + row('TZB', COL.tzb, st.free[1], st.medT, st.p90T, 1 - st.p);
+    const nowWin = st.now[0] < st.now[1] ? 'GWB' : 'TZB', nowBy = Math.abs(st.now[0] - st.now[1]);
+    let v;
+    const better = st.p > 0.5 ? 'GWB' : 'TZB', odds = Math.round(100 * Math.max(st.p, 1 - st.p));
+    const safer = st.p90G < st.p90T ? 'GWB' : 'TZB';
+    if (odds >= 85) v = `${better}, comfortably: it arrives first on ${odds}% of simulated trips.`;
+    else if (better === safer) v = `Leans ${better}: first on ${odds}% of trips, and its bad days are ${Math.round(Math.abs(st.p90G - st.p90T))} min shorter too.`;
+    else v = `Toss-up. The ${better} wins ${odds}% of trips, but the ${safer} has the shorter bad day by ${Math.round(Math.abs(st.p90G - st.p90T))} min.`;
+    if (view === 'traffic') v += ` In the traffic set above: ${nowWin} by ${Math.round(nowBy)} min (${fmt(st.now[0])} vs ${fmt(st.now[1])}).`;
+    $('place-verdict').textContent = v;
+    drawHist(st);
+    selRing.setAttribute('cx', px(sel.lon)); selRing.setAttribute('cy', py(sel.lat));
+    selCase.setAttribute('cx', px(sel.lon)); selCase.setAttribute('cy', py(sel.lat));
+    selRing.setAttribute('r', 8 * VW / Math.max(1, mapEl.clientWidth)); selCase.setAttribute('r', 8 * VW / Math.max(1, mapEl.clientWidth));
+  }
+
+  // ---------- histogram of simulated trip times ----------
+  function drawHist(st) {
+    const W = 420, H = 170, m = { l: 34, r: 10, t: 22, b: 30 };
+    const all = [...st.G, ...st.T].sort((a, b) => a - b);
+    const lo = Math.floor(all[0] / 5) * 5, hi = Math.min(Math.ceil(all[Math.floor(all.length * 0.985)] / 5) * 5 + 5, lo + 150);
+    const BW = Math.max(2, Math.round((hi - lo) / 30));
+    const nb = Math.ceil((hi - lo) / BW);
+    const hG = new Array(nb).fill(0), hT = new Array(nb).fill(0);
+    const put = (h, x) => { const k = Math.min(nb - 1, Math.max(0, Math.floor((x - lo) / BW))); h[k]++; };
+    st.G.forEach(x => put(hG, x)); st.T.forEach(x => put(hT, x));
+    const ymax = Math.max(...hG, ...hT);
+    const X = v => m.l + (v - lo) / (hi - lo) * (W - m.l - m.r), Y = c => H - m.b - c / ymax * (H - m.t - m.b);
+    const area = h => { let d = `M${X(lo)} ${Y(0)}`; h.forEach((c, k) => { d += `L${X(lo + k * BW)} ${Y(c)}L${X(lo + (k + 1) * BW)} ${Y(c)}`; }); return d + `L${X(lo + nb * BW)} ${Y(0)}Z`; };
+    const step = h => { let d = ''; h.forEach((c, k) => { d += `${k ? 'L' : 'M'}${X(lo + k * BW)} ${Y(c)}L${X(lo + (k + 1) * BW)} ${Y(c)}`; }); return d; };
+    const ticks = []; const tstep = (hi - lo) > 90 ? 20 : 10;
+    for (let v = Math.ceil(lo / tstep) * tstep; v <= hi; v += tstep) ticks.push(v);
+    const pct = c => Math.round(100 * c / D);
+    const ytick = Math.max(1, Math.round(ymax / D * 100 / 2 / 5) * 5);
+    const yt = [ytick, ytick * 2].filter(p => p * D / 100 <= ymax * 1.02);
+    const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Distribution of simulated trip times to ${sel.name}">
+      ${yt.map(p => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(p * D / 100)}" y2="${Y(p * D / 100)}" stroke="${COL.line}" stroke-width="1"/><text x="${m.l - 6}" y="${Y(p * D / 100) + 4}" text-anchor="end" font-size="11" fill="${COL.muted}" style="font-family:var(--mono)">${p}%</text>`).join('')}
+      <path d="${area(hT)}" fill="${COL.tzb}" fill-opacity=".16"/><path d="${area(hG)}" fill="${COL.gwb}" fill-opacity=".16"/>
+      <path d="${step(hT)}" fill="none" stroke="${COL.tzb}" stroke-width="2" stroke-linejoin="round"/>
+      <path d="${step(hG)}" fill="none" stroke="${COL.gwb}" stroke-width="2" stroke-linejoin="round"/>
+      <line x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}" stroke="${COL.muted}" stroke-width="1"/>
+      ${ticks.map(v => `<text x="${X(v)}" y="${H - m.b + 15}" text-anchor="middle" font-size="11" fill="${COL.muted}" style="font-family:var(--mono)">${v}</text>`).join('')}
+      <text x="${W - m.r}" y="${H - 2}" text-anchor="end" font-size="11" fill="${COL.muted}">minutes from exit 11</text>
+      ${[[st.medG, COL.gwb, 'GWB'], [st.medT, COL.tzb, 'TZB']].map(([v, c]) => `<line x1="${X(v)}" x2="${X(v)}" y1="${m.t - 2}" y2="${H - m.b}" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 3"/>`).join('')}
+      <text x="${X(st.medG)}" y="${m.t - 7}" text-anchor="${st.medG < st.medT ? 'end' : 'start'}" font-size="11.5" font-weight="600" fill="${COL.ink}">GWB median ${Math.round(st.medG)}</text>
+      <text x="${X(st.medT)}" y="${m.t - 7}" text-anchor="${st.medG < st.medT ? 'start' : 'end'}" font-size="11.5" font-weight="600" fill="${COL.ink}">TZB median ${Math.round(st.medT)}</text>
+      <rect id="hist-hit" x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent"/>
+      <line id="hist-x" y1="${m.t}" y2="${H - m.b}" stroke="${COL.ink}" stroke-width="1" visibility="hidden"/>
+    </svg><div class="tip" id="hist-tip" hidden></div>`;
+    const box = $('hist'); box.innerHTML = svg;
+    const s = box.querySelector('svg'), hit = box.querySelector('#hist-hit'), xl = box.querySelector('#hist-x'), tip = box.querySelector('#hist-tip');
+    hit.addEventListener('pointermove', e => {
+      const r = s.getBoundingClientRect(); const vx = (e.clientX - r.left) / r.width * W;
+      const k = Math.min(nb - 1, Math.max(0, Math.floor(((vx - m.l) / (W - m.l - m.r) * (hi - lo)) / BW)));
+      xl.setAttribute('x1', X(lo + (k + .5) * BW)); xl.setAttribute('x2', X(lo + (k + .5) * BW)); xl.setAttribute('visibility', 'visible');
+      tip.hidden = false;
+      tip.innerHTML = `<b>${lo + k * BW}–${lo + (k + 1) * BW} min</b><div class="row"><span><span class="sw" style="background:${COL.gwb}"></span>GWB</span><span>${pct(hG[k])}% of trips</span></div><div class="row"><span><span class="sw" style="background:${COL.tzb}"></span>TZB</span><span>${pct(hT[k])}% of trips</span></div>`;
+      const tx = (e.clientX - r.left); tip.style.left = Math.min(r.width - 150, Math.max(0, tx + 12)) + 'px'; tip.style.top = '0px';
+    });
+    hit.addEventListener('pointerleave', () => { tip.hidden = true; xl.setAttribute('visibility', 'hidden'); });
+  }
+
+  // ---------- map hover + click ----------
+  const tip = $('tip');
+  function cellFromEvent(e) {
+    const r = mapEl.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width * VW, y = (e.clientY - r.top) / r.height * VH;
+    const lat = uny(y), lon = unx(x);
+    const row = Math.floor((EXT[3] - lat) / DLAT), col = Math.floor((lon - EXT[0]) / DLON);
+    const i = row >= 0 && row < ROWS && col >= 0 && col < COLS ? cellAt[row * COLS + col] : -1;
+    return { i, lat, lon, x: e.clientX - r.left, y: e.clientY - r.top, rect: r };
+  }
+  function nearestPlace(lat, lon, km) {
+    let best = null, bd = km;
+    for (const p of PLACES) { const d = M.miles([lat, lon], [p.lat, p.lon]) * 1.609; if (d < bd) { bd = d; best = p; } }
+    return best;
+  }
+  mapEl.addEventListener('pointermove', e => {
+    const h = cellFromEvent(e);
+    if (h.i < 0 || !(inBronx(h.lat, h.lon) || inWest(h.lat, h.lon))) { tip.hidden = true; mapEl.style.cursor = 'default'; return; }
+    mapEl.style.cursor = 'pointer';
+    const near = nearestPlace(h.lat, h.lon, 2.5);
+    const where = near ? 'Near ' + near.name : (cells[h.i].bx ? 'The Bronx' : 'Westchester');
+    let body;
+    if (view === 'odds') body = `GWB first on <b>${Math.round(pWin[h.i] * 100)}%</b> of trips<div class="row"><span>Typical GWB</span><span>${fmt(medG[h.i])}</span></div><div class="row"><span>Typical TZB</span><span>${fmt(medT[h.i])}</span></div>`;
+    else if (view === 'traffic') { const g = cur.G[h.i], t = cur.T[h.i]; body = `<b>${g < t ? 'GWB' : 'TZB'}</b> by ${Math.round(Math.abs(g - t))} min<div class="row"><span>GWB</span><span>${fmt(g)}</span></div><div class="row"><span>TZB</span><span>${fmt(t)}</span></div>`; }
+    else { const g = p90G[h.i], t = p90T[h.i]; body = `Bad day: <b>${g < t ? 'GWB' : 'TZB'}</b> by ${Math.round(Math.abs(g - t))} min<div class="row"><span>GWB 1 in 10</span><span>${fmt(g)}</span></div><div class="row"><span>TZB 1 in 10</span><span>${fmt(t)}</span></div>`; }
+    tip.innerHTML = `<div style="font-weight:800;margin-bottom:2px">${where}</div>${body}`;
+    tip.hidden = false;
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    tip.style.left = (h.x + 14 + tw > h.rect.width ? h.x - tw - 14 : h.x + 14) + 'px';
+    tip.style.top = Math.min(h.rect.height - th - 6, Math.max(6, h.y - th / 2)) + 'px';
+  });
+  mapEl.addEventListener('pointerleave', () => { tip.hidden = true; });
+  mapEl.addEventListener('click', e => {
+    const h = cellFromEvent(e);
+    if (!(inBronx(h.lat, h.lon) || inWest(h.lat, h.lon))) return;
+    const near = nearestPlace(h.lat, h.lon, 1.2);
+    sel = near || { name: (nearestPlace(h.lat, h.lon, 5) ? 'Near ' + nearestPlace(h.lat, h.lon, 5).name : 'Picked spot'), lat: h.lat, lon: h.lon };
+    drawPlace();
+  });
+
+  // ---------- controls ----------
+  const pick = $('place-pick');
+  pick.innerHTML = '<option value="" disabled>Pick a town</option>' + [...PLACES].sort((a, b) => a.name.localeCompare(b.name)).map(p => `<option>${p.name}</option>`).join('');
+  pick.addEventListener('change', () => { sel = PLACES.find(p => p.name === pick.value) || sel; drawPlace(); });
+
+  const tabs = [['traffic', 'tab-traffic', 'panel-traffic'], ['odds', 'tab-odds', 'panel-odds'], ['worst', 'tab-worst', 'panel-worst']];
+  function setView(v) {
+    view = v;
+    for (const [k, t, p] of tabs) { $(t).setAttribute('aria-selected', String(k === v)); $(t).tabIndex = k === v ? 0 : -1; $(p).hidden = k !== v; }
+    render();
+  }
+  tabs.forEach(([k, t], idx) => {
+    $(t).addEventListener('click', () => setView(k));
+    $(t).addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const n = tabs[(idx + (e.key === 'ArrowRight' ? 1 : 2)) % 3]; $(n[1]).focus(); setView(n[0]); } });
+  });
+  const pre = $('presets');
+  pre.innerHTML = PRESETS.map(p => `<button type="button" data-id="${p.id}" aria-pressed="false">${p.name}</button>`).join('');
+  pre.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const p = PRESETS.find(x => x.id === b.dataset.id); scen = { dG: p.dG, dT: p.dT, c: p.c }; syncSliders(); recompute(); });
+  const cbxMph = c => Math.round(48 * (1 - M.SLOW.cbx * c / 100));
+  function syncSliders() {
+    $('dG').value = scen.dG; $('dT').value = scen.dT; $('cg').value = scen.c;
+    $('dG-out').textContent = '+' + scen.dG + ' min'; $('dT-out').textContent = '+' + scen.dT + ' min';
+    $('cg-out').textContent = scen.c === 0 ? 'free-flowing' : `Cross Bronx at ${cbxMph(scen.c)} mph`;
+    pre.querySelectorAll('button').forEach(b => { const p = PRESETS.find(x => x.id === b.dataset.id); b.setAttribute('aria-pressed', String(p.dG === scen.dG && p.dT === scen.dT && p.c === scen.c)); });
+  }
+  for (const id of ['dG', 'dT', 'cg']) $(id).addEventListener('input', () => { scen = { dG: +$('dG').value, dT: +$('dT').value, c: +$('cg').value }; syncSliders(); recompute(); });
+  let raf = 0;
+  function recompute() { cur = scenario(scen.dG, scen.dT, scen.c / 100); if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); }); }
+
+  // assumptions table
+  (function () {
+    const q = (a, p) => { const b = [...a].sort((x, y) => x - y); return b[Math.floor(p * (b.length - 1))]; };
+    const r2 = M.rng(99), big = []; for (let i = 0; i < 20000; i++) big.push(M.drawScenario(r2));
+    const g = big.map(s => s.dG), t = big.map(s => s.dT);
+    const row = (n, c, a) => `<tr><td><span class="sw" style="background:${c}"></span>${n}</td><td class="num">${Math.round(q(a, .5))} min</td><td class="num">${Math.round(q(a, .9))} min</td><td class="num">${Math.round(q(a, .99))} min</td></tr>`;
+    window.__assume = () => { $('assume').innerHTML = row('GWB side', COL.gwb, g) + row('TZB side', COL.tzb, t); };
+  })();
+
+  // findings and town table, computed from the model
+  function townStats() { return PLACES.map(p => ({ p, s: placeStats(p.lat, p.lon) })); }
+  function drawFindings() {
+    const S = townStats();
+    const by = n => S.find(x => x.p.name === n).s;
+    const pc = x => Math.round(100 * x) + '%';
+    const wp = by('White Plains'), tt = by('Tarrytown'), yk = by('Yonkers'), sc = by('Scarsdale'), fd = by('Fordham');
+    const lines = [
+      `On empty roads the GWB wins nearly everywhere. Tarrytown is close to a tie (${Math.round(tt.free[0])} vs ${Math.round(tt.free[1])} min), because the GSP route is 23 miles longer and Tarrytown sits about that far up the Hudson from the GWB.`,
+      `The Bronx and the Yonkers to New Rochelle belt stay GWB even with traffic: Fordham ${pc(fd.p)} and Yonkers ${pc(yk.p)} of simulated trips.`,
+      `The swing zone starts around Scarsdale (${pc(sc.p)} GWB) and White Plains (${pc(wp.p)}), and runs over to Rye and Port Chester and up through northern Westchester, where both routes meet at Hawthorne and it comes down to the bridge delays.`,
+      `The GWB's long tail moves the line south when the bad day is what counts. White Plains: typical ${Math.round(wp.medG)} vs ${Math.round(wp.medT)} min, but 1 in 10 trips runs ${Math.round(wp.p90G)} min by GWB against ${Math.round(wp.p90T)} by TZB.`,
+    ];
+    $('findings').innerHTML = lines.map(l => `<li>${l}</li>`).join('');
+    $('town-table').innerHTML = S.map(({ p, s }) => `<tr><td>${p.name}</td><td class="num">${Math.round(s.free[0])}</td><td class="num">${Math.round(s.free[1])}</td><td class="num">${pc(s.p)}</td><td class="num">${Math.round(s.medG)}</td><td class="num">${Math.round(s.medT)}</td><td class="num">${Math.round(s.p90G)}</td><td class="num">${Math.round(s.p90T)}</td></tr>`).join('');
+  }
+
+  // ---------- render ----------
+  function render() {
+    drawCanvas();
+    const d = contour(i => value(i));
+    curLine.setAttribute('d', d); curCase.setAttribute('d', d);
+    const showFree = !(view === 'traffic' && scen.dG === 0 && scen.dT === 0 && scen.c === 0);
+    freeLine.setAttribute('visibility', showFree ? 'visible' : 'hidden');
+    drawLegend(); drawShare(); drawPlace();
+  }
+  function retheme() { readColors(); window.__assume(); render(); }
+  readColors(); syncSliders(); window.__assume(); drawFindings(); render();
+  new ResizeObserver(() => { drawCanvas(); drawPlace(); }).observe(mapEl);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);
+  new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+</script>
+</body>
+</html>
